@@ -1,5 +1,5 @@
 import './style.css'
-import drawRectangle from "./shapes/draw-rectangle.ts";
+import { drawFilledRectangle, drawStrokedRectangle } from "./shapes/drawFilledRectangle.ts";
 
 const canvas = document.getElementById('app') as HTMLCanvasElement;
 
@@ -11,5 +11,7 @@ const ctx = canvas.getContext('2d')!;
 window.ctx = ctx;
 window.canvas = canvas;
 
-drawRectangle(ctx, "green", [20, 40], [300, 100]);
-drawRectangle(ctx, "rgb(0 0 200 / 50%)", [200, 50], [100, 100]);
+drawFilledRectangle(ctx, { color: "green", origin: [20, 40], dimensions: [300, 100] });
+drawFilledRectangle(ctx, { color: "rgb(0 0 200 / 50%)", origin: [200, 50], dimensions: [100, 100] });
+
+drawStrokedRectangle(ctx, { color: 'red', origin: [100, 50], dimensions: [50, 300] });
