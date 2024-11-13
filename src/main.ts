@@ -1,5 +1,5 @@
 import './style.css'
-import { clearRect, drawFilledRectangle, drawStrokedRectangle } from "./shapes/rectangle.ts";
+import { clearRect, drawFilledRectangle, drawImageFrame, drawStrokedRectangle } from "./shapes/rectangle.ts";
 
 const canvas = document.getElementById('app') as HTMLCanvasElement;
 
@@ -17,3 +17,5 @@ drawFilledRectangle(ctx, { color: "rgb(0 0 200 / 50%)", origin: [200, 50], dimen
 drawStrokedRectangle(ctx, { color: 'red', origin: [100, 50], dimensions: [50, 300] });
 
 clearRect(ctx, { origin: [150, 50], dimensions: [25, 25]})
+
+drawImageFrame(ctx, { color: 'pink', dimensions: [250, 100], origin: [250, 250]});
