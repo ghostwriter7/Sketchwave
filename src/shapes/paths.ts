@@ -1,5 +1,6 @@
 import type { Coordinates } from '../types/core.type.ts';
 import { calculateDistance } from '../math/distance.ts';
+import { toRadians } from '../math/to-radians.ts';
 
 const drawTriangle = (ctx: CanvasRenderingContext2D, points: [Coordinates, Coordinates, Coordinates]) => {
   ctx.beginPath();
@@ -35,6 +36,6 @@ export const drawFilledCircle = (ctx: CanvasRenderingContext2D, { color, points:
   ctx.fillStyle = color;
   const radius = calculateDistance(centerPoint, outerPoint);
   ctx.beginPath();
-  ctx.arc(...centerPoint, radius, 0, 2 * Math.PI);
+  ctx.arc(...centerPoint, radius, 0, toRadians(360));
   ctx.fill();
 }
