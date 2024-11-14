@@ -19,6 +19,12 @@ export const drawStrokedRectangle = (ctx: CanvasRenderingContext2D, { color, ori
   ctx.strokeRect(...origin, ...dimensions);
 }
 
+export const drawRoundedRectangle = (ctx: CanvasRenderingContext2D, { color, origin, dimensions }: { color: string, origin: Coordinates, dimensions: Dimensions }) => {
+  ctx.fillStyle = color;
+  ctx.roundRect(...origin, ...dimensions, 5);
+  ctx.fill();
+}
+
 export const clearRect = (ctx: CanvasRenderingContext2D, { origin, dimensions }: {
   origin: Coordinates,
   dimensions: Dimensions

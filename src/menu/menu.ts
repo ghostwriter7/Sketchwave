@@ -1,5 +1,6 @@
 import type { Coordinates } from '../types/core.type.ts';
 import { drawFilledCircle, drawFilledTriangle, drawStrokedTriangle } from '../shapes/paths.ts';
+import { drawFilledRectangle, drawRoundedRectangle, drawStrokedRectangle } from '../shapes/rectangle.ts';
 
 const menu = document.getElementById('menu') as HTMLElement;
 
@@ -45,10 +46,47 @@ const handleCircleFillAction = (canvas: HTMLCanvasElement, ctx: CanvasRenderingC
     }, { signal });
 }
 
+const handleRectAction = (type: 'fill' | 'stroke' | 'round') =>
+  (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, signal: AbortSignal) => {
+      let origin: Coordinates | null;
+      canvas.addEventListener('click', (event: MouseEvent) => {
+        const { offsetX, offsetY } = event;
+        if (!origin) {
+          origin = [offsetX, offsetY];
+        } else {
+          const width = Math.abs(offsetX - origin[0])
+          const height = Math.abs(offsetY - origin[1]);
+          const x = Math.min(offsetX, origin[0]);
+          const y = Math.min(offsetY, origin[1]);
+          const options = {
+            color: 'blue',
+            origin: [x, y],
+            dimensions: [width, height]
+          };
+          switch (type) {
+            case 'fill':
+              drawFilledRectangle(ctx, options);
+              break;
+            case 'stroke':
+              drawStrokedRectangle(ctx, options);
+              break;
+            case 'round':
+              drawRoundedRectangle(ctx, options);
+              break;
+          }
+          origin = null;
+
+        }
+      }, { signal})
+  }
+
 const actionMap: Record<string, (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, signal: AbortSignal) => void> = {
   triangleFill: handleTriangleFillAction,
   triangleStroke: handleTriangleStrokeAction,
   circleFill: handleCircleFillAction,
+  rectFill: handleRectAction('fill'),
+  rectStroke: handleRectAction('stroke'),
+  rectRound: handleRectAction('round')
 }
 
 const initializeMenu = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
