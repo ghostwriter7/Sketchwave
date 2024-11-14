@@ -1,6 +1,6 @@
 import './style.css'
 import initializeMenu from './menu/menu.ts';
-import { drawCircles } from './demos/circles.ts';
+import { drawCurves } from './demos/curves.ts';
 
 const canvas = document.getElementById('app') as HTMLCanvasElement;
 
@@ -14,4 +14,4 @@ window.canvas = canvas;
 
 initializeMenu(canvas, ctx);
 
-drawCircles(ctx);
+drawCurves(ctx);
