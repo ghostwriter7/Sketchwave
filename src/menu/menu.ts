@@ -97,7 +97,7 @@ const initializeMenu = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
     abortController = new AbortController();
     const { signal } = abortController;
     const actionId = (target as HTMLButtonElement).id;
-    actionMap[actionId](canvas, ctx, signal);
+    actionMap[actionId]?.(canvas, ctx, signal);
   });
 }
 
