@@ -1,12 +1,18 @@
 const canvas = document.getElementById('line-thickness') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-const lineMap = new Map<Path2D, { startX: number, endX: number }>();
+const lineMap = new Map<ExtendedPath2D, { startX: number, endX: number }>();
 
-const highlightSelectedLine = (path: Path2D) => {
-  ctx.fillStyle = 'blue';
-  lineMap.forEach((_, path) => ctx.fill(path));
-  ctx.fillStyle = 'red';
-  ctx.fill(path);
+type ExtendedPath2D = Path2D & { lineWidth: number };
+
+const highlightSelectedLine = (path: ExtendedPath2D) => {
+  ctx.strokeStyle = 'blue';
+  lineMap.forEach((_, path) => {
+    ctx.lineWidth = path.lineWidth;
+    ctx.stroke(path)
+  });
+  ctx.lineWidth = path.lineWidth;
+  ctx.strokeStyle = 'red';
+  ctx.stroke(path);
 }
 
 export const initializeLineThicknessPicker = () => {
@@ -16,14 +22,19 @@ export const initializeLineThicknessPicker = () => {
   const thicknesses = [1, 2, 3, 5, 7, 9, 11, 14, 17, 21];
   canvas.width = thicknesses.reduce((a, b) => a + b, 0) + thicknesses.length * gap;
   let currentX = gap;
-  ctx.fillStyle = 'blue'
+  ctx.strokeStyle = 'blue'
 
   for (let i = 0; i < thicknesses.length; i++) {
     const thickness = thicknesses[i];
-    const path = new Path2D();
+    const path = new Path2D() as ExtendedPath2D;
     lineMap.set(path, { startX: currentX, endX: currentX + thickness});
-    path.rect(currentX, 0, thickness, canvas.height);
-    ctx.fill(path);
+    ctx.beginPath();
+    ctx.lineWidth = thickness;
+    ctx.lineCap = 'round';
+    path.moveTo(currentX + thickness / 2, 5+  thickness / 2);
+    path.lineTo(currentX + thickness / 2, 100 - 5 - thickness / 2);
+    path.lineWidth = thickness;
+    ctx.stroke(path);
     currentX += gap + thickness;
   }
 
