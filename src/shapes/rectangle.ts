@@ -1,4 +1,18 @@
-import { Coordinates, Dimensions } from "../types/core.type.ts";
+import { Coordinates, Dimensions } from '../types/core.type.ts';
+
+export const createRectPathFromPoints = (pointA: Coordinates, pointB: Coordinates): Path2D => {
+  const [x1, y1] = pointA;
+  const [x2, y2] = pointB;
+
+  const width = Math.abs(x1 - x2)
+  const height = Math.abs(y1 - y2);
+  const x = Math.min(x1, x2);
+  const y = Math.min(y1, y2);
+
+  const path = new Path2D();
+  path.rect(x, y, width, height);
+  return path;
+}
 
 export const drawFilledRectangle = (ctx: CanvasRenderingContext2D,
                                     { color, origin, dimensions }: {
@@ -19,7 +33,11 @@ export const drawStrokedRectangle = (ctx: CanvasRenderingContext2D, { color, ori
   ctx.strokeRect(...origin, ...dimensions);
 }
 
-export const drawRoundedRectangle = (ctx: CanvasRenderingContext2D, { color, origin, dimensions }: { color: string, origin: Coordinates, dimensions: Dimensions }) => {
+export const drawRoundedRectangle = (ctx: CanvasRenderingContext2D, { color, origin, dimensions }: {
+  color: string,
+  origin: Coordinates,
+  dimensions: Dimensions
+}) => {
   ctx.fillStyle = color;
   ctx.roundRect(...origin, ...dimensions, 5);
   ctx.fill();
@@ -42,7 +60,9 @@ export const drawImageFrame = (ctx: CanvasRenderingContext2D, { color, origin, d
   const innerOrigin = origin.map((coordinate) => coordinate + frameWidth) as Coordinates;
   clearRect(ctx, { origin: innerOrigin, dimensions: innerDimensions });
 
-  drawStrokedRectangle(ctx, { color,
+  drawStrokedRectangle(ctx, {
+    color,
     origin: innerOrigin.map((coordinate) => coordinate + 5) as Coordinates,
-    dimensions: innerDimensions.map((dimension) => dimension - 10) as Dimensions})
+    dimensions: innerDimensions.map((dimension) => dimension - 10) as Dimensions
+  })
 }
