@@ -1,6 +1,7 @@
-import type { Coordinates } from '../types/core.type.ts';
+import type { Coordinates, Layer } from '../types/core.type.ts';
 import { drawFilledCircle, drawFilledTriangle, drawStrokedTriangle } from '../shapes/paths.ts';
 import { drawFilledRectangle, drawRoundedRectangle, drawStrokedRectangle } from '../shapes/rectangle.ts';
+import type { LayerStore } from '../store/layer.store.ts';
 
 const menu = document.getElementById('menu') as HTMLElement;
 
@@ -47,40 +48,47 @@ const handleCircleFillAction = (canvas: HTMLCanvasElement, ctx: CanvasRenderingC
 }
 
 const handleRectAction = (type: 'fill' | 'stroke' | 'round') =>
-  (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, signal: AbortSignal) => {
+  (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, signal: AbortSignal, layerStore: InstanceType<typeof LayerStore> ) => {
       let origin: Coordinates | null;
+      let path: Path2D;
+
+      const updateRect = (event: MouseEvent): void => {
+        const { offsetX, offsetY } = event;
+        const width = Math.abs(offsetX - origin[0])
+        const height = Math.abs(offsetY - origin[1]);
+        const x = Math.min(offsetX, origin[0]);
+        const y = Math.min(offsetY, origin[1]);
+        path = new Path2D();
+        path.rect(x, y, width, height);
+      }
+
       canvas.addEventListener('click', (event: MouseEvent) => {
+        if (!origin) {
+          layerStore.addLayer({
+            id: Math.random().toString(),
+            draw: () => {
+              if (path) {
+                ctx.fillStyle = 'blue';
+                ctx.fill(path);
+              }
+            }
+          });
+
+          canvas.addEventListener('mousemove', updateRect, { signal } );
+        }
+
         const { offsetX, offsetY } = event;
         if (!origin) {
           origin = [offsetX, offsetY];
         } else {
-          const width = Math.abs(offsetX - origin[0])
-          const height = Math.abs(offsetY - origin[1]);
-          const x = Math.min(offsetX, origin[0]);
-          const y = Math.min(offsetY, origin[1]);
-          const options = {
-            color: 'blue',
-            origin: [x, y],
-            dimensions: [width, height]
-          };
-          switch (type) {
-            case 'fill':
-              drawFilledRectangle(ctx, options);
-              break;
-            case 'stroke':
-              drawStrokedRectangle(ctx, options);
-              break;
-            case 'round':
-              drawRoundedRectangle(ctx, options);
-              break;
-          }
+          canvas.removeEventListener('mousemove', updateRect);
+          updateRect(event);
           origin = null;
-
         }
       }, { signal})
   }
 
-const actionMap: Record<string, (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, signal: AbortSignal) => void> = {
+const actionMap: Record<string, (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, signal: AbortSignal, layerStore: InstanceType<typeof LayerStore>) => void> = {
   triangleFill: handleTriangleFillAction,
   triangleStroke: handleTriangleStrokeAction,
   circleFill: handleCircleFillAction,
@@ -89,7 +97,7 @@ const actionMap: Record<string, (canvas: HTMLCanvasElement, ctx: CanvasRendering
   rectRound: handleRectAction('round')
 }
 
-const initializeMenu = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
+const initializeMenu = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, layerStore: InstanceType<typeof LayerStore>) => {
   let abortController: AbortController | null = null;
 
   menu.addEventListener('click', ({ target }) => {
@@ -97,7 +105,7 @@ const initializeMenu = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
     abortController = new AbortController();
     const { signal } = abortController;
     const actionId = (target as HTMLButtonElement).id;
-    actionMap[actionId]?.(canvas, ctx, signal);
+    actionMap[actionId]?.(canvas, ctx, signal, layerStore);
   });
 }
 
