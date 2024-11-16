@@ -5,6 +5,7 @@ import type { Coordinates, Layer } from './types/core.type.ts';
 interface GlobalContextState {
   activeTool?: string;
   clicks: Coordinates[];
+  color: [number, number, number];
   layers: Layer[];
   mousePosition?: Coordinates;
   tempLayer?: Layer;
@@ -14,6 +15,7 @@ interface GlobalContextActions {
   addClick: (x: number, y: number) => void;
   setMousePosition: (x: number, y: number) => void;
   setActiveTool: (activeTool: 'rect' | 'triangle' | 'circle') => void;
+  setColor: (color: [number, number, number]) => void;
   layerFacade: {
     insertLayer: (layer: Layer) => void;
     removeLayer: (layerId: string) => void;
@@ -30,12 +32,14 @@ const GlobalContext = createContext<GlobalContextState & GlobalContextActions>()
 export const GlobalProvider = (props) => {
   const [state, setState] = createStore<{
     activeTool?: 'rect' | 'triangle' | 'circle';
+    color: [number, number, number];
     clicks: Coordinates[];
     layers: Layer[];
     mousePosition?: Coordinates;
     tempLayer?: Layer;
   }>({
     clicks: [],
+    color: [0, 0, 0],
     layers: [],
   });
   const addClick = (x: number, y: number) => setState('clicks', (clicks) => [...clicks, [x, y]])
@@ -50,6 +54,7 @@ export const GlobalProvider = (props) => {
   }
   const removeLayer = (layerId: string) => setState('layers', (layers) => layers.filter((layer) => layer.id !== layerId));
   const setTemporaryLayer = (tempLayer: Layer) => setState({ tempLayer });
+  const setColor = (color: [number, number, number]) => setState({ color });
 
   const layerFacade = {
     insertLayer,
@@ -60,7 +65,7 @@ export const GlobalProvider = (props) => {
 
   return (
     <GlobalContext.Provider
-      value={{ addClick, layerFacade, setActiveTool, setMousePosition, state }}>
+      value={{ addClick, layerFacade, setColor, setActiveTool, setMousePosition, state }}>
       {props.children}
     </GlobalContext.Provider>
   )

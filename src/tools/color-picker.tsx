@@ -3,6 +3,7 @@ import { createEffect, createSignal, onMount } from 'solid-js';
 import { hsbToRgb } from '../color/hsb-to-rgb.ts';
 import { rgbToHue } from '../color/rgb-to-hue.ts';
 import { getRGBFromPixel } from '../color/get-rgb-from-pixel.ts';
+import { useGlobalContext } from '../global-provider.tsx';
 
 const CONFIG = {
   inlineMargin: 25,
@@ -98,8 +99,9 @@ const drawSelectorAt = (ctx: CanvasRenderingContext2D, x: number, y: number) => 
 }
 
 export const ColorPicker = () => {
+  const { setColor, state } = useGlobalContext();
+
   const [hue, setHue] = createSignal(0);
-  const [color, setColor] = createSignal([255, 0, 0]);
 
   let previewRef: HTMLDivElement;
 
@@ -135,7 +137,7 @@ export const ColorPicker = () => {
   });
 
   createEffect(() => {
-    const [red, green, blue] = color();
+    const [red, green, blue] = state.color;
     previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
   });
 

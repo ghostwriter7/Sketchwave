@@ -7,7 +7,7 @@ const Canvas = () => {
   const { state, addClick, layerFacade, setMousePosition } = useGlobalContext();
 
   const toolHandlers = {
-    rectFillc: handleRectangleTool
+    rectFill: handleRectangleTool
   };
 
   const handleClick = (event: MouseEvent) => {
@@ -20,7 +20,8 @@ const Canvas = () => {
     setMousePosition(offsetX, offsetY);
   }
 
-  const canvasEl = <canvas onClick={handleClick} onMouseMove={handleMouseMove} width={innerWidth} height={innerHeight}></canvas> as HTMLCanvasElement;
+  const canvasEl = <canvas onClick={handleClick} onMouseMove={handleMouseMove} width={innerWidth}
+                           height={innerHeight}></canvas> as HTMLCanvasElement;
   const ctx = canvasEl.getContext('2d')!;
 
   const render = () => {
@@ -36,6 +37,8 @@ const Canvas = () => {
     const handler = state.activeTool ? toolHandlers[state.activeTool] : null;
 
     if (handler) {
+      const [red, green, blue] = state.color;
+      ctx.fillStyle = `rgb(${red},${green},${blue})`;
       handleRectangleTool(layerFacade, state.clicks, state.clicks.length ? state.mousePosition : undefined)
     }
   })
