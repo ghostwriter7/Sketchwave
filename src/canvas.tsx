@@ -6,6 +6,10 @@ import { handleRectangleTool } from './handlers/rectangle-tool.handler.ts';
 const Canvas = () => {
   const { state, addClick, layerFacade, setMousePosition } = useGlobalContext();
 
+  const toolHandlers = {
+    rectFillc: handleRectangleTool
+  };
+
   const handleClick = (event: MouseEvent) => {
     const { offsetX, offsetY } = event;
     addClick(offsetX, offsetY);
@@ -29,7 +33,11 @@ const Canvas = () => {
   render();
 
   createEffect(() => {
-    handleRectangleTool(layerFacade, state.clicks, state.clicks.length ? state.mousePosition : undefined)
+    const handler = state.activeTool ? toolHandlers[state.activeTool] : null;
+
+    if (handler) {
+      handleRectangleTool(layerFacade, state.clicks, state.clicks.length ? state.mousePosition : undefined)
+    }
   })
 
   return canvasEl
