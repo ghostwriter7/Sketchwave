@@ -1,4 +1,5 @@
 import { useGlobalContext } from './global-provider.tsx';
+import { ColorPicker } from './tools/color-picker.tsx';
 
 const Menu = () => {
   const { state, setActiveTool } = useGlobalContext();
@@ -17,6 +18,8 @@ const Menu = () => {
     <button id="rectStroke">Rect (stroke)</button>
     <button id="rectRound">Rect (round)</button>
     <button popovertarget="line-thickness">Line Thickness</button>
+    <button popovertarget="color-picker">Color</button>
+    <ColorPicker />
   </nav>
 }
 

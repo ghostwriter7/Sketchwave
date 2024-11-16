@@ -6,12 +6,5 @@ body {
 }
 
 *::backdrop {
-  backdrop-filter: blur(10px);
-}
-
-*:popover-open {
-  position: absolute;
-  inset: unset;
-  top: 10%;
-  left: 20%;
+  backdrop-filter: blur(3px);
 }

@@ -1,4 +1,4 @@
-.color-picker {
+.color-picker:popover-open {
   align-items: center;
   border-radius: 5px;
   display: flex;
@@ -13,5 +13,13 @@
     width: 100%;
     height: 25px;
     margin-bottom: 10px;
+  }
+
+  & .color {
+    cursor: pointer;
+  }
+
+  & .slider {
+    cursor: grab;
   }
 }

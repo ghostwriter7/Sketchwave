@@ -89,6 +89,14 @@ const drawPicker = (ctx: CanvasRenderingContext2D, hue = 0) => {
   ctx.putImageData(imageData, 0, 0);
 }
 
+const drawSelectorAt = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+  ctx.beginPath();
+  ctx.strokeStyle = 'white';
+  ctx.arc(x, y, 8, 0, FULL_CIRCLE);
+  ctx.stroke();
+  ctx.closePath();
+}
+
 export const ColorPicker = () => {
   const [hue, setHue] = createSignal(0);
   const [color, setColor] = createSignal([255, 0, 0]);
@@ -131,14 +139,6 @@ export const ColorPicker = () => {
     previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
   });
 
-  const drawSelectorAt = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-    ctx.beginPath();
-    ctx.strokeStyle = 'white';
-    ctx.arc(x, y, 8, 0, FULL_CIRCLE);
-    ctx.stroke();
-    ctx.closePath();
-  }
-
   const handlePickerClick = (event: MouseEvent) => {
     const { offsetX, offsetY } = event;
     pickerCtx.clearRect(0, 0, pickerCtx.canvas.width, pickerCtx.canvas.height);
@@ -157,9 +157,10 @@ export const ColorPicker = () => {
     previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
   }
 
-  return <div class="color-picker">
+  return <div id="color-picker" class="color-picker" popover>
     <div class="preview" ref={previewRef}></div>
     <canvas
+      class="color"
       ref={pickerRef}
       width={CONFIG.width}
       height={CONFIG.pickerHeight}
@@ -169,6 +170,7 @@ export const ColorPicker = () => {
     </canvas>
 
     <canvas
+      class="slider"
       ref={sliderRef}
       width={CONFIG.width}
       height={CONFIG.sliderHeight}
