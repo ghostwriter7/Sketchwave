@@ -1,6 +1,7 @@
-import { useGlobalContext } from './global-provider.tsx';
-import { ColorPicker } from './tools/color-picker/color-picker.tsx';
-import { LineThicknessPicker } from './tools/line-thickness-picker/line-thickness-picker.tsx';
+import { useGlobalContext } from '../../global-provider.tsx';
+import { ColorPicker } from '../../tools/color-picker/color-picker.tsx';
+import { LineThicknessPicker } from '../../tools/line-thickness-picker/line-thickness-picker.tsx';
+import './menu.css';
 
 const Menu = () => {
   const { state, setActiveTool } = useGlobalContext();
@@ -10,7 +11,7 @@ const Menu = () => {
     setActiveTool(actionId);
   };
 
-  return <nav onClick={handleClick}>
+  return <nav class="menu" onClick={handleClick}>
     <span>Active tool: {state.activeTool}</span>
     <button id="triangleFill">Triangle (fill)</button>
     <button id="triangleStroke">Triangle (stroke)</button>

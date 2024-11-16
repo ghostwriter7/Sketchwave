@@ -77,7 +77,10 @@ export const LineThicknessPicker = () => {
 
 
   return <>
-    <button popovertarget="line-thickness">Line</button>
+    <button popovertarget="line-thickness">
+      <span class="material-symbols-outlined">format_line_spacing</span>
+    </button>
+
     <Card title="Line thickness" id="line-thickness" popover="auto">
       <canvas ref={canvasRef} height="100" onClick={handleClick}></canvas>
     </Card>
