@@ -1,8 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Poiret+One&family=VT323&display=swap');
+
+:root {
+  --clr-primary: white;
+  --clr-secondary: gray;
+
+  --bg-primary: #141313;
+  --bg-secondary: white;
+
+  --space-md: 8px;
+}
+
 body {
-    margin: 0;
-    overflow: hidden;
-    width: 100vw;
-    height: 100vh;
+  font-family: 'Poiret One', sans-serif;
+  margin: 0;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
 }
 
 *::backdrop {

@@ -1,16 +1,20 @@
 .card {
-  padding: 16px;
-  background-color: #141313;
+  background-color: var(--bg-primary);
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: var(--clr-primary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md);
+
+  &[popover]:not(:popover-open) {
+    display: none;
+  }
 
   .header {
     font-size: 18px;
     font-weight: bold;
-  }
-
-  .body {
-    /*margin-top: 12px;*/
+    text-align: center;
   }
 }
