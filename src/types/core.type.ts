@@ -4,5 +4,5 @@ export type Dimensions = [number, number];
 
 export interface Layer {
   id?: string;
-  draw(ctx: CanvasRenderingContext2D): void;
+  draw(ctx: CanvasRenderingContext2D, delta?: number): void;
 }

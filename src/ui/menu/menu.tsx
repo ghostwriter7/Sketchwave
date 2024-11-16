@@ -7,20 +7,22 @@ const Menu = () => {
   const { state, setActiveTool } = useGlobalContext();
 
   const handleClick = ({ target }: MouseEvent) => {
-    const actionId = (target as HTMLButtonElement).id;
+    const element = target as HTMLElement;
+    const actionId = element.getAttribute('data-tool') || element.closest('[data-tool]')?.getAttribute('data-tool');
     setActiveTool(actionId);
   };
 
   return <nav class="menu" onClick={handleClick}>
     <span>Active tool: {state.activeTool}</span>
-    <button id="triangleFill">Triangle (fill)</button>
-    <button id="triangleStroke">Triangle (stroke)</button>
-    <button id="circleFill">Circle (fill)</button>
-    <button id="rectFill">Rect (fill)</button>
-    <button id="rectStroke">Rect (stroke)</button>
-    <button id="rectRound">Rect (round)</button>
-    <LineThicknessPicker />
-    <ColorPicker />
+    <button data-tool="triangleFill">Triangle (fill)</button>
+    <button data-tool="triangleStroke">Triangle (stroke)</button>
+    <button data-tool="circleFill">Circle (fill)</button>
+    <button data-tool="rectFill">Rect (fill)</button>
+    <button data-tool="rectStroke">Rect (stroke)</button>
+    <button data-tool="rectRound">Rect (round)</button>
+    <button data-tool="select"><span class="material-symbols-outlined">ink_selection</span></button>
+    <LineThicknessPicker/>
+    <ColorPicker/>
   </nav>
 }
 

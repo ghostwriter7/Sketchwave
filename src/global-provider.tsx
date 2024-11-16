@@ -1,9 +1,10 @@
 import { batch, createContext, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import type { Coordinates, Layer } from './types/core.type.ts';
+import type { Tool } from './handlers/tool-handler.type.ts';
 
 interface GlobalContextState {
-  activeTool?: string;
+  activeTool?: Tool;
   clicks: Coordinates[];
   color: [number, number, number];
   layers: Layer[];

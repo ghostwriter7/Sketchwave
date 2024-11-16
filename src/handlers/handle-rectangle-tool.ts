@@ -1,8 +1,9 @@
 import type { Coordinates } from '../types/core.type.ts';
 import type { LayerFacade } from '../global-provider.tsx';
 import { createRectPathFromPoints } from '../shapes/rectangle.ts';
+import type { ToolHandler } from './tool-handler.type.ts';
 
-export const handleRectangleTool = (layerFacade: LayerFacade, clicks: Coordinates[], mousePosition?: Coordinates
+export const handleRectangleTool: ToolHandler = (layerFacade: LayerFacade, clicks: Coordinates[], mousePosition?: Coordinates
 ) => {
   if (clicks.length === 0) return;
 
