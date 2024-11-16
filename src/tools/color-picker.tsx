@@ -1,3 +1,4 @@
+import './color-picker.css';
 import { createEffect, createSignal, onMount } from 'solid-js';
 import { hsbToRgb } from '../color/hsb-to-rgb.ts';
 import { rgbToHue } from '../color/rgb-to-hue.ts';
@@ -69,7 +70,7 @@ const drawPicker = (ctx: CanvasRenderingContext2D, hue = 0) => {
   const { width, height } = ctx.canvas;
   ctx.clearRect(0, 0, width, height);
 
-  const imageData = ctx.createImageData(width, height);
+  const imageData = ctx.getImageData(0, 0, width, height);
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
@@ -90,6 +91,9 @@ const drawPicker = (ctx: CanvasRenderingContext2D, hue = 0) => {
 
 export const ColorPicker = () => {
   const [hue, setHue] = createSignal(0);
+  const [color, setColor] = createSignal([255, 0, 0]);
+
+  let previewRef: HTMLDivElement;
 
   let sliderRef: HTMLCanvasElement;
   let sliderCtx: CanvasRenderingContext2D;
@@ -120,21 +124,48 @@ export const ColorPicker = () => {
 
   createEffect(() => {
     drawPicker(pickerCtx, hue());
-  })
+  });
 
-  return <div style="
-  align-items: center;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  width: fit-content;
-  height: fit-content;
-  background-color: #141313;">
+  createEffect(() => {
+    const [red, green, blue] = color();
+    previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+  });
+
+  const drawSelectorAt = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+    ctx.beginPath();
+    ctx.strokeStyle = 'white';
+    ctx.arc(x, y, 8, 0, FULL_CIRCLE);
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  const handlePickerClick = (event: MouseEvent) => {
+    const { offsetX, offsetY } = event;
+    pickerCtx.clearRect(0, 0, pickerCtx.canvas.width, pickerCtx.canvas.height);
+    drawPicker(pickerCtx, hue());
+    drawSelectorAt(pickerCtx, offsetX, offsetY);
+    setColor(getRGBFromPixel(pickerCtx, offsetX, offsetY))
+  }
+
+  const handlePickerMove = (event: MouseEvent) => {
+    if (event.buttons !== 1) return;
+    const { offsetX, offsetY } = event;
+    pickerCtx.clearRect(0, 0, pickerCtx.canvas.width, pickerCtx.canvas.height);
+    drawPicker(pickerCtx, hue());
+    drawSelectorAt(pickerCtx, offsetX, offsetY);
+    const [red, green, blue] = getRGBFromPixel(pickerCtx, offsetX, offsetY);
+    previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+  }
+
+  return <div class="color-picker">
+    <div class="preview" ref={previewRef}></div>
     <canvas
       ref={pickerRef}
       width={CONFIG.width}
-      height={CONFIG.pickerHeight}>
+      height={CONFIG.pickerHeight}
+      onClick={handlePickerClick}
+      onMouseMove={handlePickerMove}
+    >
     </canvas>
 
     <canvas
