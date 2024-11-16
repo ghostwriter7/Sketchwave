@@ -19,6 +19,7 @@ export const LineThicknessPicker = () => {
     let currentX = gap;
     const rgb = stringifyRgb(state.color);
     ctx.strokeStyle = rgb;
+    ctx.font = '15px Poiret One';
 
     for (let i = 0; i < thicknesses.length; i++) {
       const thickness = thicknesses[i];
@@ -27,10 +28,14 @@ export const LineThicknessPicker = () => {
       ctx.beginPath();
       ctx.lineWidth = thickness;
       ctx.lineCap = 'round';
-      path.moveTo(currentX + thickness / 2, 5 + thickness / 2);
-      path.lineTo(currentX + thickness / 2, 100 - 5 - thickness / 2);
+      const centerX = currentX + thickness / 2;
+      path.moveTo(centerX, 5 + thickness / 2);
+      path.lineTo(centerX, 100 - 5 - thickness / 2);
       path.lineWidth = thickness;
       ctx.stroke(path);
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+      ctx.fillText(thickness.toString(), centerX, 125, thickness + 4);
       currentX += gap + thickness;
     }
   }
@@ -82,7 +87,7 @@ export const LineThicknessPicker = () => {
     </button>
 
     <Card title="Line thickness" id="line-thickness" popover="auto">
-      <canvas ref={canvasRef} height="100" onClick={handleClick}></canvas>
+      <canvas ref={canvasRef} height="130" onClick={handleClick}></canvas>
     </Card>
   </>
 
