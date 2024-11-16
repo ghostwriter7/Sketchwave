@@ -1,23 +1,27 @@
-import { onMount } from 'solid-js';
+import { createEffect, createSignal, onMount } from 'solid-js';
+import { hsbToRgb } from '../color/hsb-to-rgb.ts';
+import { rgbToHue } from '../color/rgb-to-hue.ts';
+import { getRGBFromPixel } from '../color/get-rgb-from-pixel.ts';
 
-const SLIDER_CONFIG = {
+const CONFIG = {
   inlineMargin: 25,
   topEdgeY: 10,
   bottomEdgeY: 20,
   cornerRadius: 5,
   handleRadius: 10,
   handleOutline: 12,
-  sliderWidth: 300,
+  width: 300,
+  pickerHeight: 250,
   sliderHeight: 30,
 };
 
 const FULL_CIRCLE = 2 * Math.PI;
-const CENTER_Y = SLIDER_CONFIG.sliderHeight / 2;
+const CENTER_Y = CONFIG.sliderHeight / 2;
 
 const drawSlider = (ctx: CanvasRenderingContext2D) => {
-  const { bottomEdgeY, cornerRadius, inlineMargin, sliderWidth, topEdgeY } = SLIDER_CONFIG;
+  const { bottomEdgeY, cornerRadius, inlineMargin, width, topEdgeY } = CONFIG;
 
-  const gradient = ctx.createLinearGradient(inlineMargin, 0, sliderWidth - inlineMargin, 0);
+  const gradient = ctx.createLinearGradient(inlineMargin, 0, width - inlineMargin, 0);
   gradient.addColorStop(0, 'red');
   gradient.addColorStop(0.16, 'orange');
   gradient.addColorStop(0.33, 'yellow');
@@ -31,11 +35,11 @@ const drawSlider = (ctx: CanvasRenderingContext2D) => {
   const path = new Path2D();
   path.moveTo(inlineMargin, topEdgeY);
 
-  path.lineTo(sliderWidth - inlineMargin - cornerRadius, topEdgeY);
-  path.arcTo(sliderWidth - inlineMargin, topEdgeY, sliderWidth - inlineMargin, topEdgeY + cornerRadius, cornerRadius);
+  path.lineTo(width - inlineMargin - cornerRadius, topEdgeY);
+  path.arcTo(width - inlineMargin, topEdgeY, width - inlineMargin, topEdgeY + cornerRadius, cornerRadius);
 
-  path.lineTo(sliderWidth - inlineMargin, bottomEdgeY - cornerRadius);
-  path.arcTo(sliderWidth - inlineMargin, bottomEdgeY, sliderWidth - inlineMargin - cornerRadius, bottomEdgeY, cornerRadius);
+  path.lineTo(width - inlineMargin, bottomEdgeY - cornerRadius);
+  path.arcTo(width - inlineMargin, bottomEdgeY, width - inlineMargin - cornerRadius, bottomEdgeY, cornerRadius);
 
   path.lineTo(inlineMargin + cornerRadius, bottomEdgeY);
   path.arcTo(inlineMargin, bottomEdgeY, inlineMargin, bottomEdgeY - cornerRadius, cornerRadius);
@@ -47,7 +51,7 @@ const drawSlider = (ctx: CanvasRenderingContext2D) => {
 }
 
 const drawSliderHandle = (ctx: CanvasRenderingContext2D, x: number, color: string) => {
-  const { handleOutline, handleRadius } = SLIDER_CONFIG;
+  const { handleOutline, handleRadius } = CONFIG;
   ctx.beginPath();
   ctx.fillStyle = 'white';
   ctx.arc(x, CENTER_Y, handleOutline, 0, FULL_CIRCLE);
@@ -61,39 +65,83 @@ const drawSliderHandle = (ctx: CanvasRenderingContext2D, x: number, color: strin
   ctx.closePath();
 }
 
-const getRGBFromPixel = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-  const pixel = ctx.getImageData(x, y, 1, 1);
-  const [red, green, blue] = pixel.data;
-  return `rgb(${red}, ${green}, ${blue})`;
+const drawPicker = (ctx: CanvasRenderingContext2D, hue = 0) => {
+  const { width, height } = ctx.canvas;
+  ctx.clearRect(0, 0, width, height);
+
+  const imageData = ctx.createImageData(width, height);
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const saturation = x / width;
+      const brightness = 1 - y / height;
+
+      const [r, g, b] = hsbToRgb(hue, saturation, brightness);
+      const index = (y * width + x) * 4;
+      imageData.data[index] = r;
+      imageData.data[index + 1] = g;
+      imageData.data[index + 2] = b;
+      imageData.data[index + 3] = 255;
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
 }
 
-
 export const ColorPicker = () => {
-  let ref: HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2D;
+  const [hue, setHue] = createSignal(0);
+
+  let sliderRef: HTMLCanvasElement;
+  let sliderCtx: CanvasRenderingContext2D;
+
+  let pickerRef: HTMLCanvasElement;
+  let pickerCtx: CanvasRenderingContext2D;
 
   onMount(() => {
-    ctx = ref.getContext('2d', { willReadFrequently: true })!;
-    drawSlider(ctx);
-    drawSliderHandle(ctx, SLIDER_CONFIG.inlineMargin, 'red');
+    sliderCtx = sliderRef.getContext('2d', { willReadFrequently: true })!;
+    drawSlider(sliderCtx);
+    drawSliderHandle(sliderCtx, CONFIG.inlineMargin, 'red');
+
+    pickerCtx = pickerRef.getContext('2d', { willReadFrequently: true })!;
+    drawPicker(pickerCtx)
   });
 
   const handleMouseMove = (event: MouseEvent) => {
     if (event.buttons === 1) {
       const { offsetX } = event;
-      if (offsetX < SLIDER_CONFIG.inlineMargin || offsetX > SLIDER_CONFIG.sliderWidth - SLIDER_CONFIG.inlineMargin) return;
-      ctx.clearRect(0, 0, ref.width, ref.height);
-      drawSlider(ctx);
-      drawSliderHandle(ctx, offsetX, getRGBFromPixel(ctx, offsetX, 15));
+      if (offsetX < CONFIG.inlineMargin || offsetX > CONFIG.width - CONFIG.inlineMargin) return;
+      sliderCtx.clearRect(0, 0, sliderRef.width, sliderRef.height);
+      drawSlider(sliderCtx);
+      const [red, green, blue] = getRGBFromPixel(sliderCtx, offsetX, 15);
+      setHue(rgbToHue(red, green, blue));
+      drawSliderHandle(sliderCtx, offsetX, `rgb(${red}, ${green}, ${blue})`);
     }
   }
 
-  return <div style="position: absolute; left: 200px; top: 200px; background-color: #131414; height: 30px;">
-    <canvas ref={ref}
-            width={SLIDER_CONFIG.sliderWidth}
-            height={SLIDER_CONFIG.sliderHeight}
-            onMouseMove={handleMouseMove}>
+  createEffect(() => {
+    drawPicker(pickerCtx, hue());
+  })
+
+  return <div style="
+  align-items: center;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: fit-content;
+  height: fit-content;
+  background-color: #141313;">
+    <canvas
+      ref={pickerRef}
+      width={CONFIG.width}
+      height={CONFIG.pickerHeight}>
+    </canvas>
+
+    <canvas
+      ref={sliderRef}
+      width={CONFIG.width}
+      height={CONFIG.sliderHeight}
+      onMouseMove={handleMouseMove}>
     </canvas>
   </div>
-
 }
