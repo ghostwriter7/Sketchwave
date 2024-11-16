@@ -1,0 +1,16 @@
+.card {
+  padding: 16px;
+  background-color: #141313;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .header {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .body {
+    /*margin-top: 12px;*/
+  }
+}

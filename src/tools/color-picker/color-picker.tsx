@@ -1,10 +1,11 @@
 import './color-picker.css';
-import { createEffect, createMemo, createSignal, onMount } from 'solid-js';
-import { hsbToRgb } from '../color/hsb-to-rgb.ts';
-import { rgbToHue } from '../color/rgb-to-hue.ts';
-import { getRGBFromPixel } from '../color/get-rgb-from-pixel.ts';
-import { useGlobalContext } from '../global-provider.tsx';
-import { rgbToHex } from '../color/rgb-to-hex.ts';
+import { createEffect, createSignal, onMount } from 'solid-js';
+import { hsbToRgb } from '../../color/hsb-to-rgb.ts';
+import { rgbToHue } from '../../color/rgb-to-hue.ts';
+import { getRGBFromPixel } from '../../color/get-rgb-from-pixel.ts';
+import { useGlobalContext } from '../../global-provider.tsx';
+import { rgbToHex } from '../../color/rgb-to-hex.ts';
+import { Card } from '../../ui/card/card.tsx';
 
 const CONFIG = {
   inlineMargin: 25,
@@ -170,27 +171,28 @@ export const ColorPicker = () => {
   }
 
   return <>
-  <input class="toggle" ref={triggerRef} type="color" onClick={toggleColorPicker}/>
+    <input class="toggle" ref={triggerRef} type="color" onClick={toggleColorPicker}/>
+    <Card ref={popoverRef} title="Color picker" id="color-picker" popover="auto">
+      <div class="color-picker">
+        <div class="preview" ref={previewRef}></div>
+        <canvas
+          class="color"
+          ref={pickerRef}
+          width={CONFIG.width}
+          height={CONFIG.pickerHeight}
+          onClick={handlePickerClick}
+          onMouseMove={handlePickerMove}
+        >
+        </canvas>
 
-  <div ref={popoverRef} id="color-picker" class="color-picker" popover>
-    <div class="preview" ref={previewRef}></div>
-    <canvas
-      class="color"
-      ref={pickerRef}
-      width={CONFIG.width}
-      height={CONFIG.pickerHeight}
-      onClick={handlePickerClick}
-      onMouseMove={handlePickerMove}
-    >
-    </canvas>
-
-    <canvas
-      class="slider"
-      ref={sliderRef}
-      width={CONFIG.width}
-      height={CONFIG.sliderHeight}
-      onMouseMove={handleMouseMove}>
-    </canvas>
-  </div>
+        <canvas
+          class="slider"
+          ref={sliderRef}
+          width={CONFIG.width}
+          height={CONFIG.sliderHeight}
+          onMouseMove={handleMouseMove}>
+        </canvas>
+      </div>
+    </Card>
   </>
 }
