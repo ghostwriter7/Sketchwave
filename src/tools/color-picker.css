@@ -23,3 +23,12 @@
     cursor: grab;
   }
 }
+
+.toggle {
+  --size: 30px;
+  cursor: pointer;
+  border-radius: 2px;
+  background:  #141313;
+  width: var(--size);
+  height: var(--size);
+}

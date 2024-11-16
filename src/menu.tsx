@@ -18,7 +18,6 @@ const Menu = () => {
     <button id="rectStroke">Rect (stroke)</button>
     <button id="rectRound">Rect (round)</button>
     <button popovertarget="line-thickness">Line Thickness</button>
-    <button popovertarget="color-picker">Color</button>
     <ColorPicker />
   </nav>
 }

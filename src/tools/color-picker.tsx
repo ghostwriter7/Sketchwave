@@ -1,9 +1,10 @@
 import './color-picker.css';
-import { createEffect, createSignal, onMount } from 'solid-js';
+import { createEffect, createMemo, createSignal, onMount } from 'solid-js';
 import { hsbToRgb } from '../color/hsb-to-rgb.ts';
 import { rgbToHue } from '../color/rgb-to-hue.ts';
 import { getRGBFromPixel } from '../color/get-rgb-from-pixel.ts';
 import { useGlobalContext } from '../global-provider.tsx';
+import { rgbToHex } from '../color/rgb-to-hex.ts';
 
 const CONFIG = {
   inlineMargin: 25,
@@ -104,6 +105,7 @@ export const ColorPicker = () => {
   const [hue, setHue] = createSignal(0);
 
   let previewRef: HTMLDivElement;
+  let triggerRef: HTMLInputElement;
 
   let sliderRef: HTMLCanvasElement;
   let sliderCtx: CanvasRenderingContext2D;
@@ -139,6 +141,7 @@ export const ColorPicker = () => {
   createEffect(() => {
     const [red, green, blue] = state.color;
     previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+    triggerRef.value = rgbToHex(red, green, blue);
   });
 
   const handlePickerClick = (event: MouseEvent) => {
@@ -159,7 +162,17 @@ export const ColorPicker = () => {
     previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
   }
 
-  return <div id="color-picker" class="color-picker" popover>
+  let popoverRef: HTMLDivElement;
+
+  const toggleColorPicker = (event: MouseEvent) => {
+    event.preventDefault();
+    popoverRef.showPopover();
+  }
+
+  return <>
+  <input class="toggle" ref={triggerRef} type="color" onClick={toggleColorPicker}/>
+
+  <div ref={popoverRef} id="color-picker" class="color-picker" popover>
     <div class="preview" ref={previewRef}></div>
     <canvas
       class="color"
@@ -179,4 +192,5 @@ export const ColorPicker = () => {
       onMouseMove={handleMouseMove}>
     </canvas>
   </div>
+  </>
 }
