@@ -35,26 +35,18 @@ export class LineTool extends ToolHandler {
   public tryCreateLayer(): Layer | null {
     if (this.points.length === 0) return null;
 
-    const path = new Path2D();
+    const path = this.createPath();
     return {
       tool: LineTool.name.toUpperCase(),
-      draw: () => {
-        this.ctx.strokeStyle = this.colour;
-        this.points.forEach(({ x, y }, index) =>
-          index === 0 ? path.moveTo(x, y) : path.lineTo(x, y));
-        this.ctx.stroke(path);
-      }
+      draw: () => this.renderPath(path),
     }
   }
 
   protected override render(): void {
     super.render();
-    this.ctx.strokeStyle = this.colour;
-    this.ctx.beginPath();
-    this.points.forEach(({ x, y }, index) =>
-      index === 0 ? this.ctx.moveTo(x, y) : this.ctx.lineTo(x, y));
-    this.ctx.lineTo(this.previewOnlyPoint!.x, this.previewOnlyPoint!.y);
-    this.ctx.stroke();
+    const path = this.createPath();
+    path.lineTo(this.previewOnlyPoint!.x, this.previewOnlyPoint!.y);
+    this.renderPath(path);
   }
 
   private initializeListeners(): void {
@@ -93,5 +85,18 @@ export class LineTool extends ToolHandler {
 
   private addPointFromEvent(event: MouseEvent): void {
     this.points = [...this.points, Point.fromEvent(event)];
+  }
+
+  private createPath(): Path2D {
+    const path = new Path2D();
+    this.points.forEach(({ x, y }, index) =>
+      index === 0 ? path.moveTo(x, y) : path.lineTo(x, y));
+    return path;
+  }
+
+  private renderPath(path: Path2D): void {
+    this.ctx.lineWidth = this.lineWidth;
+    this.ctx.strokeStyle = this.colour;
+    this.ctx.stroke(path);
   }
 }

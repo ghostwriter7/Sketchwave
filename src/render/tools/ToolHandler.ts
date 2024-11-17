@@ -18,6 +18,10 @@ export abstract class ToolHandler {
     return this.ctx.canvas.height;
   }
 
+  protected get lineWidth(): number {
+    return this.toolState.lineWidth;
+  }
+
   protected get width(): number {
     return this.ctx.canvas.width;
   }
