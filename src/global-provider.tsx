@@ -5,7 +5,9 @@ import type { ToolType } from './types/core.type.ts';
 export interface GlobalContextState {
   activeTool?: ToolType;
   color: [number, number, number];
+  height: number;
   lineWidth: number;
+  width: number;
 }
 
 interface GlobalContextActions {
@@ -18,7 +20,9 @@ const GlobalContext = createContext<GlobalContextActions>();
 export const GlobalProvider = (props: ParentProps) => {
   const [state, setState] = createStore<GlobalContextState>({
     color: [0, 0, 0],
-    lineWidth: 1
+    height: 300,
+    lineWidth: 1,
+    width: 500
   });
   const updateState = (state: Partial<GlobalContextState>) => setState({ ...state });
 

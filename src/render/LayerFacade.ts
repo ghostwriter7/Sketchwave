@@ -15,7 +15,8 @@ export class LayerFacade {
 
   public renderLayers(): void {
     this.logger.log(`Rendering layers...`);
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.fillStyle = '#fff';
+    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.stack.forEach((layer) => layer.draw());
   }
 }

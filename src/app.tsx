@@ -6,7 +6,9 @@ const App = () => {
   return <>
     <GlobalProvider>
       <Menu />
-      <Canvas/>
+      <main>
+        <Canvas/>
+      </main>
     </GlobalProvider>
   </>;
 }

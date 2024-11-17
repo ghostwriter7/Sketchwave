@@ -13,6 +13,8 @@ const Canvas = () => {
 
   onMount(() => {
     ctx = canvasRef.getContext('2d', { willReadFrequently: true })!;
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
     layerFacade = new LayerFacade(ctx);
   });
 
@@ -28,7 +30,7 @@ const Canvas = () => {
     }
   })
 
-  return <canvas ref={canvasRef!} height={innerHeight} width={innerWidth}></canvas>
+  return <canvas ref={canvasRef!} height={state.height} width={state.width}></canvas>
 }
 
 export default Canvas;

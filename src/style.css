@@ -11,6 +11,7 @@
 }
 
 body {
+  display: flex;
   font-family: 'Poiret One', sans-serif;
   margin: 0;
   overflow: hidden;
@@ -24,4 +25,19 @@ body {
 
 button:has(.material-symbols-outlined) {
   display: flex;
+}
+
+#root {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+main {
+  align-items: center;
+  background-color: var(--bg-primary);
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  width: 100%;
 }
