@@ -13,13 +13,8 @@ export class RectTool extends ToolHandler {
     super(ctx, toolState, layerFacade);
   }
 
-  public onInit(): void {
-    super.onInit();
-    this.initializeListeners();
-  }
-
-  private initializeListeners(): void {
-    this.canvas.addEventListener('click', (event: MouseEvent): void => {
+  protected initializeListeners(): void {
+    this.onClick((event: MouseEvent): void => {
       if (this.points.length === 1) {
         this.points.push(Point.fromEvent(event));
         const layer = this.tryCreateLayer();
@@ -31,13 +26,13 @@ export class RectTool extends ToolHandler {
       } else {
         this.points.push(Point.fromEvent(event));
       }
-    }, { signal: this.abortController.signal});
+    });
 
-    this.canvas.addEventListener('mousemove', (event: MouseEvent): void => {
+    this.onMove((event: MouseEvent): void => {
       if (this.points.length === 0) return;
       this.tempPoint = Point.fromEvent(event);
       this.render();
-    }, { signal: this.abortController.signal });
+    });
   }
 
   protected render(): void {

@@ -20,11 +20,6 @@ export class LineTool extends ToolHandler {
     super(ctx, toolState, layerFacade);
   }
 
-  public override onInit(): void {
-    super.onInit();
-    this.initializeListeners();
-  }
-
   public tryCreateLayer(): Layer | null {
     if (this.points.length === 0) return null;
 
@@ -42,19 +37,17 @@ export class LineTool extends ToolHandler {
     this.renderPath(path);
   }
 
-  private initializeListeners(): void {
-    this.logger.log('Initializing listeners.');
+  protected initializeListeners(): void {
+    this.onClick(this.addPointFromEvent.bind(this));
 
-    this.canvas.addEventListener('click', this.addPointFromEvent.bind(this), { signal: this.abortController.signal });
-
-    this.canvas.addEventListener('mousemove', (event) => {
+    this.onMove((event) => {
       if (this.points.length > 0) {
         this.previewOnlyPoint = Point.fromEvent(event);
         this.render();
       }
-    }, { signal: this.abortController.signal });
+    });
 
-    this.canvas.addEventListener('dblclick', (event) => {
+    this.onDoubleClick((event) => {
       this.addPointFromEvent(event);
       this.render();
 
@@ -63,10 +56,10 @@ export class LineTool extends ToolHandler {
 
       this.reset();
       this.initializeListeners();
-    }, { signal: this.abortController.signal });
+    });
   }
 
-  private reset(): void {
+  protected override reset(): void {
     super.reset();
     this.points = [];
     this.previewOnlyPoint = null;

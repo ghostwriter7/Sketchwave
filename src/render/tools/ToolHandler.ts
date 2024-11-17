@@ -29,6 +29,10 @@ export abstract class ToolHandler {
     return this.ctx.canvas.width;
   }
 
+  private get eventListenerOptions(): AddEventListenerOptions {
+    return { signal: this.abortController.signal }
+  }
+
   protected constructor(protected readonly ctx: CanvasRenderingContext2D,
                         protected readonly toolState: ToolState,
                         protected readonly layerFacade: LayerFacade) {
@@ -51,6 +55,7 @@ export abstract class ToolHandler {
    */
   public onInit(): void {
     this.logger.log('Initializing an instance.');
+    this.initializeListeners();
   }
 
   /**
@@ -58,6 +63,25 @@ export abstract class ToolHandler {
    * Called by a rendering system prior to destroying a tool.
    */
   public abstract tryCreateLayer(): Layer | null;
+
+  /**
+   * Initializes event listeners required for a concrete tool to function.
+   * Called during the onInit hook.
+   * @protected
+   */
+  protected abstract initializeListeners(): void;
+
+  protected onClick(handler: (event: MouseEvent) => void): void {
+    this.canvas.addEventListener('click', handler, this.eventListenerOptions);
+  }
+
+  protected onDoubleClick(handler: (event: MouseEvent) => void): void {
+    this.canvas.addEventListener('dblclick', handler, this.eventListenerOptions);
+  }
+
+  protected onMove(handler: (event: MouseEvent) => void): void {
+    this.canvas.addEventListener('mousemove', handler, this.eventListenerOptions);
+  }
 
   /**
    * Renders the current result of work done by the tool onto the canvas.
