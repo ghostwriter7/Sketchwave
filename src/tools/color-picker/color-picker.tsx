@@ -101,7 +101,7 @@ const drawSelectorAt = (ctx: CanvasRenderingContext2D, x: number, y: number) => 
 }
 
 export const ColorPicker = () => {
-  const { setColor, state } = useGlobalContext();
+  const { state, updateState } = useGlobalContext();
 
   const [hue, setHue] = createSignal(0);
 
@@ -150,7 +150,7 @@ export const ColorPicker = () => {
     pickerCtx.clearRect(0, 0, pickerCtx.canvas.width, pickerCtx.canvas.height);
     drawPicker(pickerCtx, hue());
     drawSelectorAt(pickerCtx, offsetX, offsetY);
-    setColor(getRGBFromPixel(pickerCtx, offsetX, offsetY))
+    updateState({ color: getRGBFromPixel(pickerCtx, offsetX, offsetY) });
   }
 
   const handlePickerMove = (event: MouseEvent) => {

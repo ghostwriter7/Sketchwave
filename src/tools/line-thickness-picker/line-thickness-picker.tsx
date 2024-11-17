@@ -6,7 +6,7 @@ import { Card } from '../../ui/card/card.tsx';
 type ExtendedPath2D = Path2D & { lineWidth: number };
 
 export const LineThicknessPicker = () => {
-  const { state } = useGlobalContext();
+  const { state, updateState } = useGlobalContext();
   let canvasRef: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
 
@@ -78,6 +78,7 @@ export const LineThicknessPicker = () => {
       }, null)[0];
 
     highlightSelectedLine(activeLine);
+    updateState({ lineWidth: activeLine.lineWidth })
   }
 
 

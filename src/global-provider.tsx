@@ -1,32 +1,28 @@
-import { createContext, useContext } from 'solid-js';
+import { createContext, type ParentProps, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import type { ToolType } from './types/core.type.ts';
 
-interface GlobalContextState {
+export interface GlobalContextState {
   activeTool?: ToolType;
   color: [number, number, number];
+  lineWidth: number;
 }
 
 interface GlobalContextActions {
-  setActiveTool: (activeTool: ToolType) => void;
-  setColor: (color: [number, number, number]) => void;
   state: GlobalContextState;
+  updateState: (state: Partial<GlobalContextState>) => void;
 }
 
-const GlobalContext = createContext<GlobalContextState & GlobalContextActions>();
+const GlobalContext = createContext<GlobalContextActions>();
 
-export const GlobalProvider = (props) => {
-  const [state, setState] = createStore<GlobalContextState>({ color: [0, 0, 0] });
-  const setActiveTool = (activeTool: ToolType) => setState({ activeTool });
-  const setColor = (color: [number, number, number]) => setState({ color });
+export const GlobalProvider = (props: ParentProps) => {
+  const [state, setState] = createStore<GlobalContextState>({
+    color: [0, 0, 0],
+    lineWidth: 1
+  });
+  const updateState = (state: Partial<GlobalContextState>) => setState({ ...state });
 
-
-  return (
-    <GlobalContext.Provider
-      value={{ setColor, setActiveTool, state }}>
-      {props.children}
-    </GlobalContext.Provider>
-  )
+  return <GlobalContext.Provider value={{ updateState, state }}>{props.children}</GlobalContext.Provider>
 }
 
 export const useGlobalContext = (): GlobalContextActions => useContext(GlobalContext)!;

@@ -7,15 +7,15 @@ import { Logger } from '../../utils/Logger.ts';
 
 const Menu = () => {
   const logger = new Logger('MENU');
-  const { state, setActiveTool } = useGlobalContext();
+  const { state, updateState } = useGlobalContext();
 
   const handleClick = ({ target }: MouseEvent) => {
     const element = target as HTMLElement;
     const toolId = element.getAttribute('data-tool') || element.closest('[data-tool]')?.getAttribute('data-tool');
 
     if (state.activeTool !== toolId && toolId) {
-      logger.log(`${toolId} selected.`);
-      setActiveTool(toolId as ToolType);
+      logger.log(`${toolId.toUpperCase()} tool selected.`);
+      updateState({ activeTool: toolId as ToolType });
     }
   };
 

@@ -1,6 +1,5 @@
 import { useGlobalContext } from './global-provider.tsx';
 import { createEffect, onMount } from 'solid-js';
-import { LineTool } from './render/tools/LineTool.ts';
 import { ToolState } from './render/tools/ToolState.ts';
 import { LayerFacade } from './render/LayerFacade.ts';
 import type { ToolHandler } from './render/tools/ToolHandler.ts';
@@ -15,13 +14,12 @@ const Canvas = () => {
 
   onMount(() => {
     ctx = canvasRef.getContext('2d', { willReadFrequently: true })!;
-  })
+  });
 
   let activeTool: ToolHandler | null = null;
 
   createEffect(() => {
-    const [red, green, blue] = state.color;
-    const toolState = new ToolState(`rgb(${red},${green},${blue})`);
+    const toolState = ToolState.fromState(state);
 
     activeTool?.onDestroy();
 

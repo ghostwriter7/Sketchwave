@@ -3,6 +3,7 @@ import { ToolHandler } from './ToolHandler.ts';
 import type { ToolState } from './ToolState.ts';
 import { Point } from '../primitives/Point.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
+import { Logger } from '../../utils/Logger.ts';
 
 /**
  * A Line Tool is used for drawing straight lines between points
@@ -11,6 +12,8 @@ import type { LayerFacade } from '../LayerFacade.ts';
 export class LineTool extends ToolHandler {
   private points: Point[] = [];
   private previewOnlyPoint: Point | null = null;
+
+  private readonly logger = new Logger(LineTool);
 
   constructor(
     ctx: CanvasRenderingContext2D,
@@ -21,6 +24,7 @@ export class LineTool extends ToolHandler {
   }
 
   public onDestroy(): void {
+    this.logger.log('Destroying an instance.');
     this.abortController?.abort(`Destroying ${LineTool.name}.`);
   }
 
@@ -54,6 +58,8 @@ export class LineTool extends ToolHandler {
   }
 
   private initializeListeners(): void {
+    this.logger.log('Initializing listeners.');
+
     this.canvas.addEventListener('click', this.addPointFromEvent.bind(this), { signal: this.abortController.signal });
 
     this.canvas.addEventListener('mousemove', (event) => {
