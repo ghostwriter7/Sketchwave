@@ -1,13 +1,13 @@
-import type { Constructor, Layer } from '../../types/core.type.ts';
+import type { Constructor } from '../../types/core.type.ts';
 import type { ToolState } from './ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { Logger } from '../../utils/Logger.ts';
 
 export abstract class ToolHandler {
   protected abortController = new AbortController();
-  protected snapshot: ImageData;
+  protected snapshot!: ImageData;
 
-  protected readonly logger: Logger;
+  protected readonly logger = new Logger(this.constructor as Constructor);
 
   protected get canvas(): HTMLCanvasElement {
     return this.ctx.canvas;
@@ -36,8 +36,7 @@ export abstract class ToolHandler {
   protected constructor(protected readonly ctx: CanvasRenderingContext2D,
                         protected readonly toolState: ToolState,
                         protected readonly layerFacade: LayerFacade) {
-    this.snapshot = ctx.getImageData(0, 0, this.width, this.height);
-    this.logger = new Logger(this.constructor as Constructor);
+    this.onInit();
   }
 
   /**
@@ -47,22 +46,25 @@ export abstract class ToolHandler {
   public onDestroy(): void {
     this.logger.log('Destroying an instance.');
     this.abortController?.abort(`Destroying an instance.`);
+    this.tryCreateLayer();
   }
 
   /**
    * A hook to establish canvas' listeners and tool's logic for drawing.
    * Called by a rendering system upon activating a tool.
    */
-  public onInit(): void {
+  protected onInit(): void {
     this.logger.log('Initializing an instance.');
     this.initializeListeners();
+    this.layerFacade.renderLayers();
+    this.snapshot = this.ctx.getImageData(0, 0, this.width, this.height);
   }
 
   /**
    * Tries to create a new layer that should be pushed onto the stack.
    * Called by a rendering system prior to destroying a tool.
    */
-  public abstract tryCreateLayer(): Layer | null;
+  public abstract tryCreateLayer(): void;
 
   /**
    * Initializes event listeners required for a concrete tool to function.

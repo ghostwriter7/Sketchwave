@@ -1,4 +1,3 @@
-import { Layer } from '../../types/core.type.ts';
 import { ToolHandler } from './ToolHandler.ts';
 import type { ToolState } from './ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
@@ -17,10 +16,7 @@ export class RectTool extends ToolHandler {
     this.onClick((event: MouseEvent): void => {
       if (this.points.length === 1) {
         this.points.push(Point.fromEvent(event));
-        const layer = this.tryCreateLayer();
-        if (layer) {
-          this.layerFacade.pushLayer(layer);
-        }
+        this.tryCreateLayer();
         this.reset();
         this.initializeListeners();
       } else {
@@ -41,17 +37,19 @@ export class RectTool extends ToolHandler {
     this.ctx.fill(createRectPathFromPoints(this.points[0], this.tempPoint!));
   }
 
-  public tryCreateLayer(): Layer | null {
-    if (this.points.length !== 2) return null;
+  public tryCreateLayer(): void {
+    if (this.points.length !== 2) return;
 
     const path = createRectPathFromPoints(...this.points as [Point, Point]);
-    return {
+    const layer = {
       tool: 'rect',
       draw: () => {
         this.ctx.fillStyle = this.colour;
         this.ctx.fill(path);
       }
     }
+
+    if (layer) this.layerFacade.pushLayer(layer);
   }
 
   protected override reset(): void {

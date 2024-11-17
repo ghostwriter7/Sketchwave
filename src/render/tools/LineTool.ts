@@ -1,4 +1,3 @@
-import { Layer } from '../../types/core.type.ts';
 import { ToolHandler } from './ToolHandler.ts';
 import type { ToolState } from './ToolState.ts';
 import { Point } from '../primitives/Point.ts';
@@ -20,14 +19,15 @@ export class LineTool extends ToolHandler {
     super(ctx, toolState, layerFacade);
   }
 
-  public tryCreateLayer(): Layer | null {
-    if (this.points.length === 0) return null;
+  public tryCreateLayer(): void {
+    if (this.points.length === 0) return;
 
     const path = this.createPath();
-    return {
+    const layer = {
       tool: LineTool.name.toUpperCase(),
       draw: () => this.renderPath(path),
     }
+    if (layer) this.layerFacade.pushLayer(layer);
   }
 
   protected override render(): void {
@@ -50,10 +50,7 @@ export class LineTool extends ToolHandler {
     this.onDoubleClick((event) => {
       this.addPointFromEvent(event);
       this.render();
-
-      const layer = this.tryCreateLayer();
-      if (layer) this.layerFacade.pushLayer(layer);
-
+      this.tryCreateLayer();
       this.reset();
       this.initializeListeners();
     });

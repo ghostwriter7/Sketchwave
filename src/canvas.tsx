@@ -9,11 +9,11 @@ const Canvas = () => {
   const { state } = useGlobalContext();
   let canvasRef: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
-
-  const layerFacade = new LayerFacade();
+  let layerFacade : LayerFacade;
 
   onMount(() => {
     ctx = canvasRef.getContext('2d', { willReadFrequently: true })!;
+    layerFacade = new LayerFacade(ctx);
   });
 
   let activeTool: ToolHandler | null = null;
@@ -25,7 +25,6 @@ const Canvas = () => {
 
     if (state.activeTool) {
       activeTool = ToolHandlerFactory.fromToolType(state.activeTool, ctx, toolState, layerFacade);
-      activeTool.onInit();
     }
   })
 
