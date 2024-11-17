@@ -63,6 +63,7 @@ export const Resizer = () => {
     renderIndicators(originX, originY, width, height);
   });
 
+
   const drawSizePreview = (x: number, y: number, width: number, height: number) => {
     renderIndicators(x, y, width, height);
     ctx.setLineDash([4, 2]);
@@ -76,9 +77,9 @@ export const Resizer = () => {
 
   const handleMouseMove = (event: MouseEvent) => {
     if (isDragging) {
+      ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
       canvasRef.style.zIndex = '2';
       const { offsetY, offsetX } = event;
-      ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
       const width = state.width;
       const height = state.height;
 
@@ -87,19 +88,38 @@ export const Resizer = () => {
 
       const cursorName = cursors[cursorIndex];
 
+      const xAxisMovable = canMoveInX(cursorName);
+      const yAxisMovable = canMoveInY(cursorName);
       const changeOriginX = shouldChangeOriginX(cursorName);
       const changeOriginY = shouldChangeOriginY(cursorName);
 
-      const deltaY = canMoveInY(cursorName) ?
+      const deltaY = yAxisMovable ?
         (changeOriginY ? originY - offsetY : offsetY - originY) : 0;
-      const deltaX = canMoveInX(cursorName) ?
+      const deltaX = xAxisMovable ?
         (changeOriginX ? originX - offsetX : offsetX - originX) : 0;
 
-      const newOriginX = changeOriginX ? originX - deltaX : originX;
-      const newOriginY = changeOriginY ? originY - deltaY : originY;
+      let newOriginX = changeOriginX ? originX - deltaX : originX;
+      let newOriginY = changeOriginY ? originY - deltaY : originY;
 
-      const newWidth = changeOriginX ? width + deltaX : deltaX || width;
-      const newHeight = changeOriginY ? height + deltaY : deltaY || height;
+      let newWidth = changeOriginX ? width + deltaX : xAxisMovable ? deltaX : width;
+      let newHeight = changeOriginY ? height + deltaY : yAxisMovable ? deltaY : height;
+
+      if ((originX + width) - newOriginX  <= 1) {
+        newOriginX = originX + width - 1;
+        newWidth = 2;
+      } else if (newOriginX == originX && newWidth < 0) {
+        newOriginX = originX + 1;
+        newWidth = 2;
+      }
+
+      if ((originY + height) - newOriginY <= 1) {
+        newOriginY = originY + height - 1;
+        newHeight = 2;
+      } else if (newOriginY == originY && newHeight < 0) {
+        newOriginY = originY + 1;
+        newHeight = 2;
+      }
+
       drawSizePreview(newOriginX, newOriginY, newWidth, newHeight);
     } else {
       const point = Point.fromEvent(event);
