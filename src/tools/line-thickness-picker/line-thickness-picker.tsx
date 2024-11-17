@@ -3,14 +3,15 @@ import { useGlobalContext } from '../../global-provider.tsx';
 import { stringifyRgb } from '../../color/stringify-rgb.ts';
 import { Card } from '../../ui/card/card.tsx';
 
-type ExtendedPath2D = Path2D & { lineWidth: number };
+type ExtendedPath2D = Path2D & { lineWidth: number, startX: number, endX: number };
 
 export const LineThicknessPicker = () => {
   const { state, updateState } = useGlobalContext();
+
   let canvasRef: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
 
-  const lineMap = new Map<ExtendedPath2D, { startX: number, endX: number }>();
+  const lineMap = new Map<number, ExtendedPath2D>();
 
   const renderLines = () => {
     const gap = 10;
@@ -24,20 +25,28 @@ export const LineThicknessPicker = () => {
     for (let i = 0; i < thicknesses.length; i++) {
       const thickness = thicknesses[i];
       const path = new Path2D() as ExtendedPath2D;
-      lineMap.set(path, { startX: currentX, endX: currentX + thickness });
-      ctx.beginPath();
-      ctx.lineWidth = thickness;
-      ctx.lineCap = 'round';
+      path.startX = currentX;
+      path.endX = currentX + thickness;
+      path.lineWidth = thickness;
+
       const centerX = currentX + thickness / 2;
       path.moveTo(centerX, 5 + thickness / 2);
       path.lineTo(centerX, 100 - 5 - thickness / 2);
-      path.lineWidth = thickness;
+
+      lineMap.set(thickness, path);
+
+      ctx.beginPath();
+      ctx.lineWidth = thickness;
+      ctx.lineCap = 'round';
+
       ctx.stroke(path);
       ctx.fillStyle = 'white';
       ctx.textAlign = 'center';
       ctx.fillText(thickness.toString(), centerX, 125, thickness + 4);
       currentX += gap + thickness;
     }
+
+    highlightSelectedLine(lineMap.get(state.lineWidth)!)
   }
 
   onMount(() => {
@@ -52,7 +61,7 @@ export const LineThicknessPicker = () => {
 
   const highlightSelectedLine = (path: ExtendedPath2D) => {
     ctx.strokeStyle = stringifyRgb(state.color);
-    lineMap.forEach((_, path) => {
+    lineMap.forEach((path) => {
       ctx.lineWidth = path.lineWidth;
       ctx.stroke(path);
     });
@@ -64,23 +73,17 @@ export const LineThicknessPicker = () => {
   const handleClick = (event: MouseEvent): void => {
     const { offsetX } = event;
 
-    const calcLineDistanceFromClick = (startX: number, endX: number) =>
-      Math.min(Math.abs(offsetX - startX), Math.abs(offsetX - endX));
+    const calcLineDistanceFromClick = (extendedPath: ExtendedPath2D) =>
+      Math.min(Math.abs(offsetX - extendedPath.startX), Math.abs(offsetX - extendedPath.endX));
 
     const activeLine = [...lineMap.entries()]
-      .reduce((currentThickness, [thickness, { startX, endX }]) => {
-        if (!currentThickness) {
-          return [thickness, calcLineDistanceFromClick(startX, endX)];
-        }
-
-        const distance = calcLineDistanceFromClick(startX, endX)
-        return distance < currentThickness[1] ? [thickness, distance] : currentThickness;
-      }, null)[0];
+      .map(([_, extendedPath]) => [extendedPath, calcLineDistanceFromClick(extendedPath)] as [ExtendedPath2D, number])
+      .reduce((previousTuple, currentTuple) =>
+        previousTuple[1] < currentTuple[1] ? previousTuple : currentTuple)[0];
 
     highlightSelectedLine(activeLine);
     updateState({ lineWidth: activeLine.lineWidth })
   }
-
 
   return <>
     <button popovertarget="line-thickness">
