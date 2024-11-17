@@ -1,7 +1,7 @@
 import { createEffect, onMount } from 'solid-js';
 import { useGlobalContext } from '../../global-provider.tsx';
 import { stringifyRgb } from '../../color/stringify-rgb.ts';
-import { Card } from '../../ui/card/card.tsx';
+import { Card } from '../../components/card/card.tsx';
 
 type ExtendedPath2D = Path2D & { lineWidth: number, startX: number, endX: number };
 

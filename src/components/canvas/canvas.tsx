@@ -1,9 +1,10 @@
-import { useGlobalContext } from './global-provider.tsx';
+import { useGlobalContext } from '../../global-provider.tsx';
 import { createEffect, onMount } from 'solid-js';
-import { ToolState } from './render/tools/ToolState.ts';
-import { LayerFacade } from './render/LayerFacade.ts';
-import type { ToolHandler } from './render/tools/ToolHandler.ts';
-import { ToolHandlerFactory } from './render/tools/ToolHandlerFactory.ts';
+import { ToolState } from '../../render/tools/ToolState.ts';
+import { LayerFacade } from '../../render/LayerFacade.ts';
+import type { ToolHandler } from '../../render/tools/ToolHandler.ts';
+import { ToolHandlerFactory } from '../../render/tools/ToolHandlerFactory.ts';
+import './canvas.css';
 
 const Canvas = () => {
   const { state } = useGlobalContext();
@@ -30,7 +31,7 @@ const Canvas = () => {
     }
   })
 
-  return <canvas ref={canvasRef!} height={state.height} width={state.width}></canvas>
+  return <canvas class="canvas" ref={canvasRef!} height={state.height} width={state.width}></canvas>
 }
 
 export default Canvas;

@@ -5,7 +5,7 @@ import { rgbToHue } from '../../color/rgb-to-hue.ts';
 import { getRGBFromPixel } from '../../color/get-rgb-from-pixel.ts';
 import { useGlobalContext } from '../../global-provider.tsx';
 import { rgbToHex } from '../../color/rgb-to-hex.ts';
-import { Card } from '../../ui/card/card.tsx';
+import { Card } from '../../components/card/card.tsx';
 
 const CONFIG = {
   inlineMargin: 25,
