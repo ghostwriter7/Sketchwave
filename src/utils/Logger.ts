@@ -1,3 +1,5 @@
+import type { Constructor } from '../types/core.type.ts';
+
 export class Logger {
   private readonly tag: string;
 
@@ -5,7 +7,7 @@ export class Logger {
     return `[${new Date().toLocaleTimeString()}]`;
   }
 
-  constructor(type: (new (...args: any) => any) | string) {
+  constructor(type: Constructor | string) {
     this.tag = typeof type === 'string' ? `[${type}]` : `[${type.name.toUpperCase()}]`;
   }
 

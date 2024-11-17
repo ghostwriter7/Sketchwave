@@ -9,3 +9,5 @@ export interface Layer {
 }
 
 export type ToolType = 'rect' | 'line';
+
+export type Constructor = new (...args: any) => any;

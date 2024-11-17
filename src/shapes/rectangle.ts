@@ -1,8 +1,9 @@
 import { Coordinates, Dimensions } from '../types/core.type.ts';
+import type { Point } from '../render/primitives/Point.ts';
 
-export const createRectPathFromPoints = (pointA: Coordinates, pointB: Coordinates): Path2D => {
-  const [x1, y1] = pointA;
-  const [x2, y2] = pointB;
+export const createRectPathFromPoints = (pointA: Point, pointB: Point): Path2D => {
+  const { x: x1, y: y1 } = pointA;
+  const { x: x2, y: y2 } = pointB;
 
   const width = Math.abs(x1 - x2)
   const height = Math.abs(y1 - y2);

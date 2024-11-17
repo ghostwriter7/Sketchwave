@@ -20,6 +20,9 @@ const Menu = () => {
   };
 
   return <nav class="menu" onClick={handleClick}>
+    <button data-tool="rect">
+      <span class="material-symbols-outlined">crop_square</span>
+    </button>
     <button data-tool="line">
       <span class="material-symbols-outlined">timeline</span>
     </button>
