@@ -4,6 +4,7 @@ import { LineTool } from './render/tools/LineTool.ts';
 import { ToolState } from './render/tools/ToolState.ts';
 import { LayerFacade } from './render/LayerFacade.ts';
 import type { ToolHandler } from './render/tools/ToolHandler.ts';
+import { ToolHandlerFactory } from './render/tools/ToolHandlerFactory.ts';
 
 const Canvas = () => {
   const { state } = useGlobalContext();
@@ -24,8 +25,10 @@ const Canvas = () => {
 
     activeTool?.onDestroy();
 
-    activeTool = new LineTool(ctx, toolState, layerFacade);
-    activeTool.onInit();
+    if (state.activeTool) {
+      activeTool = ToolHandlerFactory.fromToolType(state.activeTool, ctx, toolState, layerFacade);
+      activeTool.onInit();
+    }
   })
 
   return <canvas ref={canvasRef} height={innerHeight} width={innerWidth}></canvas>

@@ -5,8 +5,8 @@ export class Logger {
     return `[${new Date().toLocaleTimeString()}]`;
   }
 
-  constructor(type: new (...args: any) => any) {
-    this.tag = `[${type.name.toUpperCase()}]`;
+  constructor(type: (new (...args: any) => any) | string) {
+    this.tag = typeof type === 'string' ? `[${type}]` : `[${type.name.toUpperCase()}]`;
   }
 
   public log(message: string): void {

@@ -1,14 +1,14 @@
 import { createContext, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import type { Tool } from './handlers/tool-handler.type.ts';
+import type { ToolType } from './types/core.type.ts';
 
 interface GlobalContextState {
-  activeTool?: Tool;
+  activeTool?: ToolType;
   color: [number, number, number];
 }
 
 interface GlobalContextActions {
-  setActiveTool: (activeTool: 'rect' | 'triangle' | 'circle') => void;
+  setActiveTool: (activeTool: ToolType) => void;
   setColor: (color: [number, number, number]) => void;
   state: GlobalContextState;
 }
@@ -16,13 +16,8 @@ interface GlobalContextActions {
 const GlobalContext = createContext<GlobalContextState & GlobalContextActions>();
 
 export const GlobalProvider = (props) => {
-  const [state, setState] = createStore<{
-    activeTool?: 'rect' | 'triangle' | 'circle';
-    color: [number, number, number];
-  }>({
-    color: [0, 0, 0],
-  });
-  const setActiveTool = (activeTool: 'rect' | 'triangle' | 'circle') => setState({ activeTool });
+  const [state, setState] = createStore<GlobalContextState>({ color: [0, 0, 0] });
+  const setActiveTool = (activeTool: ToolType) => setState({ activeTool });
   const setColor = (color: [number, number, number]) => setState({ color });
 
 

@@ -7,3 +7,5 @@ export interface Layer {
   tool: string
   draw(): void;
 }
+
+export type ToolType = 'rect' | 'line';
