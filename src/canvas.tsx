@@ -28,7 +28,7 @@ const Canvas = () => {
     }
   })
 
-  return <canvas ref={canvasRef} height={innerHeight} width={innerWidth}></canvas>
+  return <canvas ref={canvasRef!} height={innerHeight} width={innerWidth}></canvas>
 }
 
 export default Canvas;

@@ -171,13 +171,13 @@ export const ColorPicker = () => {
   }
 
   return <>
-    <input class="toggle" ref={triggerRef} type="color" onClick={toggleColorPicker}/>
-    <Card ref={popoverRef} title="Color picker" id="color-picker" popover="auto">
+    <input class="toggle" ref={triggerRef!} type="color" onClick={toggleColorPicker}/>
+    <Card ref={popoverRef!} title="Color picker" id="color-picker" popover="auto">
       <div class="color-picker">
-        <div class="preview" ref={previewRef}></div>
+        <div class="preview" ref={previewRef!}></div>
         <canvas
           class="color"
-          ref={pickerRef}
+          ref={pickerRef!}
           width={CONFIG.width}
           height={CONFIG.pickerHeight}
           onClick={handlePickerClick}
@@ -187,7 +187,7 @@ export const ColorPicker = () => {
 
         <canvas
           class="slider"
-          ref={sliderRef}
+          ref={sliderRef!}
           width={CONFIG.width}
           height={CONFIG.sliderHeight}
           onMouseMove={handleMouseMove}>

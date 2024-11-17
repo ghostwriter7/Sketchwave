@@ -91,7 +91,7 @@ export const LineThicknessPicker = () => {
     </button>
 
     <Card title="Line thickness" id="line-thickness" popover="auto">
-      <canvas ref={canvasRef} height="130" onClick={handleClick}></canvas>
+      <canvas ref={canvasRef!} height="130" onClick={handleClick}></canvas>
     </Card>
   </>
 
