@@ -19,13 +19,19 @@ const Canvas = () => {
     ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
   }
 
+  let activeTool: ToolHandler | null = null;
+
   onMount(() => {
     ctx = canvasRef.getContext('2d', { willReadFrequently: true })!;
     clearCanvas();
     layerFacade = new LayerFacade(ctx);
+
+    document.body.addEventListener('contextmenu', (event: MouseEvent) => {
+      event.preventDefault();
+      activeTool?.cancel();
+    });
   });
 
-  let activeTool: ToolHandler | null = null;
 
   createEffect(() => {
     const width = state.width;
@@ -53,7 +59,7 @@ const Canvas = () => {
     height={state.height}
     width={state.width}
     onMouseLeave={() => setMousePos(null, null)}
-    onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY) }>
+    onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY)}>
   </canvas>
 }
 

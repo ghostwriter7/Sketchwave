@@ -20,18 +20,18 @@ export class LineTool extends ToolHandler {
   }
 
   public tryCreateLayer(): void {
-    if (this.points.length === 0) return;
+    if (this.points.length <= 1) return;
 
     const path = this.createPath();
     const layer = {
-      tool: LineTool.name.toUpperCase(),
+      tool: this.name,
       draw: () => this.renderPath(path),
     }
     if (layer) this.layerFacade.pushLayer(layer);
   }
 
-  protected override render(): void {
-    super.render();
+  protected override renderPreview(): void {
+    super.renderPreview();
     const path = this.createPath();
     path.lineTo(this.previewOnlyPoint!.x, this.previewOnlyPoint!.y);
     this.renderPath(path);
@@ -43,13 +43,13 @@ export class LineTool extends ToolHandler {
     this.onMove((event) => {
       if (this.points.length > 0) {
         this.previewOnlyPoint = Point.fromEvent(event);
-        this.render();
+        this.renderPreview();
       }
     });
 
     this.onDoubleClick((event) => {
       this.addPointFromEvent(event);
-      this.render();
+      this.renderPreview();
       this.tryCreateLayer();
       this.reset();
       this.initializeListeners();

@@ -27,12 +27,12 @@ export class RectTool extends ToolHandler {
     this.onMove((event: MouseEvent): void => {
       if (this.points.length === 0) return;
       this.tempPoint = Point.fromEvent(event);
-      this.render();
+      this.renderPreview();
     });
   }
 
-  protected render(): void {
-    super.render();
+  protected renderPreview(): void {
+    super.renderPreview();
     this.ctx.fillStyle = this.colour;
     this.ctx.fill(createRectPathFromPoints(this.points[0], this.tempPoint!));
   }
@@ -42,7 +42,7 @@ export class RectTool extends ToolHandler {
 
     const path = createRectPathFromPoints(...this.points as [Point, Point]);
     const layer = {
-      tool: 'rect',
+      tool: this.name,
       draw: () => {
         this.ctx.fillStyle = this.colour;
         this.ctx.fill(path);

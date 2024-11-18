@@ -25,6 +25,10 @@ export abstract class ToolHandler {
     return this.toolState.lineWidth;
   }
 
+  protected get name(): string {
+    return this.constructor.name.toUpperCase();
+  }
+
   protected get width(): number {
     return this.ctx.canvas.width;
   }
@@ -37,6 +41,18 @@ export abstract class ToolHandler {
                         protected readonly toolState: ToolState,
                         protected readonly layerFacade: LayerFacade) {
     this.onInit();
+  }
+
+  /**
+   * A handler to be called externally upon receiving a user's input to cancel
+   * the ongoing drawing action.
+   */
+  public cancel(): void {
+    this.logger.log('Cancelling the action.');
+    this.tryCreateLayer();
+    this.layerFacade.renderLayers();
+    this.reset();
+    this.initializeListeners();
   }
 
   /**
@@ -89,7 +105,7 @@ export abstract class ToolHandler {
    * Renders the current result of work done by the tool onto the canvas.
    * @protected
    */
-  protected render(): void {
+  protected renderPreview(): void {
     this.logger.log('Rendering preview.');
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.ctx.putImageData(this.snapshot, 0, 0);
