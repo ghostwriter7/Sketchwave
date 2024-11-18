@@ -8,7 +8,7 @@ import './canvas.css';
 import { Logger } from '../../utils/Logger.ts';
 
 const Canvas = () => {
-  const { state } = useGlobalContext();
+  const { state, setMousePos } = useGlobalContext();
   let canvasRef: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
   let layerFacade: LayerFacade;
@@ -47,7 +47,14 @@ const Canvas = () => {
     }
   })
 
-  return <canvas class="canvas" ref={canvasRef!} height={state.height} width={state.width}></canvas>
+  return <canvas
+    class="canvas"
+    ref={canvasRef!}
+    height={state.height}
+    width={state.width}
+    onMouseLeave={() => setMousePos(null, null)}
+    onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY) }>
+  </canvas>
 }
 
 export default Canvas;

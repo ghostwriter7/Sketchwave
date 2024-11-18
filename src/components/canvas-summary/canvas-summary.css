@@ -1,0 +1,13 @@
+.canvas-summary {
+  align-items: center;
+  background-color: var(--bg-secondary);
+  color: var(--clr-primary);
+  display: flex;
+  font-size: 1em;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+
+  .material-symbols-outlined {
+    font-size: 1em;
+  }
+}

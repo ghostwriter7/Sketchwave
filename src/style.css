@@ -5,8 +5,9 @@
   --clr-secondary: gray;
 
   --bg-primary: #141313;
-  --bg-secondary: white;
+  --bg-secondary: #2f2e2e;
 
+  --space-sm: 4px;
   --space-md: 8px;
 }
 
