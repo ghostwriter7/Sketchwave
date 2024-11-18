@@ -5,24 +5,34 @@ import { LayerFacade } from '../../render/LayerFacade.ts';
 import type { ToolHandler } from '../../render/tools/ToolHandler.ts';
 import { ToolHandlerFactory } from '../../render/tools/ToolHandlerFactory.ts';
 import './canvas.css';
+import { Logger } from '../../utils/Logger.ts';
 
 const Canvas = () => {
   const { state } = useGlobalContext();
   let canvasRef: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
-  let layerFacade : LayerFacade;
+  let layerFacade: LayerFacade;
+  const logger = new Logger('CANVAS')
+
+  const clearCanvas = () => {
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
+  }
 
   onMount(() => {
     ctx = canvasRef.getContext('2d', { willReadFrequently: true })!;
+    clearCanvas();
     layerFacade = new LayerFacade(ctx);
   });
 
   let activeTool: ToolHandler | null = null;
 
   createEffect(() => {
-    if (state.width || state.height) {
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
+    const width = state.width;
+    const height = state.height;
+    if (canvasRef.width !== width || canvasRef.height !== height) {
+      logger.log('Notified about dimensions change -> updating.');
+      clearCanvas();
       layerFacade.renderLayers();
     }
   });
