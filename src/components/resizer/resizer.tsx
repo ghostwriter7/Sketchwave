@@ -13,15 +13,22 @@ export const Resizer = () => {
   const cursors = ['nw-resize', 'n-resize', 'ne-resize', 'w-resize', 'e-resize', 'sw-resize', 's-resize', 'se-resize'] as const;
 
   const cursorCapabilities = {
-    'nw-resize': { moveX: true, moveY: true, changeOriginX: true, changeOriginY: true },
-    'n-resize': { moveX: false, moveY: true, changeOriginX: false, changeOriginY: true },
-    'ne-resize': { moveX: true, moveY: true, changeOriginX: false, changeOriginY: true },
-    'w-resize': { moveX: true, moveY: false, changeOriginX: true, changeOriginY: false },
-    'e-resize': { moveX: true, moveY: false, changeOriginX: false, changeOriginY: false },
-    'sw-resize': { moveX: true, moveY: true, changeOriginX: true, changeOriginY: false },
-    's-resize': { moveX: false, moveY: true, changeOriginX: false, changeOriginY: false },
-    'se-resize': { moveX: true, moveY: true, changeOriginX: false, changeOriginY: false },
+    'nw-resize': { moveXAxis: true, moveYAxis: true, changeOriginX: true, changeOriginY: true },
+    'n-resize': { moveXAxis: false, moveYAxis: true, changeOriginX: false, changeOriginY: true },
+    'ne-resize': { moveXAxis: true, moveYAxis: true, changeOriginX: false, changeOriginY: true },
+    'w-resize': { moveXAxis: true, moveYAxis: false, changeOriginX: true, changeOriginY: false },
+    'e-resize': { moveXAxis: true, moveYAxis: false, changeOriginX: false, changeOriginY: false },
+    'sw-resize': { moveXAxis: true, moveYAxis: true, changeOriginX: true, changeOriginY: false },
+    's-resize': { moveXAxis: false, moveYAxis: true, changeOriginX: false, changeOriginY: false },
+    'se-resize': { moveXAxis: true, moveYAxis: true, changeOriginX: false, changeOriginY: false },
   } as const;
+
+  const updateCursorIfApplicable = (event: MouseEvent): void => {
+    const point = Point.fromEvent(event);
+    cursorIndex = indicators.findIndex((indicatorPoint) => calculateDistance(point, indicatorPoint) < 10);
+    canvasRef.style.cursor = cursorIndex !== -1 ? cursors[cursorIndex] : 'default';
+    canvasRef.style.zIndex = 'unset';
+  }
 
   const renderIndicators = (x: number, y: number, width: number, height: number) => {
     const squareDimension = 5;
@@ -74,52 +81,56 @@ export const Resizer = () => {
   let cursorIndex = -1;
   let newWidth: number, newHeight: number;
 
+  const calculateDelta = (isMovable: boolean, canChangeOrigin: boolean, currentOrigin: number, eventOrigin: number): number => {
+    if (!isMovable) return 0;
+    return canChangeOrigin ? currentOrigin - eventOrigin : eventOrigin - currentOrigin;
+  }
+
+  const adjustBounds = (origin: number, size: number, newOrigin: number, newSize: number): {
+    adjustedOrigin: number,
+    adjustedSize: number
+  } => {
+    if ((origin + size) - newOrigin <= 1) {
+      return { adjustedOrigin: origin + size + 1, adjustedSize: 2 };
+    } else if (newOrigin == origin && newSize < 0) {
+      return { adjustedOrigin: origin + 1, adjustedSize: 2 };
+    }
+    return { adjustedOrigin: newOrigin, adjustedSize: newSize };
+  }
+
   const handleMouseMove = (event: MouseEvent) => {
     if (isDragging) {
       ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
       canvasRef.style.zIndex = '2';
-      const { offsetY, offsetX } = event;
-      const width = state.width;
-      const height = state.height;
 
+      const { offsetY, offsetX } = event;
+      const { height, width } = state;
       const { originX: currentOriginX, originY: currentOriginY } = getOriginXAndY();
 
       const cursorName = cursors[cursorIndex];
-      const { changeOriginX, changeOriginY, moveX, moveY } = cursorCapabilities[cursorName];
+      const { changeOriginX, changeOriginY, moveXAxis, moveYAxis } = cursorCapabilities[cursorName];
 
-      const deltaY = moveY ?
-        (changeOriginY ? currentOriginY - offsetY : offsetY - currentOriginY) : 0;
-      const deltaX = moveX ?
-        (changeOriginX ? currentOriginX - offsetX : offsetX - currentOriginX) : 0;
+      const deltaY = calculateDelta(moveYAxis, changeOriginY, currentOriginY, offsetY);
+      const deltaX = calculateDelta(moveXAxis, changeOriginX, currentOriginX, offsetX);
 
       let newOriginX = changeOriginX ? currentOriginX - deltaX : currentOriginX;
       let newOriginY = changeOriginY ? currentOriginY - deltaY : currentOriginY;
 
-      newWidth = changeOriginX ? width + deltaX : moveX ? deltaX : width;
-      newHeight = changeOriginY ? height + deltaY : moveY ? deltaY : height;
+      newWidth = changeOriginX ? width + deltaX : moveXAxis ? deltaX : width;
+      newHeight = changeOriginY ? height + deltaY : moveYAxis ? deltaY : height;
 
-      if ((currentOriginX + width) - newOriginX <= 1) {
-        newOriginX = currentOriginX + width - 1;
-        newWidth = 2;
-      } else if (newOriginX == currentOriginX && newWidth < 0) {
-        newOriginX = currentOriginX + 1;
-        newWidth = 2;
-      }
-
-      if ((currentOriginY + height) - newOriginY <= 1) {
-        newOriginY = currentOriginY + height - 1;
-        newHeight = 2;
-      } else if (newOriginY == currentOriginY && newHeight < 0) {
-        newOriginY = currentOriginY + 1;
-        newHeight = 2;
-      }
+      ({
+        adjustedOrigin: newOriginX,
+        adjustedSize: newWidth
+      } = adjustBounds(currentOriginX, width, newOriginX, newWidth));
+      ({
+        adjustedOrigin: newOriginY,
+        adjustedSize: newHeight
+      } = adjustBounds(currentOriginY, height, newOriginY, newHeight));
 
       drawSizePreview(newOriginX, newOriginY, newWidth, newHeight);
     } else {
-      const point = Point.fromEvent(event);
-      cursorIndex = indicators.findIndex((indicatorPoint) => calculateDistance(point, indicatorPoint) < 10);
-      canvasRef.style.cursor = cursorIndex !== -1 ? cursors[cursorIndex] : 'default';
-      canvasRef.style.zIndex = 'unset';
+      updateCursorIfApplicable(event);
     }
   }
 
