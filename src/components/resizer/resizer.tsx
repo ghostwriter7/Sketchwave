@@ -10,21 +10,18 @@ export const Resizer = () => {
   let ctx: CanvasRenderingContext2D;
   let indicators: Point[];
 
-  const cursors = ['nw-resize', 'n-resize', 'ne-resize', 'w-resize', 'e-resize', 'sw-resize', 's-resize', 'se-resize'];
+  const cursors = ['nw-resize', 'n-resize', 'ne-resize', 'w-resize', 'e-resize', 'sw-resize', 's-resize', 'se-resize'] as const;
 
-  const updateOriginXCursors = ['nw-resize', 'w-resize', 'sw-resize'];
-  const shouldChangeOriginX = (cursor: string) => updateOriginXCursors.includes(cursor);
-
-  const updateOriginYCursors = ['nw-resize', 'n-resize', 'ne-resize']
-  const shouldChangeOriginY = (cursor: string) => updateOriginYCursors.includes(cursor);
-
-  const canMoveInXY = (cursor: string): boolean => cursor.split('-')[0].length == 2;
-
-  const canMoveInY = (cursor: string): boolean =>
-    canMoveInXY(cursor) || cursor.startsWith('s') || cursor.startsWith('n');
-
-  const canMoveInX = (cursor: string): boolean =>
-    canMoveInXY(cursor) || cursor.startsWith('e') || cursor.startsWith('w');
+  const cursorCapabilities = {
+    'nw-resize': { moveX: true, moveY: true, changeOriginX: true, changeOriginY: true },
+    'n-resize': { moveX: false, moveY: true, changeOriginX: false, changeOriginY: true },
+    'ne-resize': { moveX: true, moveY: true, changeOriginX: false, changeOriginY: true },
+    'w-resize': { moveX: true, moveY: false, changeOriginX: true, changeOriginY: false },
+    'e-resize': { moveX: true, moveY: false, changeOriginX: false, changeOriginY: false },
+    'sw-resize': { moveX: true, moveY: true, changeOriginX: true, changeOriginY: false },
+    's-resize': { moveX: false, moveY: true, changeOriginX: false, changeOriginY: false },
+    'se-resize': { moveX: true, moveY: true, changeOriginX: false, changeOriginY: false },
+  } as const;
 
   const renderIndicators = (x: number, y: number, width: number, height: number) => {
     const squareDimension = 5;
@@ -53,14 +50,15 @@ export const Resizer = () => {
     ctx = canvasRef.getContext('2d')!;
   });
 
+  const getOriginXAndY = () => ({
+    originX: canvasRef.width / 2 - state.width / 2,
+    originY: canvasRef.height / 2 - state.height / 2
+  })
+
   createEffect(() => {
-    const width = state.width;
-    const height = state.height;
-
-    const originX = (canvasRef.width / 2) - (width / 2);
-    const originY = (canvasRef.height / 2) - (height / 2);
-
-    renderIndicators(originX, originY, width, height);
+    const { originX, originY } = getOriginXAndY();
+    ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+    renderIndicators(originX, originY, state.width, state.height);
   });
 
 
@@ -74,6 +72,7 @@ export const Resizer = () => {
 
   let isDragging = false;
   let cursorIndex = -1;
+  let newWidth: number, newHeight: number;
 
   const handleMouseMove = (event: MouseEvent) => {
     if (isDragging) {
@@ -83,40 +82,35 @@ export const Resizer = () => {
       const width = state.width;
       const height = state.height;
 
-      const originX = (canvasRef.width / 2) - (width / 2);
-      const originY = (canvasRef.height / 2) - (height / 2);
+      const { originX: currentOriginX, originY: currentOriginY } = getOriginXAndY();
 
       const cursorName = cursors[cursorIndex];
+      const { changeOriginX, changeOriginY, moveX, moveY } = cursorCapabilities[cursorName];
 
-      const xAxisMovable = canMoveInX(cursorName);
-      const yAxisMovable = canMoveInY(cursorName);
-      const changeOriginX = shouldChangeOriginX(cursorName);
-      const changeOriginY = shouldChangeOriginY(cursorName);
+      const deltaY = moveY ?
+        (changeOriginY ? currentOriginY - offsetY : offsetY - currentOriginY) : 0;
+      const deltaX = moveX ?
+        (changeOriginX ? currentOriginX - offsetX : offsetX - currentOriginX) : 0;
 
-      const deltaY = yAxisMovable ?
-        (changeOriginY ? originY - offsetY : offsetY - originY) : 0;
-      const deltaX = xAxisMovable ?
-        (changeOriginX ? originX - offsetX : offsetX - originX) : 0;
+      let newOriginX = changeOriginX ? currentOriginX - deltaX : currentOriginX;
+      let newOriginY = changeOriginY ? currentOriginY - deltaY : currentOriginY;
 
-      let newOriginX = changeOriginX ? originX - deltaX : originX;
-      let newOriginY = changeOriginY ? originY - deltaY : originY;
+      newWidth = changeOriginX ? width + deltaX : moveX ? deltaX : width;
+      newHeight = changeOriginY ? height + deltaY : moveY ? deltaY : height;
 
-      let newWidth = changeOriginX ? width + deltaX : xAxisMovable ? deltaX : width;
-      let newHeight = changeOriginY ? height + deltaY : yAxisMovable ? deltaY : height;
-
-      if ((originX + width) - newOriginX  <= 1) {
-        newOriginX = originX + width - 1;
+      if ((currentOriginX + width) - newOriginX <= 1) {
+        newOriginX = currentOriginX + width - 1;
         newWidth = 2;
-      } else if (newOriginX == originX && newWidth < 0) {
-        newOriginX = originX + 1;
+      } else if (newOriginX == currentOriginX && newWidth < 0) {
+        newOriginX = currentOriginX + 1;
         newWidth = 2;
       }
 
-      if ((originY + height) - newOriginY <= 1) {
-        newOriginY = originY + height - 1;
+      if ((currentOriginY + height) - newOriginY <= 1) {
+        newOriginY = currentOriginY + height - 1;
         newHeight = 2;
-      } else if (newOriginY == originY && newHeight < 0) {
-        newOriginY = originY + 1;
+      } else if (newOriginY == currentOriginY && newHeight < 0) {
+        newOriginY = currentOriginY + 1;
         newHeight = 2;
       }
 
@@ -134,8 +128,12 @@ export const Resizer = () => {
     isDragging = canvasRef.style.cursor !== 'default';
   }
 
-  const handleMouseUp = ()=> {
+  const handleMouseUp = () => {
     isDragging = false;
+    canvasRef.style.zIndex = 'unset';
+    if (newWidth !== state.width || newHeight !== state.height) {
+      updateState({ width: newWidth, height: newHeight });
+    }
   }
 
   return <canvas

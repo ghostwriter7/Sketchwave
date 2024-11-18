@@ -14,12 +14,18 @@ const Canvas = () => {
 
   onMount(() => {
     ctx = canvasRef.getContext('2d', { willReadFrequently: true })!;
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
     layerFacade = new LayerFacade(ctx);
   });
 
   let activeTool: ToolHandler | null = null;
+
+  createEffect(() => {
+    if (state.width || state.height) {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
+      layerFacade.renderLayers();
+    }
+  });
 
   createEffect(() => {
     const toolState = ToolState.fromState(state);
