@@ -1,6 +1,17 @@
 /// <reference types="vite/client" />
 
 interface Window {
-    canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D;
+  showOpenFilePicker(options:  {excludeAcceptAllOption?: boolean,
+  multiple?: boolean,
+  startIn?: string ,
+  types: {
+    description?: string,
+    accept: {
+      [key: string]: string[],
+    },
+  }[]}): Promise<FileSystemFileHandle[]>;
+}
+
+interface String {
+  toTitleCase(): string;
 }

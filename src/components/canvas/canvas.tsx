@@ -12,7 +12,7 @@ const Canvas = () => {
   let canvasRef: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
   let layerFacade: LayerFacade;
-  const logger = new Logger('CANVAS')
+  const logger = new Logger('Canvas')
 
   const clearCanvas = () => {
     ctx.fillStyle = '#fff';
@@ -23,7 +23,7 @@ const Canvas = () => {
 
   onMount(() => {
     ctx = new Proxy(canvasRef.getContext('2d', { willReadFrequently: true })!, {
-      get(target: CanvasRenderingContext2D, property: string, receiver: any): any {
+      get(target: CanvasRenderingContext2D, property: string): any {
         logger.debug(`Retrieving "${property}" from the main ctx.`);
         const value = target[property];
         if (value instanceof Function) {
@@ -47,14 +47,15 @@ const Canvas = () => {
   });
 
 
-  createEffect(() => {
+  createEffect((prev: [number, number] | undefined) => {
     const width = state.width;
     const height = state.height;
-    if (canvasRef.width !== width || canvasRef.height !== height) {
-      logger.log(`Notified about dimensions change (W: ${canvasRef.width} -> ${width}, H: ${canvasRef.height} -> ${height}).`);
+    if (!!prev && (prev[0] !== width || prev[1] !== height)) {
+      logger.log(`Notified about dimensions change (W: ${prev[0]} -> ${width}, H: ${prev[1]} -> ${height}).`);
       clearCanvas();
       layerFacade.renderLayers();
     }
+    return [width, height] as [number, number];
   });
 
   createEffect(() => {
