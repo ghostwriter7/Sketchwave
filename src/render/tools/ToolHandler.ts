@@ -5,7 +5,6 @@ import { Logger } from '../../utils/Logger.ts';
 
 export abstract class ToolHandler {
   protected abortController = new AbortController();
-  protected snapshot!: ImageData;
 
   protected readonly logger = new Logger(this.constructor as Constructor);
 
@@ -72,8 +71,6 @@ export abstract class ToolHandler {
   protected onInit(): void {
     this.logger.log('Initializing an instance.');
     this.initializeListeners();
-    this.layerFacade.renderLayers();
-    this.snapshot = this.ctx.getImageData(0, 0, this.width, this.height);
   }
 
   /**
@@ -106,19 +103,13 @@ export abstract class ToolHandler {
    * @protected
    */
   protected renderPreview(): void {
-    this.logger.log('Rendering preview.');
-    this.ctx.clearRect(0, 0, this.width, this.height);
-    this.ctx.putImageData(this.snapshot, 0, 0);
-  }
-
-  protected refreshSnapshot(): void {
-    this.snapshot = this.ctx.getImageData(0, 0, this.width, this.height);
+    this.logger.debug('Rendering preview.');
+    this.layerFacade.renderLayers();
   }
 
   protected reset(): void {
     this.logger.log('Resetting an instance.');
     this.abortController.abort();
     this.abortController = new AbortController();
-    this.refreshSnapshot();
   }
 }

@@ -43,9 +43,9 @@ export class RectTool extends ToolHandler {
     const path = createRectPathFromPoints(...this.points as [Point, Point]);
     const layer = {
       tool: this.name,
-      draw: () => {
-        this.ctx.fillStyle = this.colour;
-        this.ctx.fill(path);
+      draw: (ctx: CanvasRenderingContext2D) => {
+        ctx.fillStyle = this.colour;
+        ctx.fill(path);
       }
     }
 

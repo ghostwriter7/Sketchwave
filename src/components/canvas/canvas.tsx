@@ -14,11 +14,6 @@ const Canvas = () => {
   let layerFacade: LayerFacade;
   const logger = new Logger('Canvas')
 
-  const clearCanvas = () => {
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
-  }
-
   let activeTool: ToolHandler | null = null;
 
   onMount(() => {
@@ -27,7 +22,7 @@ const Canvas = () => {
         logger.debug(`Retrieving "${property}" from the main ctx.`);
         const value = target[property];
         if (value instanceof Function) {
-          return (...args: unknown[])=> value.apply(target, args);
+          return (...args: unknown[]) => value.apply(target, args);
         }
         return value;
       },
@@ -37,12 +32,17 @@ const Canvas = () => {
         return true;
       }
     })
-    clearCanvas();
     layerFacade = new LayerFacade(ctx);
+    layerFacade.renderLayers();
 
     document.body.addEventListener('contextmenu', (event: MouseEvent) => {
       event.preventDefault();
-      activeTool?.cancel();
+      activeTool?.onDestroy();
+      if (state.activeTool) {
+        layerFacade.renderLayers();
+        const toolState = ToolState.fromState(state);
+        activeTool = ToolHandlerFactory.fromToolType(state.activeTool, ctx, toolState, layerFacade);
+      }
     });
   });
 
@@ -52,7 +52,6 @@ const Canvas = () => {
     const height = state.height;
     if (!!prev && (prev[0] !== width || prev[1] !== height)) {
       logger.log(`Notified about dimensions change (W: ${prev[0]} -> ${width}, H: ${prev[1]} -> ${height}).`);
-      clearCanvas();
       layerFacade.renderLayers();
     }
     return [width, height] as [number, number];

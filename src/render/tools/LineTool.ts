@@ -25,7 +25,7 @@ export class LineTool extends ToolHandler {
     const path = this.createPath();
     const layer = {
       tool: this.name,
-      draw: () => this.renderPath(path),
+      draw: (ctx: CanvasRenderingContext2D) => this.renderPath(path, ctx),
     }
     if (layer) this.layerFacade.pushLayer(layer);
   }
@@ -73,9 +73,9 @@ export class LineTool extends ToolHandler {
     return path;
   }
 
-  private renderPath(path: Path2D): void {
-    this.ctx.lineWidth = this.lineWidth;
-    this.ctx.strokeStyle = this.colour;
-    this.ctx.stroke(path);
+  private renderPath(path: Path2D, ctx: CanvasRenderingContext2D = this.ctx): void {
+    ctx.lineWidth = this.lineWidth;
+    ctx.strokeStyle = this.colour;
+    ctx.stroke(path);
   }
 }

@@ -1,11 +1,11 @@
 import './color-picker.css';
 import { createEffect, createSignal, onMount } from 'solid-js';
-import { hsbToRgb } from '../../color/hsb-to-rgb.ts';
-import { rgbToHue } from '../../color/rgb-to-hue.ts';
-import { getRGBFromPixel } from '../../color/get-rgb-from-pixel.ts';
-import { useGlobalContext } from '../../global-provider.tsx';
-import { rgbToHex } from '../../color/rgb-to-hex.ts';
-import { Card } from '../../components/card/card.tsx';
+import { hsbToRgb } from '../../../color/hsb-to-rgb.ts';
+import { rgbToHue } from '../../../color/rgb-to-hue.ts';
+import { getRGBFromPixel } from '../../../color/get-rgb-from-pixel.ts';
+import { useGlobalContext } from '../../../global-provider.tsx';
+import { rgbToHex } from '../../../color/rgb-to-hex.ts';
+import { Card } from '../../card/card.tsx';
 
 const CONFIG = {
   inlineMargin: 25,
