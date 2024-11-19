@@ -22,7 +22,21 @@ const Canvas = () => {
   let activeTool: ToolHandler | null = null;
 
   onMount(() => {
-    ctx = canvasRef.getContext('2d', { willReadFrequently: true })!;
+    ctx = new Proxy(canvasRef.getContext('2d', { willReadFrequently: true })!, {
+      get(target: CanvasRenderingContext2D, property: string, receiver: any): any {
+        logger.debug(`Retrieving "${property}" from the main ctx.`);
+        const value = target[property];
+        if (value instanceof Function) {
+          return (...args: unknown[])=> value.apply(target, args);
+        }
+        return value;
+      },
+      set(target: CanvasRenderingContext2D, property: string, newValue: any): boolean {
+        logger.debug(`Setting "${property}" to "${newValue}" on the main ctx.`);
+        target[property] = newValue;
+        return true;
+      }
+    })
     clearCanvas();
     layerFacade = new LayerFacade(ctx);
 
@@ -37,7 +51,7 @@ const Canvas = () => {
     const width = state.width;
     const height = state.height;
     if (canvasRef.width !== width || canvasRef.height !== height) {
-      logger.log('Notified about dimensions change -> updating.');
+      logger.log(`Notified about dimensions change (W: ${canvasRef.width} -> ${width}, H: ${canvasRef.height} -> ${height}).`);
       clearCanvas();
       layerFacade.renderLayers();
     }
