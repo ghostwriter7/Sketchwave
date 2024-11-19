@@ -140,11 +140,11 @@ export const Resizer = () => {
   }
 
   const handleMouseUp = () => {
-    isDragging = false;
-    canvasRef.style.zIndex = 'unset';
-    if (newWidth !== state.width || newHeight !== state.height) {
+    if (isDragging && (newWidth !== state.width || newHeight !== state.height)) {
       updateState({ width: newWidth, height: newHeight });
     }
+    isDragging = false;
+    canvasRef.style.zIndex = 'unset';
   }
 
   return <canvas

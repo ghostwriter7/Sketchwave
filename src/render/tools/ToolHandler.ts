@@ -25,7 +25,7 @@ export abstract class ToolHandler {
   }
 
   protected get name(): string {
-    return this.constructor.name.toUpperCase();
+    return this.constructor.name.toTitleCase();
   }
 
   protected get width(): number {

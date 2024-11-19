@@ -22,12 +22,16 @@ export class LayerFacade {
   }
 
   public hasAnyLayers(): boolean {
-    return this.stack.length > 0;
+    return this.stack.length > 1;
   }
 
   public pushLayer(layer: Layer): void {
     this.stack.push(layer);
     this.logger.log(`A new layer created by ${layer.tool}. Current count: ${this.stack.length}`);
+    this.refreshSnapshot();
+  }
+
+  public refreshSnapshot(): void {
     this.snapshot = this.createSnapshot();
   }
 
@@ -39,14 +43,7 @@ export class LayerFacade {
   private createSnapshot(): ImageData {
     const offscreenCanvas = new OffscreenCanvas(this.ctx.canvas.width, this.ctx.canvas.height);
     const ctx = offscreenCanvas.getContext('2d')!;
-
-    if (this.snapshot) {
-      ctx.putImageData(this.snapshot, 0, 0);
-      this.stack.at(-1)!.draw(ctx);
-    } else {
-      this.stack.forEach((layer) => layer.draw(ctx));
-    }
-
+    this.stack.forEach((layer) => layer.draw(ctx));
     return ctx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
   }
 }

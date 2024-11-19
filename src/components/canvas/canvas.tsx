@@ -52,6 +52,7 @@ const Canvas = () => {
     const height = state.height;
     if (!!prev && (prev[0] !== width || prev[1] !== height)) {
       logger.log(`Notified about dimensions change (W: ${prev[0]} -> ${width}, H: ${prev[1]} -> ${height}).`);
+      layerFacade.refreshSnapshot();
       layerFacade.renderLayers();
     }
     return [width, height] as [number, number];

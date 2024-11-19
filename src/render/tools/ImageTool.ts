@@ -10,6 +10,10 @@ export class ImageTool extends ToolHandler {
     super(ctx, toolState, layerFacade);
   }
 
+  public override onDestroy(): void {
+    this.logger.log('Destroying an instance.');
+  }
+
   public override async onInit(): Promise<void> {
     this.logger.log('Initializing.');
     const { updateState } = useGlobalContext();
@@ -33,9 +37,8 @@ export class ImageTool extends ToolHandler {
 
       this.tryCreateLayer();
       this.layerFacade.renderLayers();
-    } else {
-        updateState({ activeTool: undefined });
     }
+    updateState({ activeTool: undefined });
   }
 
   public tryCreateLayer(): void {
@@ -45,9 +48,8 @@ export class ImageTool extends ToolHandler {
     const { width, height } = this.imageBitmap!;
     this.layerFacade.pushLayer({
       tool: this.name,
-      draw: () => {
-        this.ctx.drawImage(imageBitmap, 0, 0, width, height, 0, 0, width, height);
-      }
+      draw: (ctx: CanvasRenderingContext2D) =>
+        ctx.drawImage(imageBitmap, 0, 0, width, height, 0, 0, width, height)
     });
 
     this.imageBitmap = null;
