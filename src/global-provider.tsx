@@ -13,7 +13,7 @@ export interface GlobalContextState {
 }
 
 interface GlobalContextActions {
-  setMousePos<T = number | null>(x: T, y: T): void;
+  setMousePos<T extends number | null>(x: T, y: T): void;
   state: GlobalContextState;
   updateState: (state: Partial<GlobalContextState>) => void;
 }
@@ -30,7 +30,7 @@ export const GlobalProvider = (props: ParentProps) => {
     width: 500
   });
   const updateState = (state: Partial<GlobalContextState>) => setState({ ...state });
-  const setMousePos = <T = number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y })
+  const setMousePos = <T extends number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y })
   return <GlobalContext.Provider value={{ setMousePos, updateState, state }}>{props.children}</GlobalContext.Provider>
 }
 

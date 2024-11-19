@@ -5,6 +5,8 @@ import { useGlobalContext } from '../../global-provider.tsx';
 
 export class ImageTool extends ToolHandler {
   private imageBitmap: ImageBitmap | null = null;
+  private updatedWidth: number | null = null;
+  private updatedHeight: number | null = null;
 
   constructor(ctx: CanvasRenderingContext2D, toolState: ToolState, layerFacade: LayerFacade) {
     super(ctx, toolState, layerFacade);
@@ -28,9 +30,9 @@ export class ImageTool extends ToolHandler {
 
       if (width > maxWidth || height > maxHeight) {
         const scaleFactor = Math.min(maxWidth / width, maxHeight / height);
-        const updatedWidth = width * scaleFactor;
-        const updatedHeight = height * scaleFactor;
-        updateState({ width: updatedWidth, height: updatedHeight });
+        this.updatedWidth = width * scaleFactor;
+        this.updatedHeight = height * scaleFactor;
+        updateState({ width: this.updatedWidth, height: this.updatedHeight });
       } else {
         updateState({ width, height });
       }
@@ -45,11 +47,12 @@ export class ImageTool extends ToolHandler {
     if (!this.imageBitmap) return;
 
     const imageBitmap = this.imageBitmap;
-    const { width, height } = this.imageBitmap!;
     this.layerFacade.pushLayer({
       tool: this.name,
       draw: (ctx: CanvasRenderingContext2D) =>
-        ctx.drawImage(imageBitmap, 0, 0, width, height, 0, 0, width, height)
+        ctx.drawImage(imageBitmap, 0, 0, imageBitmap.width, imageBitmap.height, 0, 0,
+          this.updatedWidth || ctx.canvas.width,
+          this.updatedHeight || ctx.canvas.height)
     });
 
     this.imageBitmap = null;
