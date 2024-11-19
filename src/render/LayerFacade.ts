@@ -2,10 +2,18 @@ import type { Layer } from '../types/core.type.ts';
 import { Logger } from '../utils/Logger.ts';
 
 export class LayerFacade {
-  private readonly stack: Layer[] = [];
+  private stack: Layer[] = [];
   private readonly logger = new Logger(LayerFacade)
 
   constructor(private readonly ctx: CanvasRenderingContext2D) {
+  }
+
+  public clearLayers(): void {
+    this.stack = [];
+  }
+
+  public hasAnyLayers(): boolean {
+    return this.stack.length > 0;
   }
 
   public pushLayer(layer: Layer): void {
@@ -15,8 +23,7 @@ export class LayerFacade {
 
   public renderLayers(): void {
     this.logger.log(`Rendering layers...`);
-    this.ctx.fillStyle = '#fff';
     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    this.stack.forEach((layer) => layer.draw());
+    this.stack.forEach((layer) => layer.draw(this.ctx));
   }
 }
