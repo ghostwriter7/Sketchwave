@@ -26,6 +26,8 @@ export class ImageTool extends ToolHandler {
       if (this.layerFacade.hasAnyLayers()) this.layerFacade.clearLayers();
 
       const { width, height } = this.imageBitmap;
+      this.updatedWidth = width;
+      this.updatedHeight = height;
       const [maxWidth, maxHeight] = [innerWidth - 150, innerHeight - 150];
 
       if (width > maxWidth || height > maxHeight) {
@@ -51,8 +53,8 @@ export class ImageTool extends ToolHandler {
       tool: this.name,
       draw: (ctx: CanvasRenderingContext2D) =>
         ctx.drawImage(imageBitmap, 0, 0, imageBitmap.width, imageBitmap.height, 0, 0,
-          this.updatedWidth || ctx.canvas.width,
-          this.updatedHeight || ctx.canvas.height)
+          this.updatedWidth!,
+          this.updatedHeight!)
     });
 
     this.imageBitmap = null;
