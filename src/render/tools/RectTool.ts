@@ -3,13 +3,14 @@ import type { ToolState } from './ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { Point } from '../primitives/Point.ts';
 import { createRectPathFromPoints } from '../../shapes/rectangle.ts';
+import type { CanvasFacade } from '../CanvasFacade.ts';
 
 export class RectTool extends ToolHandler {
   private points: Point[] = [];
   private tempPoint: Point | null = null;
 
-  constructor(ctx: CanvasRenderingContext2D, toolState: ToolState, layerFacade: LayerFacade) {
-    super(ctx, toolState, layerFacade);
+  constructor(canvasFacade: CanvasFacade, toolState: ToolState, layerFacade: LayerFacade) {
+    super(canvasFacade, toolState, layerFacade);
   }
 
   protected initializeListeners(): void {

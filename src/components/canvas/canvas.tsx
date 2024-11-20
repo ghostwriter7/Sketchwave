@@ -6,33 +6,20 @@ import type { ToolHandler } from '../../render/tools/ToolHandler.ts';
 import { ToolHandlerFactory } from '../../render/tools/ToolHandlerFactory.ts';
 import './canvas.css';
 import { Logger } from '../../utils/Logger.ts';
+import { CanvasFacade } from '../../render/CanvasFacade.ts';
 
 const Canvas = () => {
   const { state, setMousePos } = useGlobalContext();
   let canvasRef: HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2D;
   let layerFacade: LayerFacade;
+  let canvasFacade: CanvasFacade;
   const logger = new Logger('Canvas')
 
   let activeTool: ToolHandler | null = null;
 
   onMount(() => {
-    ctx = new Proxy(canvasRef.getContext('2d', { willReadFrequently: true })!, {
-      get(target: CanvasRenderingContext2D, property: string): any {
-        logger.debug(`Retrieving "${property}" from the main ctx.`);
-        const value = target[property];
-        if (value instanceof Function) {
-          return (...args: unknown[]) => value.apply(target, args);
-        }
-        return value;
-      },
-      set(target: CanvasRenderingContext2D, property: string, newValue: any): boolean {
-        logger.debug(`Setting "${property}" to "${newValue}" on the main ctx.`);
-        target[property] = newValue;
-        return true;
-      }
-    })
-    layerFacade = new LayerFacade(ctx);
+    canvasFacade = new CanvasFacade(canvasRef, state);
+    layerFacade = new LayerFacade(canvasFacade);
     layerFacade.renderLayers();
 
     document.body.addEventListener('contextmenu', (event: MouseEvent) => {
@@ -41,7 +28,7 @@ const Canvas = () => {
       if (state.activeTool) {
         layerFacade.renderLayers();
         const toolState = ToolState.fromState(state);
-        activeTool = ToolHandlerFactory.fromToolType(state.activeTool, ctx, toolState, layerFacade);
+        activeTool = ToolHandlerFactory.fromToolType(state.activeTool, canvasFacade, toolState, layerFacade);
       }
     });
   });
@@ -64,7 +51,7 @@ const Canvas = () => {
     activeTool?.onDestroy();
 
     if (state.activeTool) {
-      activeTool = ToolHandlerFactory.fromToolType(state.activeTool, ctx, toolState, layerFacade);
+      activeTool = ToolHandlerFactory.fromToolType(state.activeTool, canvasFacade, toolState, layerFacade);
     }
   })
 

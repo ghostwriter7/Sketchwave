@@ -2,6 +2,7 @@ import type { Constructor } from '../../types/core.type.ts';
 import type { ToolState } from './ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { Logger } from '../../utils/Logger.ts';
+import type { CanvasFacade } from '../CanvasFacade.ts';
 
 export abstract class ToolHandler {
   protected abortController = new AbortController();
@@ -14,6 +15,10 @@ export abstract class ToolHandler {
 
   protected get colour(): string {
     return this.toolState.colour;
+  }
+
+  protected get ctx(): CanvasRenderingContext2D {
+    return this.canvasFacade.ctx;
   }
 
   protected get height(): number {
@@ -36,7 +41,7 @@ export abstract class ToolHandler {
     return { signal: this.abortController.signal }
   }
 
-  protected constructor(protected readonly ctx: CanvasRenderingContext2D,
+  protected constructor(protected readonly canvasFacade: CanvasFacade,
                         protected readonly toolState: ToolState,
                         protected readonly layerFacade: LayerFacade) {
     this.onInit();

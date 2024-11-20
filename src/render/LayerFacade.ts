@@ -1,12 +1,17 @@
 import type { Layer } from '../types/core.type.ts';
 import { Logger } from '../utils/Logger.ts';
+import type { CanvasFacade } from './CanvasFacade.ts';
 
 export class LayerFacade {
   private stack: Layer[] = [];
   private readonly logger = new Logger(LayerFacade)
   private snapshot: ImageData;
 
-  constructor(private readonly ctx: CanvasRenderingContext2D) {
+  private get ctx(): CanvasRenderingContext2D {
+    return this.canvasFacade.ctx;
+  }
+
+  constructor(private readonly canvasFacade: CanvasFacade) {
     this.stack.push({
       tool: LayerFacade.name,
       draw: (ctx: CanvasRenderingContext2D) => {

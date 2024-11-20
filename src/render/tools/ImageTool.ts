@@ -2,14 +2,15 @@ import { ToolHandler } from './ToolHandler.ts';
 import type { ToolState } from './ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { useGlobalContext } from '../../global-provider.tsx';
+import type { CanvasFacade } from '../CanvasFacade.ts';
 
 export class ImageTool extends ToolHandler {
   private imageBitmap: ImageBitmap | null = null;
   private updatedWidth: number | null = null;
   private updatedHeight: number | null = null;
 
-  constructor(ctx: CanvasRenderingContext2D, toolState: ToolState, layerFacade: LayerFacade) {
-    super(ctx, toolState, layerFacade);
+  constructor(canvasFacade: CanvasFacade, toolState: ToolState, layerFacade: LayerFacade) {
+    super(canvasFacade, toolState, layerFacade);
   }
 
   public override onDestroy(): void {

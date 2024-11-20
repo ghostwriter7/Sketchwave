@@ -10,7 +10,7 @@ const App = () => {
       <Menu />
       <main>
         <Resizer />
-        <Canvas/>
+        <Canvas />
       </main>
       <CanvasSummary />
     </GlobalProvider>

@@ -4,10 +4,18 @@ import type { ToolType } from '../../types/core.type.ts';
 import { Logger } from '../../utils/Logger.ts';
 import { LineThicknessPicker } from '../tools/line-thickness-picker/line-thickness-picker.tsx';
 import { ColorPicker } from '../tools/color-picker/color-picker.tsx';
+import { For } from 'solid-js';
 
 const Menu = () => {
   const logger = new Logger('Menu');
   const { state, updateState } = useGlobalContext();
+
+  const buttons: { id: ToolType, icon: string }[] = [
+    { id: 'image', icon: 'folder_open' },
+    { id: 'save', icon: 'save' },
+    { id: 'rect', icon: 'crop_square' },
+    { id: 'line', icon: 'timeline' },
+  ]
 
   const handleClick = ({ target }: MouseEvent) => {
     const element = target as HTMLElement;
@@ -20,15 +28,11 @@ const Menu = () => {
   };
 
   return <nav class="menu" onClick={handleClick}>
-    <button data-tool="image">
-      <span class="material-symbols-outlined">folder_open</span>
-    </button>
-    <button data-tool="rect">
-      <span class="material-symbols-outlined">crop_square</span>
-    </button>
-    <button data-tool="line">
-      <span class="material-symbols-outlined">timeline</span>
-    </button>
+    <For each={buttons}>
+      {({ id, icon }) => <button data-tool={id}>
+        <span class="material-symbols-outlined">{icon}</span>
+      </button>}
+    </For>
     <LineThicknessPicker/>
     <ColorPicker/>
   </nav>
