@@ -7,19 +7,26 @@ import { ToolHandlerFactory } from '../../render/tools/ToolHandlerFactory.ts';
 import './canvas.css';
 import { Logger } from '../../utils/Logger.ts';
 import { CanvasFacade } from '../../render/CanvasFacade.ts';
+import { Resizer } from '../resizer/resizer.tsx';
 
 const Canvas = () => {
-  const { state, setMousePos } = useGlobalContext();
-  let canvasRef: HTMLCanvasElement;
-  let layerFacade: LayerFacade;
-  let canvasFacade: CanvasFacade;
+  const { state, setMousePos, updateState } = useGlobalContext();
+  const canvasRef = <canvas
+    class="canvas"
+    height={state.height}
+    width={state.width}
+    onMouseLeave={() => setMousePos(null, null)}
+    onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY)}>
+  </canvas> as HTMLCanvasElement;
+
+  const canvasFacade = new CanvasFacade(canvasRef, state, updateState);
+  const layerFacade = new LayerFacade(canvasFacade);
+
   const logger = new Logger('Canvas')
 
   let activeTool: ToolHandler | null = null;
 
   onMount(() => {
-    canvasFacade = new CanvasFacade(canvasRef, state);
-    layerFacade = new LayerFacade(canvasFacade);
     layerFacade.renderLayers();
 
     document.body.addEventListener('contextmenu', (event: MouseEvent) => {
@@ -53,16 +60,12 @@ const Canvas = () => {
     if (state.activeTool) {
       activeTool = ToolHandlerFactory.fromToolType(state.activeTool, canvasFacade, toolState, layerFacade);
     }
-  })
+  });
 
-  return <canvas
-    class="canvas"
-    ref={canvasRef!}
-    height={state.height}
-    width={state.width}
-    onMouseLeave={() => setMousePos(null, null)}
-    onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY)}>
-  </canvas>
+  return <>
+    <Resizer canvasFacade={canvasFacade}/>
+    {canvasRef}
+  </>
 }
 
 export default Canvas;

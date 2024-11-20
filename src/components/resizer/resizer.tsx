@@ -1,11 +1,10 @@
-import { useGlobalContext } from '../../global-provider.tsx';
 import './resizer.css';
-import { createEffect, onMount } from 'solid-js';
+import { createEffect, onMount, type ParentProps } from 'solid-js';
 import { Point } from '../../render/primitives/Point.ts';
 import { calculateDistance } from '../../math/distance.ts';
+import type { CanvasFacade } from '../../render/CanvasFacade.ts';
 
-export const Resizer = () => {
-  const { state, updateState } = useGlobalContext();
+export const Resizer = ({canvasFacade}: ParentProps<{ canvasFacade: CanvasFacade}>) => {
   let canvasRef: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
   let indicators: Point[];
@@ -58,14 +57,14 @@ export const Resizer = () => {
   });
 
   const getOriginXAndY = () => ({
-    originX: canvasRef.width / 2 - state.width / 2,
-    originY: canvasRef.height / 2 - state.height / 2
+    originX: canvasRef.width / 2 - canvasFacade.state.width / 2,
+    originY: canvasRef.height / 2 - canvasFacade.state.height / 2
   })
 
   createEffect(() => {
     const { originX, originY } = getOriginXAndY();
     ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
-    renderIndicators(originX, originY, state.width, state.height);
+    renderIndicators(originX, originY, canvasFacade.state.width, canvasFacade.state.height);
   });
 
 
@@ -104,7 +103,7 @@ export const Resizer = () => {
       canvasRef.style.zIndex = '2';
 
       const { offsetY, offsetX } = event;
-      const { height, width } = state;
+      const { height, width } = canvasFacade.state;
       const { originX: currentOriginX, originY: currentOriginY } = getOriginXAndY();
 
       const cursorName = cursors[cursorIndex];
@@ -140,8 +139,8 @@ export const Resizer = () => {
   }
 
   const handleMouseUp = () => {
-    if (isDragging && (newWidth !== state.width || newHeight !== state.height)) {
-      updateState({ width: newWidth, height: newHeight });
+    if (isDragging && (newWidth !== canvasFacade.state.width || newHeight !== canvasFacade.state.height)) {
+      canvasFacade.updateDimensions(newWidth, newHeight);
     }
     isDragging = false;
     canvasRef.style.zIndex = 'unset';
