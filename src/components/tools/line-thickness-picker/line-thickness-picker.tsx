@@ -18,8 +18,7 @@ export const LineThicknessPicker = () => {
     const thicknesses = [1, 2, 3, 5, 7, 9, 11, 14, 17, 21];
     canvasRef.width = thicknesses.reduce((a, b) => a + b, 0) + thicknesses.length * gap;
     let currentX = gap;
-    const rgb = stringifyRgb(state.color);
-    ctx.strokeStyle = rgb;
+    ctx.strokeStyle = stringifyRgb(state.color);
     ctx.font = '15px Poiret One';
 
     for (let i = 0; i < thicknesses.length; i++) {
@@ -86,7 +85,7 @@ export const LineThicknessPicker = () => {
   }
 
   return <>
-    <button popovertarget="line-thickness">
+    <button popovertarget="line-thickness" title="Line Thickness (T)">
       <span class="material-symbols-outlined">format_line_spacing</span>
     </button>
 

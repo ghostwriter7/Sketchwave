@@ -73,7 +73,7 @@ export const OpenFileButton = () => {
     }
   }
 
-  return <button onClick={handleClick}>
+  return <button onClick={handleClick} title="Open Image (CTRL + O)">
     <span class="material-symbols-outlined">folder_open</span>
   </button>
 }

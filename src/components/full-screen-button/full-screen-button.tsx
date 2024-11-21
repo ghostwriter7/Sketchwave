@@ -10,7 +10,7 @@ export const FullScreenButton = () => {
 
   document.addEventListener('fullscreenchange', () => setActive(!!document.fullscreenElement));
 
-  return <button classList={{ active: active() }} onClick={handleClick}>
+  return <button classList={{ active: active() }} onClick={handleClick} title="Full Screen (F11)">
     <span class="material-symbols-outlined">
       screenshot_monitor
     </span>

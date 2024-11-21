@@ -13,10 +13,10 @@ const Menu = () => {
   const logger = new Logger('Menu');
   const { state, updateState } = useGlobalContext();
 
-  const buttons: { id: ToolType, icon: string }[] = [
-    { id: 'rect', icon: 'crop_square' },
-    { id: 'line', icon: 'timeline' },
-  ]
+  const buttons: { id: ToolType, icon: string; title: string }[] = [
+    { id: 'rect', icon: 'crop_square', title: 'Rectangle (R)' },
+    { id: 'line', icon: 'timeline', title: 'Line (L)' },
+  ];
 
   const handleClick = ({ target }: MouseEvent) => {
     const element = target as HTMLElement;
@@ -32,7 +32,7 @@ const Menu = () => {
     <SaveButton />
     <OpenFileButton />
     <For each={buttons}>
-      {({ id, icon }) => <button data-tool={id}>
+      {({ id, icon, title }) => <button data-tool={id} title={title}>
         <span class="material-symbols-outlined">{icon}</span>
       </button>}
     </For>

@@ -29,7 +29,7 @@ export const SaveButton = () => {
     }
   }
 
-  return <button class="save-button" onClick={handleClick}>
+  return <button class="save-button" onClick={handleClick} title="Save (CTRL + S)">
     <Show when={fileHandle()}>{fileHandle()!.name}</Show>
     <span class="material-symbols-outlined">save</span>
   </button>
