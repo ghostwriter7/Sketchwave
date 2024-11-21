@@ -41,7 +41,7 @@ const Menu = () => {
     const { code, ctrlKey } = event;
     const matchingActionKey = Object.entries(KEYBOARD_MAPPING).find(([_, value]) => {
       if (typeof value === 'string') {
-        return code === value;
+        return code === value && !ctrlKey;
       }
       return value.key === code && (!value.ctrl || ctrlKey);
     })?.[0];
