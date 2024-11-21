@@ -7,6 +7,7 @@ import { ColorPicker } from '../tools/color-picker/color-picker.tsx';
 import { For } from 'solid-js';
 import { SaveButton } from '../save-button/save-button.tsx';
 import { OpenFileButton } from '../open-file-button/open-file-button.tsx';
+import { FullScreenButton } from '../full-screen-button/full-screen-button.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -37,6 +38,7 @@ const Menu = () => {
     </For>
     <LineThicknessPicker/>
     <ColorPicker/>
+    <FullScreenButton />
   </nav>
 }
 
