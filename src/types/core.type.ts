@@ -8,6 +8,6 @@ export interface Layer {
   draw(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D): void;
 }
 
-export type ToolType = 'save' | 'rect' | 'line' | 'image';
+export type ToolType = 'rect' | 'line' | 'image';
 
 export type Constructor = new (...args: any) => any;

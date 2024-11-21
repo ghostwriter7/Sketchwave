@@ -1,0 +1,5 @@
+.save-button {
+  align-items: center;
+  display: flex;
+  gap: var(--space-md);
+}

@@ -5,6 +5,7 @@ import { Logger } from '../../utils/Logger.ts';
 import { LineThicknessPicker } from '../tools/line-thickness-picker/line-thickness-picker.tsx';
 import { ColorPicker } from '../tools/color-picker/color-picker.tsx';
 import { For } from 'solid-js';
+import { SaveButton } from '../save-button/save-button.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -12,7 +13,6 @@ const Menu = () => {
 
   const buttons: { id: ToolType, icon: string }[] = [
     { id: 'image', icon: 'folder_open' },
-    { id: 'save', icon: 'save' },
     { id: 'rect', icon: 'crop_square' },
     { id: 'line', icon: 'timeline' },
   ]
@@ -28,6 +28,7 @@ const Menu = () => {
   };
 
   return <nav class="menu" onClick={handleClick}>
+    <SaveButton />
     <For each={buttons}>
       {({ id, icon }) => <button data-tool={id}>
         <span class="material-symbols-outlined">{icon}</span>

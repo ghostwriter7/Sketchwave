@@ -1,15 +1,21 @@
 /// <reference types="vite/client" />
 
+type Type = {
+  description?: string,
+  accept: {
+    [key: string]: string[],
+  },
+}
+
 interface Window {
-  showOpenFilePicker(options:  {excludeAcceptAllOption?: boolean,
-  multiple?: boolean,
-  startIn?: string ,
-  types: {
-    description?: string,
-    accept: {
-      [key: string]: string[],
-    },
-  }[]}): Promise<FileSystemFileHandle[]>;
+  showOpenFilePicker(options: {
+    excludeAcceptAllOption?: boolean,
+    multiple?: boolean,
+    startIn?: string,
+    types: Type[]
+  }): Promise<FileSystemFileHandle[]>;
+
+  showSaveFilePicker(options: { suggestedName: string; types: Type[] }): Promise<FileSystemFileHandle>;
 }
 
 interface String {
