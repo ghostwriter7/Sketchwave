@@ -29,16 +29,17 @@ const Menu = () => {
   };
 
   return <nav class="menu" onClick={handleClick}>
-    <SaveButton />
-    <OpenFileButton />
+    <SaveButton/>
+    <OpenFileButton/>
     <For each={buttons}>
-      {({ id, icon, title }) => <button data-tool={id} title={title}>
-        <span class="material-symbols-outlined">{icon}</span>
-      </button>}
+      {({ id, icon, title }) =>
+        <button classList={{ active: state.activeTool === id }} data-tool={id} title={title}>
+          <span class="material-symbols-outlined">{icon}</span>
+        </button>}
     </For>
     <LineThicknessPicker/>
     <ColorPicker/>
-    <FullScreenButton />
+    <FullScreenButton/>
   </nav>
 }
 

@@ -1,9 +1,10 @@
 .canvas-summary {
   align-items: center;
   background-color: var(--bg-secondary);
-  color: var(--clr-primary);
+  color: var(--clr-secondary);
   display: flex;
   font-size: 1em;
+  font-weight: 600;
   gap: var(--space-md);
   padding: var(--space-sm) var(--space-md);
 

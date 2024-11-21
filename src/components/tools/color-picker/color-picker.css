@@ -21,11 +21,18 @@
   }
 }
 
-.toggle {
-  --size: 30px;
-  cursor: pointer;
-  border-radius: 2px;
-  background:  #141313;
+input[type="color"] {
+  --size: 36px;
   width: var(--size);
   height: var(--size);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  appearance: none;
+  padding: 4px;
+  -webkit-appearance: none;
+
+  &::-webkit-color-swatch {
+    border-radius: var(--radius);
+  }
 }

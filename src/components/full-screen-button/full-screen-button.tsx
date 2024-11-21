@@ -1,5 +1,4 @@
 import { createSignal } from 'solid-js';
-import './full-screen-button.css';
 
 export const FullScreenButton = () => {
   const [active, setActive] = createSignal(!!document.fullscreenElement);

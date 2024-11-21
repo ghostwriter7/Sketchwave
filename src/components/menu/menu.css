@@ -1,5 +1,8 @@
 .menu {
   align-items: center;
+  background: var(--bg-secondary);
   display: flex;
   flex-wrap: wrap;
+  gap: var(--space-md);
+  padding: var(--space-sm);
 }
