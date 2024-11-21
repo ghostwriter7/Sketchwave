@@ -6,11 +6,11 @@ import type { ToolHandler } from '../../render/tools/ToolHandler.ts';
 import { ToolHandlerFactory } from '../../render/tools/ToolHandlerFactory.ts';
 import './canvas.css';
 import { Logger } from '../../utils/Logger.ts';
-import { CanvasFacade } from '../../render/CanvasFacade.ts';
 import { Resizer } from '../resizer/resizer.tsx';
 
 const Canvas = () => {
-  const { state, setMousePos, updateState } = useGlobalContext();
+  const { state, setCtx, setMousePos } = useGlobalContext();
+
   const canvasRef = <canvas
     class="canvas"
     height={state.height}
@@ -19,8 +19,10 @@ const Canvas = () => {
     onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY)}>
   </canvas> as HTMLCanvasElement;
 
-  const canvasFacade = new CanvasFacade(canvasRef, state, updateState);
-  const layerFacade = new LayerFacade(canvasFacade);
+  const ctx = canvasRef.getContext('2d')!
+  setCtx(ctx);
+
+  const layerFacade = new LayerFacade(state);
 
   const logger = new Logger('Canvas')
 
@@ -35,7 +37,7 @@ const Canvas = () => {
       if (state.activeTool) {
         layerFacade.renderLayers();
         const toolState = ToolState.fromState(state);
-        activeTool = ToolHandlerFactory.fromToolType(state.activeTool, canvasFacade, toolState, layerFacade);
+        activeTool = ToolHandlerFactory.fromToolType(state.activeTool, toolState, layerFacade);
       }
     });
   });
@@ -58,12 +60,12 @@ const Canvas = () => {
     activeTool?.onDestroy();
 
     if (state.activeTool) {
-      activeTool = ToolHandlerFactory.fromToolType(state.activeTool, canvasFacade, toolState, layerFacade);
+      activeTool = ToolHandlerFactory.fromToolType(state.activeTool, toolState, layerFacade);
     }
   });
 
   return <>
-    <Resizer canvasFacade={canvasFacade}/>
+    <Resizer />
     {canvasRef}
   </>
 }

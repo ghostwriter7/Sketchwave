@@ -1,12 +1,15 @@
 import './resizer.css';
-import { createEffect, onMount, type ParentProps } from 'solid-js';
+import { createEffect, onMount } from 'solid-js';
 import { Point } from '../../render/primitives/Point.ts';
 import { calculateDistance } from '../../math/distance.ts';
-import type { CanvasFacade } from '../../render/CanvasFacade.ts';
+import { useGlobalContext } from '../../global-provider.tsx';
 
-export const Resizer = ({canvasFacade}: ParentProps<{ canvasFacade: CanvasFacade}>) => {
-  let canvasRef: HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2D;
+export const Resizer = () => {
+  const { state, setDimensions } = useGlobalContext();
+
+  const canvasRef = <canvas class="resizer" width={innerWidth - 100} height={innerHeight - 100} /> as HTMLCanvasElement;
+  const ctx = canvasRef.getContext('2d')!;
+
   let indicators: Point[];
 
   const cursors = ['nw-resize', 'n-resize', 'ne-resize', 'w-resize', 'e-resize', 'sw-resize', 's-resize', 'se-resize'] as const;
@@ -52,19 +55,15 @@ export const Resizer = ({canvasFacade}: ParentProps<{ canvasFacade: CanvasFacade
       .forEach(({ x, y }) => ctx.fillRect(x, y, squareDimension, squareDimension));
   }
 
-  onMount(() => {
-    ctx = canvasRef.getContext('2d')!;
-  });
-
   const getOriginXAndY = () => ({
-    originX: canvasRef.width / 2 - canvasFacade.state.width / 2,
-    originY: canvasRef.height / 2 - canvasFacade.state.height / 2
+    originX: canvasRef.width / 2 - state.width / 2,
+    originY: canvasRef.height / 2 - state.height / 2
   })
 
   createEffect(() => {
     const { originX, originY } = getOriginXAndY();
     ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
-    renderIndicators(originX, originY, canvasFacade.state.width, canvasFacade.state.height);
+    renderIndicators(originX, originY, state.width, state.height);
   });
 
 
@@ -103,7 +102,7 @@ export const Resizer = ({canvasFacade}: ParentProps<{ canvasFacade: CanvasFacade
       canvasRef.style.zIndex = '2';
 
       const { offsetY, offsetX } = event;
-      const { height, width } = canvasFacade.state;
+      const { height, width } = state;
       const { originX: currentOriginX, originY: currentOriginY } = getOriginXAndY();
 
       const cursorName = cursors[cursorIndex];
@@ -139,21 +138,18 @@ export const Resizer = ({canvasFacade}: ParentProps<{ canvasFacade: CanvasFacade
   }
 
   const handleMouseUp = () => {
-    if (isDragging && (newWidth !== canvasFacade.state.width || newHeight !== canvasFacade.state.height)) {
-      canvasFacade.updateDimensions(newWidth, newHeight);
+    if (isDragging && (newWidth !== state.width || newHeight !== state.height)) {
+      setDimensions(newWidth, newHeight);
     }
     isDragging = false;
     canvasRef.style.zIndex = 'unset';
   }
 
-  return <canvas
-    ref={canvasRef!}
-    class="resizer"
-    width={innerWidth - 100}
-    height={innerHeight - 100}
-    onMouseMove={handleMouseMove}
-    onMouseDown={handleMouseDown}
-    onMouseUp={handleMouseUp}
-  >
-  </canvas>
+  onMount(() => {
+    canvasRef.addEventListener('mousemove', handleMouseMove);
+    canvasRef.addEventListener('mouseup', handleMouseUp);
+    canvasRef.addEventListener('mousedown', handleMouseDown);
+  });
+
+  return canvasRef;
 }

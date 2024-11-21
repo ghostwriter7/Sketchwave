@@ -5,6 +5,7 @@ import type { ToolType } from './types/core.type.ts';
 export interface GlobalContextState {
   activeTool?: ToolType;
   color: [number, number, number];
+  ctx: CanvasRenderingContext2D | null;
   currentMouseX: number | null;
   currentMouseY: number | null;
   height: number;
@@ -13,6 +14,8 @@ export interface GlobalContextState {
 }
 
 interface GlobalContextActions {
+  setCtx(ctx: CanvasRenderingContext2D): void;
+  setDimensions(width: number, height: number): void;
   setMousePos<T extends number | null>(x: T, y: T): void;
   state: GlobalContextState;
   updateState: (state: Partial<GlobalContextState>) => void;
@@ -23,15 +26,23 @@ const GlobalContext = createContext<GlobalContextActions>();
 export const GlobalProvider = (props: ParentProps) => {
   const [state, setState] = createStore<GlobalContextState>({
     color: [0, 0, 0],
+    ctx: null,
     currentMouseX: null,
     currentMouseY: null,
     height: 300,
     lineWidth: 1,
     width: 500
   });
-  const updateState = (state: Partial<GlobalContextState>) => setState({ ...state });
-  const setMousePos = <T extends number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y })
-  return <GlobalContext.Provider value={{ setMousePos, updateState, state }}>{props.children}</GlobalContext.Provider>
+
+  const facade: GlobalContextActions = {
+    state,
+    setCtx: (ctx: CanvasRenderingContext2D) => setState('ctx', ctx),
+    setMousePos: <T extends number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y }),
+    setDimensions: (width: number, height: number) => setState({ width, height }),
+    updateState: (state: Partial<GlobalContextState>) => setState({ ...state })
+  }
+
+  return <GlobalContext.Provider value={{ ...facade }}>{props.children}</GlobalContext.Provider>
 }
 
 export const useGlobalContext = (): GlobalContextActions => useContext(GlobalContext)!;

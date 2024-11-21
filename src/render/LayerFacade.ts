@@ -1,17 +1,17 @@
 import type { Layer } from '../types/core.type.ts';
 import { Logger } from '../utils/Logger.ts';
-import type { CanvasFacade } from './CanvasFacade.ts';
+import type { GlobalContextState } from '../global-provider.tsx';
 
 export class LayerFacade {
   private stack: Layer[] = [];
   private readonly logger = new Logger(LayerFacade)
   private snapshot: ImageData;
 
-  private get ctx(): CanvasRenderingContext2D {
-    return this.canvasFacade.ctx;
+  public get ctx(): CanvasRenderingContext2D {
+    return this.state.ctx!;
   }
 
-  constructor(private readonly canvasFacade: CanvasFacade) {
+  constructor(private readonly state: GlobalContextState) {
     this.stack.push({
       tool: LayerFacade.name,
       draw: (ctx: CanvasRenderingContext2D) => {

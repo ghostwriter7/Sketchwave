@@ -2,7 +2,6 @@ import { ToolHandler } from './ToolHandler.ts';
 import type { ToolState } from './ToolState.ts';
 import { Point } from '../primitives/Point.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
-import type { CanvasFacade } from '../CanvasFacade.ts';
 
 /**
  * A Line Tool is used for drawing straight lines between points
@@ -13,11 +12,10 @@ export class LineTool extends ToolHandler {
   private previewOnlyPoint: Point | null = null;
 
   constructor(
-    canvasFacade: CanvasFacade,
     toolState: ToolState,
     layerFacade: LayerFacade
   ) {
-    super(canvasFacade, toolState, layerFacade);
+    super(toolState, layerFacade);
   }
 
   public tryCreateLayer(): void {
