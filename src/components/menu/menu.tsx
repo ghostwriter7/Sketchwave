@@ -6,13 +6,13 @@ import { LineThicknessPicker } from '../tools/line-thickness-picker/line-thickne
 import { ColorPicker } from '../tools/color-picker/color-picker.tsx';
 import { For } from 'solid-js';
 import { SaveButton } from '../save-button/save-button.tsx';
+import { OpenFileButton } from '../open-file-button/open-file-button.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
   const { state, updateState } = useGlobalContext();
 
   const buttons: { id: ToolType, icon: string }[] = [
-    { id: 'image', icon: 'folder_open' },
     { id: 'rect', icon: 'crop_square' },
     { id: 'line', icon: 'timeline' },
   ]
@@ -29,6 +29,7 @@ const Menu = () => {
 
   return <nav class="menu" onClick={handleClick}>
     <SaveButton />
+    <OpenFileButton />
     <For each={buttons}>
       {({ id, icon }) => <button data-tool={id}>
         <span class="material-symbols-outlined">{icon}</span>

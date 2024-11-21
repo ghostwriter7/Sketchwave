@@ -4,22 +4,20 @@ import type { ToolState } from './ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { LineTool } from './LineTool.ts';
 import { RectTool } from './RectTool.ts';
-import { ImageTool } from './ImageTool.ts';
 
 export class ToolHandlerFactory {
-  private static readonly toolKeyToTypeMap: Record<ToolType, new (ctx: CanvasRenderingContext2D, toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
-    image: ImageTool,
+  private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
     line: LineTool,
     rect: RectTool,
   }
 
-  public static fromToolType(toolType: ToolType, ctx: CanvasRenderingContext2D, toolState: ToolState, layerFacade: LayerFacade): ToolHandler {
+  public static fromToolType(toolType: ToolType, toolState: ToolState, layerFacade: LayerFacade): ToolHandler {
     const type = this.toolKeyToTypeMap[toolType]
 
     if (!type) {
       throw new Error(`Unsupported tool type: ${toolType}`);
     }
 
-    return new type(ctx, toolState, layerFacade);
+    return new type(toolState, layerFacade);
   }
 }
