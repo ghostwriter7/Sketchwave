@@ -9,6 +9,15 @@ import { SaveButton } from '../save-button/save-button.tsx';
 import { OpenFileButton } from '../open-file-button/open-file-button.tsx';
 import { FullScreenButton } from '../full-screen-button/full-screen-button.tsx';
 
+const KEYBOARD_MAPPING = {
+  rect: 'KeyR',
+  line: 'KeyL',
+  'color-picker-button': 'KeyC',
+  'line-thickness-button': 'KeyT',
+  'save-file-button': { key: 'KeyS', ctrl: true },
+  'open-file-button': { key: 'KeyO', ctrl: true }
+}
+
 const Menu = () => {
   const logger = new Logger('Menu');
   const { state, updateState } = useGlobalContext();
@@ -27,6 +36,26 @@ const Menu = () => {
       updateState({ activeTool: toolId as ToolType });
     }
   };
+
+  document.addEventListener('keydown', (event) => {
+    const { code, ctrlKey } = event;
+    const matchingActionKey = Object.entries(KEYBOARD_MAPPING).find(([_, value]) => {
+      if (typeof value === 'string') {
+        return code === value;
+      }
+      return value.key === code && (!value.ctrl || ctrlKey);
+    })?.[0];
+
+    if (matchingActionKey) {
+      event.preventDefault();
+
+      if (buttons.some((button) => button.id === matchingActionKey)) {
+        updateState({ activeTool: matchingActionKey as ToolType });
+      } else {
+        document.getElementById(matchingActionKey)?.click();
+      }
+    }
+  });
 
   return <nav class="menu" onClick={handleClick}>
     <SaveButton/>

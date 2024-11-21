@@ -85,7 +85,7 @@ export const LineThicknessPicker = () => {
   }
 
   return <>
-    <button popovertarget="line-thickness" title="Line Thickness (T)">
+    <button id="line-thickness-button" popovertarget="line-thickness" title="Line Thickness (T)">
       <span class="material-symbols-outlined">format_line_spacing</span>
     </button>
 
