@@ -1,18 +1,45 @@
 import { ToolHandler } from './ToolHandler.ts';
 import type { ToolState } from './ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
+import { Point } from '../primitives/Point.ts';
 
 export class EraserTool extends ToolHandler {
+  private isErasing = false;
+  private points = [] as Point[];
+
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
   }
 
   public tryCreateLayer(): void {
-    // throw new Error('Method not implemented.');
+    if (this.points.length === 0) return;
+
+    const points = this.points;
+
+    this.layerFacade.pushLayer({
+      tool: this.name,
+      draw: (ctx: CanvasRenderingContext2D) => {
+        ctx.fillStyle = 'white';
+        points.forEach(({ x, y }) => ctx.fillRect(x, y, 10, 10));
+      }
+    });
   }
 
   protected initializeListeners(): void {
-    // throw new Error('Method not implemented.');
+    this.onMouseDown(() => this.isErasing = true);
+
+    this.onMouseUp(() => {
+      this.isErasing = false;
+      this.tryCreateLayer();
+      this.points = [];
+    });
+
+    this.onMove((event) => {
+      if (!this.isErasing) return;
+      const { offsetX, offsetY } = event;
+      this.points.push(new Point(offsetX, offsetY));
+      this.renderPreview();
+    })
   }
 
   protected async getCustomCursor(): Promise<string> {
@@ -28,5 +55,13 @@ export class EraserTool extends ToolHandler {
     const blob = await ctx.canvas.convertToBlob();
     const objectUrl = URL.createObjectURL(blob);
     return `url('${objectUrl}'), auto`;
+  }
+
+  protected renderPreview(): void {
+    super.renderPreview();
+    this.ctx.fillStyle = 'white';
+    this.points.forEach(({ x, y }) => {
+      this.ctx.fillRect(x, y, 10, 10)
+    });
   }
 }

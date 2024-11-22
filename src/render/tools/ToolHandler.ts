@@ -3,6 +3,8 @@ import type { ToolState } from './ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { Logger } from '../../utils/Logger.ts';
 
+type EventHandler = (event: MouseEvent) => void;
+
 export abstract class ToolHandler {
   protected abortController = new AbortController();
 
@@ -79,16 +81,24 @@ export abstract class ToolHandler {
    */
   protected abstract initializeListeners(): void;
 
-  protected onClick(handler: (event: MouseEvent) => void): void {
+  protected onClick(handler: EventHandler): void {
     this.canvas.addEventListener('click', handler, this.eventListenerOptions);
   }
 
-  protected onDoubleClick(handler: (event: MouseEvent) => void): void {
+  protected onDoubleClick(handler: EventHandler): void {
     this.canvas.addEventListener('dblclick', handler, this.eventListenerOptions);
   }
 
-  protected onMove(handler: (event: MouseEvent) => void): void {
+  protected onMove(handler: EventHandler): void {
     this.canvas.addEventListener('mousemove', handler, this.eventListenerOptions);
+  }
+
+  protected onMouseDown(handler: EventHandler): void {
+    this.canvas.addEventListener('mousedown', handler, this.eventListenerOptions);
+  }
+
+  protected onMouseUp(handler: EventHandler): void {
+    this.canvas.addEventListener('mouseup', handler, this.eventListenerOptions);
   }
 
   /**
