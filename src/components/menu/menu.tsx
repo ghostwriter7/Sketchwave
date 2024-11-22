@@ -10,6 +10,7 @@ import { OpenFileButton } from '../open-file-button/open-file-button.tsx';
 import { FullScreenButton } from '../full-screen-button/full-screen-button.tsx';
 
 const KEYBOARD_MAPPING = {
+  eraser: 'KeyE',
   rect: 'KeyR',
   line: 'KeyL',
   'color-picker-button': 'KeyC',
@@ -25,6 +26,7 @@ const Menu = () => {
   const buttons: { id: ToolType, icon: string; title: string }[] = [
     { id: 'rect', icon: 'crop_square', title: 'Rectangle (R)' },
     { id: 'line', icon: 'timeline', title: 'Line (L)' },
+    { id: 'eraser', icon: 'ink_eraser', title: 'Eraser (E)' },
   ];
 
   const handleClick = ({ target }: MouseEvent) => {

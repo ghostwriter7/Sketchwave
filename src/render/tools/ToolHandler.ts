@@ -46,18 +46,6 @@ export abstract class ToolHandler {
   }
 
   /**
-   * A handler to be called externally upon receiving a user's input to cancel
-   * the ongoing drawing action.
-   */
-  public cancel(): void {
-    this.logger.log('Cancelling the action.');
-    this.tryCreateLayer();
-    this.layerFacade.renderLayers();
-    this.reset();
-    this.initializeListeners();
-  }
-
-  /**
    * A hook to clean up subscriptions and listeners.
    * Called by a rendering system prior to activating a different tool.
    */
@@ -65,15 +53,17 @@ export abstract class ToolHandler {
     this.logger.log('Destroying an instance.');
     this.abortController?.abort(`Destroying an instance.`);
     this.tryCreateLayer();
+    this.canvas.style.cursor = 'pointer';
   }
 
   /**
    * A hook to establish canvas' listeners and tool's logic for drawing.
    * Called by a rendering system upon activating a tool.
    */
-  protected onInit(): void {
+  protected async onInit(): Promise<void> {
     this.logger.log('Initializing an instance.');
     this.initializeListeners();
+    this.canvas.style.cursor = await this.getCustomCursor();
   }
 
   /**
@@ -114,5 +104,14 @@ export abstract class ToolHandler {
     this.logger.log('Resetting an instance.');
     this.abortController.abort();
     this.abortController = new AbortController();
+  }
+
+  /**
+   *
+   * Should return a Data URL representing a custom cursor for a given tool
+   * @protected
+   */
+  protected async getCustomCursor(): Promise<string> {
+    return Promise.resolve('pointer');
   }
 }

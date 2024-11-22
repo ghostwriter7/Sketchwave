@@ -4,9 +4,11 @@ import type { ToolState } from './ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { LineTool } from './LineTool.ts';
 import { RectTool } from './RectTool.ts';
+import { EraserTool } from './EraserTool.ts';
 
 export class ToolHandlerFactory {
   private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
+    eraser: EraserTool,
     line: LineTool,
     rect: RectTool,
   }
