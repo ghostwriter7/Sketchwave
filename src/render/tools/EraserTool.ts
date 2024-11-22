@@ -6,22 +6,25 @@ import { Point } from '../primitives/Point.ts';
 export class EraserTool extends ToolHandler {
   private isErasing = false;
   private points = [] as Point[];
+  private objectUrl!: string;
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
+  }
+
+  public override onDestroy() {
+    super.onDestroy();
+    URL.revokeObjectURL(this.objectUrl);
   }
 
   public tryCreateLayer(): void {
     if (this.points.length === 0) return;
 
     const points = this.points;
-
+    const draw = (ctx: CanvasRenderingContext2D): void => this.drawLines(ctx, points);
     this.layerFacade.pushLayer({
       tool: this.name,
-      draw: (ctx: CanvasRenderingContext2D) => {
-        ctx.fillStyle = 'white';
-        points.forEach(({ x, y }) => ctx.fillRect(x, y, 10, 10));
-      }
+      draw
     });
   }
 
@@ -53,15 +56,26 @@ export class EraserTool extends ToolHandler {
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
     const blob = await ctx.canvas.convertToBlob();
-    const objectUrl = URL.createObjectURL(blob);
-    return `url('${objectUrl}'), auto`;
+    this.objectUrl = URL.createObjectURL(blob);
+    return `url('${this.objectUrl}'), auto`;
   }
 
   protected renderPreview(): void {
     super.renderPreview();
-    this.ctx.fillStyle = 'white';
-    this.points.forEach(({ x, y }) => {
-      this.ctx.fillRect(x, y, 10, 10)
+    this.drawLines(this.ctx, this.points);
+  }
+
+  private drawLines(ctx: CanvasRenderingContext2D, points: Point[]): void {
+    if (this.points.length <= 1) return;
+
+    ctx.strokeStyle = 'white';
+    ctx.beginPath();
+    ctx.lineWidth = 10;
+    ctx.lineJoin = 'bevel';
+    ctx.moveTo(points[0].x + 5, points[0].y + 5);
+    points.slice(1).forEach(({ x, y }) => {
+      ctx.lineTo(x + 5, y + 5);
     });
+    ctx.stroke();
   }
 }
