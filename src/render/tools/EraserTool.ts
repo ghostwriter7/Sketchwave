@@ -8,6 +8,13 @@ export class EraserTool extends ToolHandler {
   private points = [] as Point[];
   private objectUrl!: string;
 
+  private currentPath: Path2D | null = null;
+  private lastPointIndex = 0;
+
+  private readonly WIDTH = 10;
+  private readonly HALF_WIDTH = 5;
+  private readonly COLOR = 'white';
+
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
   }
@@ -28,21 +35,42 @@ export class EraserTool extends ToolHandler {
     });
   }
 
-  protected initializeListeners(): void {
-    this.onMouseDown(() => this.isErasing = true);
+  public override async onInit(): Promise<void> {
+    await super.onInit();
 
-    this.onMouseUp(() => {
-      this.isErasing = false;
-      this.tryCreateLayer();
-      this.points = [];
+    this.ctx.strokeStyle = this.COLOR;
+    this.ctx.fillStyle = this.COLOR;
+    this.ctx.lineWidth = this.WIDTH;
+    this.ctx.lineJoin = 'bevel';
+  }
+
+  protected initializeListeners(): void {
+
+    this.onMouseDown(({ offsetX, offsetY }) => {
+      this.points.push(new Point(offsetX, offsetY));
+      this.currentPath = new Path2D();
+      this.currentPath.moveTo(offsetX + this.HALF_WIDTH, offsetY + this.HALF_WIDTH);
+      this.isErasing = true
+      this.renderPreview();
     });
 
-    this.onMove((event) => {
+    this.onMouseUp(() => this.resetAndSave());
+    this.onMouseLeave(() => this.resetAndSave());
+
+    this.onMove(({ offsetX, offsetY }) => {
       if (!this.isErasing) return;
-      const { offsetX, offsetY } = event;
       this.points.push(new Point(offsetX, offsetY));
       this.renderPreview();
-    })
+    });
+  }
+
+  private resetAndSave(): void {
+    this.isErasing = false;
+    if (this.points.length === 0) return;
+    this.tryCreateLayer();
+    this.currentPath = null;
+    this.points = [];
+    this.lastPointIndex = 0;
   }
 
   protected async getCustomCursor(): Promise<string> {
@@ -62,20 +90,32 @@ export class EraserTool extends ToolHandler {
 
   protected renderPreview(): void {
     super.renderPreview();
-    this.drawLines(this.ctx, this.points);
+
+    if (this.points.length === 1) {
+      this.ctx.fillRect(this.points[0].x, this.points[0].y, this.WIDTH, this.WIDTH);
+    } else {
+      this.currentPath!.lineTo(this.points[this.lastPointIndex + 1].x + this.HALF_WIDTH, this.points[this.lastPointIndex + 1].y + this.HALF_WIDTH);
+      this.lastPointIndex++;
+      this.ctx.stroke(this.currentPath!);
+    }
   }
 
   private drawLines(ctx: CanvasRenderingContext2D, points: Point[]): void {
-    if (this.points.length <= 1) return;
+    if (points.length < 1) return;
 
-    ctx.strokeStyle = 'white';
-    ctx.beginPath();
-    ctx.lineWidth = 10;
-    ctx.lineJoin = 'bevel';
-    ctx.moveTo(points[0].x + 5, points[0].y + 5);
-    points.slice(1).forEach(({ x, y }) => {
-      ctx.lineTo(x + 5, y + 5);
-    });
-    ctx.stroke();
+    if (points.length === 1) {
+      ctx.fillStyle = this.COLOR;
+      ctx.fillRect(points[0].x, points[0].y, this.WIDTH, this.WIDTH);
+    } else {
+      ctx.strokeStyle = this.COLOR;
+      ctx.beginPath();
+      ctx.lineWidth = this.WIDTH;
+      ctx.lineJoin = 'bevel';
+      ctx.moveTo(points[0].x + this.HALF_WIDTH, points[0].y + this.HALF_WIDTH);
+      points.slice(1).forEach(({ x, y }) => {
+        ctx.lineTo(x + this.HALF_WIDTH, y + this.HALF_WIDTH);
+      });
+      ctx.stroke();
+    }
   }
 }

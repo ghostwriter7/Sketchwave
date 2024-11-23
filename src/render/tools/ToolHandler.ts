@@ -101,6 +101,10 @@ export abstract class ToolHandler {
     this.canvas.addEventListener('mouseup', handler, this.eventListenerOptions);
   }
 
+  protected onMouseLeave(handler: EventHandler): void {
+    this.canvas.addEventListener('mouseleave', handler, this.eventListenerOptions);
+  }
+
   /**
    * Renders the current result of work done by the tool onto the canvas.
    * @protected
