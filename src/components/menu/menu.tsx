@@ -11,7 +11,7 @@ import { FullScreenButton } from '../full-screen-button/full-screen-button.tsx';
 import { BrushPicker } from '../brush-picker/brush-picker.tsx';
 
 const KEYBOARD_MAPPING = {
-  brushes: 'KeyB',
+  'brushes-picker': 'KeyB',
   eraser: 'KeyE',
   rect: 'KeyR',
   line: 'KeyL',

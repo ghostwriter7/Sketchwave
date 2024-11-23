@@ -43,12 +43,21 @@ export const BrushPicker = () => {
     }
   ]
 
+  let popoverRef: HTMLElement;
+
+  const handleClick = (event: MouseEvent) => {
+    if ((event.target as HTMLElement).getAttribute('data-tool')) {
+      popoverRef.hidePopover();
+    }
+  }
+
   return <div class="wrapper">
-    <button classList={{ active: brushes.some((brush) => brush.id == state.activeTool)}} popovertarget="brushes" title="Brushes">
+    <button id="brushes-picker" classList={{ active: brushes.some((brush) => brush.id == state.activeTool) }}
+            popovertarget="brushes" title="Brushes (B)">
       <span class="material-symbols-outlined">brush</span>
     </button>
-    <Card id="brushes" title="Brushes" popover="auto">
-      <ul class="dropdown">
+    <Card ref={popoverRef!} id="brushes" title="Brushes" popover="auto">
+      <ul class="dropdown" onClick={handleClick}>
         <For each={brushes}>
           {({ id, label }) =>
             <li data-tool={id} classList={{ active: state.activeTool === id }} id={id}>{label}</li>}
