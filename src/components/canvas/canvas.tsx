@@ -55,17 +55,16 @@ const Canvas = () => {
   });
 
   createEffect(() => {
-    const toolState = ToolState.fromState(state);
-
     activeTool?.onDestroy();
 
     if (state.activeTool) {
+      const toolState = ToolState.fromState(state);
       activeTool = ToolHandlerFactory.fromToolType(state.activeTool, toolState, layerFacade);
     }
   });
 
   return <>
-    <Resizer />
+    <Resizer/>
     {canvasRef}
   </>
 }
