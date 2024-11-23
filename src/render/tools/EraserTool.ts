@@ -6,7 +6,6 @@ import { Point } from '../primitives/Point.ts';
 export class EraserTool extends ToolHandler {
   private isErasing = false;
   private points = [] as Point[];
-  private objectUrl!: string;
 
   private currentPath: Path2D | null = null;
   private lastPointIndex = 0;
@@ -17,11 +16,6 @@ export class EraserTool extends ToolHandler {
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
-  }
-
-  public override onDestroy() {
-    super.onDestroy();
-    URL.revokeObjectURL(this.objectUrl);
   }
 
   public tryCreateLayer(): void {
@@ -84,8 +78,8 @@ export class EraserTool extends ToolHandler {
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
     const blob = await ctx.canvas.convertToBlob();
-    this.objectUrl = URL.createObjectURL(blob);
-    return `url('${this.objectUrl}'), auto`;
+    this.cursorObjectUrl = URL.createObjectURL(blob);
+    return `url('${this.cursorObjectUrl}'), auto`;
   }
 
   protected renderPreview(): void {

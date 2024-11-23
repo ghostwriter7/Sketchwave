@@ -7,14 +7,14 @@ export const BrushPicker = () => {
   const { state } = useGlobalContext();
   const brushes = [
     {
-      // Random dots on a given arc area
-      'label': 'Airbrush',
-      'id': 'airbrush'
-    },
-    {
       // Simple arcs
       'label': 'Brush',
       'id': 'brush'
+    },
+    {
+      // Random dots on a given arc area
+      'label': 'Airbrush',
+      'id': 'airbrush'
     },
     {
       // Short line at 45 degrees

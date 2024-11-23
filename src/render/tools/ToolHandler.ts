@@ -7,6 +7,7 @@ type EventHandler = (event: MouseEvent) => void;
 
 export abstract class ToolHandler {
   protected abortController = new AbortController();
+  protected cursorObjectUrl?: string
 
   protected readonly logger = new Logger(this.constructor as Constructor);
 
@@ -56,6 +57,7 @@ export abstract class ToolHandler {
     this.abortController?.abort(`Destroying an instance.`);
     this.tryCreateLayer();
     this.canvas.style.cursor = 'pointer';
+    if (this.cursorObjectUrl) URL.revokeObjectURL(this.cursorObjectUrl);
   }
 
   /**
