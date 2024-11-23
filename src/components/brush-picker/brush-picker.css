@@ -1,0 +1,12 @@
+.wrapper {
+  anchor-name: --brushesWrapper;
+  position: relative;
+}
+
+#brushes {
+  position-anchor: --brushesWrapper;
+  position: absolute;
+  inset: unset;
+  top: anchor(bottom);
+  left: anchor(left);
+}

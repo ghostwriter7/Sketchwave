@@ -8,8 +8,10 @@ import { For } from 'solid-js';
 import { SaveButton } from '../save-button/save-button.tsx';
 import { OpenFileButton } from '../open-file-button/open-file-button.tsx';
 import { FullScreenButton } from '../full-screen-button/full-screen-button.tsx';
+import { BrushPicker } from '../brush-picker/brush-picker.tsx';
 
 const KEYBOARD_MAPPING = {
+  brushes: 'KeyB',
   eraser: 'KeyE',
   rect: 'KeyR',
   line: 'KeyL',
@@ -68,6 +70,7 @@ const Menu = () => {
           <span class="material-symbols-outlined">{icon}</span>
         </button>}
     </For>
+    <BrushPicker />
     <LineThicknessPicker/>
     <ColorPicker/>
     <FullScreenButton/>

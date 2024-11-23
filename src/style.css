@@ -90,3 +90,36 @@ main {
   position: relative;
   width: 100%;
 }
+
+ul {
+  padding: 0;
+  margin-block: 0;
+
+  &.dropdown {
+    li {
+      background: var(--bg-secondary);
+      color: var(--clr-secondary);
+      padding: 2px 4px;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    li:hover {
+      color: var(--clr-hover);
+      background: var(--bg-hover);
+    }
+
+    li.active {
+      color: var(--clr-active);
+      background: var(--bg-active);
+    }
+
+    li:not(:last-child) {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+li {
+  list-style: none;
+}
