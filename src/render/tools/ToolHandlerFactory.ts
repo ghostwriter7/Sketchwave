@@ -1,14 +1,16 @@
 import type { ToolType } from '../../types/core.type.ts';
-import type { ToolHandler } from './ToolHandler.ts';
+import type { ToolHandler } from './abstract/ToolHandler.ts';
 import type { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { LineTool } from './LineTool.ts';
 import { RectTool } from './RectTool.ts';
 import { EraserTool } from './EraserTool.ts';
 import { BrushTool } from './brushes/BrushTool.ts';
+import { AirbrushTool } from './brushes/AirbrushTool.ts';
 
 export class ToolHandlerFactory {
   private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
+    airbrush: AirbrushTool,
     brush: BrushTool,
     eraser: EraserTool,
     line: LineTool,

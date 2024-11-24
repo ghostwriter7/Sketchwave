@@ -1,14 +1,15 @@
-import type { Constructor } from '../../types/core.type.ts';
-import type { ToolState } from './models/ToolState.ts';
-import type { LayerFacade } from '../LayerFacade.ts';
-import { Logger } from '../../utils/Logger.ts';
-import { applyToolState } from './helpers/apply-tool-state.ts';
+import type { Constructor } from '../../../types/core.type.ts';
+import type { ToolState } from '../models/ToolState.ts';
+import type { LayerFacade } from '../../LayerFacade.ts';
+import { Logger } from '../../../utils/Logger.ts';
+import { applyToolState } from '../helpers/apply-tool-state.ts';
 
 type EventHandler = (event: MouseEvent) => void;
 
 export abstract class ToolHandler {
   protected abortController = new AbortController();
   protected cursorObjectUrl?: string
+  protected halfSize: number;
 
   protected readonly logger = new Logger(this.constructor as Constructor);
 
@@ -29,11 +30,15 @@ export abstract class ToolHandler {
   }
 
   protected get lineWidth(): number {
-    return this.toolState.lineWidth;
+    return this.toolState.size;
   }
 
   protected get name(): string {
     return this.constructor.name.toTitleCase();
+  }
+
+  protected get size(): number {
+    return this.toolState.size;
   }
 
   protected get width(): number {
@@ -46,6 +51,7 @@ export abstract class ToolHandler {
 
   protected constructor(protected readonly toolState: ToolState,
                         protected readonly layerFacade: LayerFacade) {
+    this.halfSize = this.toolState.size / 2;
     this.layerFacade.ctx.save();
     applyToolState(this.layerFacade.ctx, toolState);
     this.onInit();

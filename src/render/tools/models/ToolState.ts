@@ -1,7 +1,7 @@
 import type { GlobalContextState } from '../../../global-provider.tsx';
 
-export type ToolState = Pick<CanvasRenderingContext2D, | 'lineCap' | 'lineJoin' | 'lineWidth'>
-  & { fillStyle: string; strokeStyle: string };
+export type ToolState = Pick<CanvasRenderingContext2D, | 'lineCap' | 'lineJoin'>
+  & { fillStyle: string; strokeStyle: string; size: number };
 
 export class ToolStateFactory {
   public static fromState(state: GlobalContextState): ToolState {
@@ -12,7 +12,7 @@ export class ToolStateFactory {
       fillStyle: colour,
       lineCap: 'round',
       lineJoin: 'round',
-      lineWidth: state.lineWidth,
+      size: state.size,
       strokeStyle: colour
     };
   }

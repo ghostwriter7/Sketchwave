@@ -1,24 +1,17 @@
-import { ToolHandler } from './ToolHandler.ts';
 import { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { Point } from '../primitives/Point.ts';
 import { applyToolState } from './helpers/apply-tool-state.ts';
+import { SimpleTool } from './abstract/SimpleTool.ts';
 
-export class EraserTool extends ToolHandler {
-  private isErasing = false;
-  private points = [] as Point[];
-
-  private currentPath: Path2D | null = null;
-  private lastPointIndex = 0;
-
-  private readonly WIDTH = 10;
-  private readonly HALF_WIDTH = 5;
+export class EraserTool extends SimpleTool {
+  private static readonly WIDTH = 10;
 
   constructor(_: ToolState, layerFacade: LayerFacade) {
     super({
       fillStyle: 'white',
       strokeStyle: 'white',
-      lineWidth: 10,
+      size: 10,
       lineJoin: 'bevel',
       lineCap: 'butt'
     }, layerFacade);
@@ -32,37 +25,9 @@ export class EraserTool extends ToolHandler {
 
     const draw = (ctx: CanvasRenderingContext2D): void => {
       applyToolState(ctx, toolState);
-      this.drawLines(ctx, points);
+      EraserTool.drawLines(ctx, points);
     }
     this.createLayer(draw);
-  }
-
-  protected initializeListeners(): void {
-    this.onMouseDown(({ offsetX, offsetY }) => {
-      this.points.push(new Point(offsetX, offsetY));
-      this.currentPath = new Path2D();
-      this.currentPath.moveTo(offsetX + this.HALF_WIDTH, offsetY + this.HALF_WIDTH);
-      this.isErasing = true
-      this.renderPreview();
-    });
-
-    this.onMouseUp(() => this.resetAndSave());
-    this.onMouseLeave(() => this.resetAndSave());
-
-    this.onMove((event) => {
-      if (!this.isErasing) return;
-      this.points.push(Point.fromEvent(event));
-      this.renderPreview();
-    });
-  }
-
-  private resetAndSave(): void {
-    this.isErasing = false;
-    if (this.points.length === 0) return;
-    this.tryCreateLayer();
-    this.currentPath = null;
-    this.points = [];
-    this.lastPointIndex = 0;
   }
 
   protected async getCustomCursor(): Promise<string> {
@@ -76,31 +41,38 @@ export class EraserTool extends ToolHandler {
 
     const blob = await ctx.canvas.convertToBlob();
     this.cursorObjectUrl = URL.createObjectURL(blob);
-    return `url('${this.cursorObjectUrl}'), auto`;
+    return `url('${this.cursorObjectUrl}') ${this.halfSize} ${this.halfSize}, auto`;
   }
 
   protected renderPreview(): void {
     super.renderPreview();
 
+    const [{ x, y }] = this.points;
     if (this.points.length === 1) {
-      this.ctx.fillRect(this.points[0].x, this.points[0].y, this.WIDTH, this.WIDTH);
+      this.ctx.fillRect(x - 5, y - 5, EraserTool.WIDTH, EraserTool.WIDTH);
     } else {
-      this.currentPath!.lineTo(this.points[this.lastPointIndex + 1].x + this.HALF_WIDTH, this.points[this.lastPointIndex + 1].y + this.HALF_WIDTH);
+      if (this.points.length === 2) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y);
+      }
+
+      this.ctx.lineTo(this.points[this.lastPointIndex + 1].x, this.points[this.lastPointIndex + 1].y);
       this.lastPointIndex++;
-      this.ctx.stroke(this.currentPath!);
+      this.ctx.stroke();
     }
   }
 
-  private drawLines(ctx: CanvasRenderingContext2D, points: Point[]): void {
+  private static drawLines(ctx: CanvasRenderingContext2D, points: Point[]): void {
     if (points.length < 1) return;
 
+    const [{ x, y }] = points;
     if (points.length === 1) {
-      ctx.fillRect(points[0].x, points[0].y, this.WIDTH, this.WIDTH);
+      ctx.fillRect(x - 5, y - 5, EraserTool.WIDTH, EraserTool.WIDTH);
     } else {
       ctx.beginPath();
-      ctx.moveTo(points[0].x + this.HALF_WIDTH, points[0].y + this.HALF_WIDTH);
+      ctx.moveTo(x, y);
       points.slice(1).forEach(({ x, y }) => {
-        ctx.lineTo(x + this.HALF_WIDTH, y + this.HALF_WIDTH);
+        ctx.lineTo(x, y);
       });
       ctx.stroke();
     }

@@ -2,7 +2,7 @@ import { useGlobalContext } from '../../global-provider.tsx';
 import { createEffect, onMount } from 'solid-js';
 import { ToolStateFactory } from '../../render/tools/models/ToolState.ts';
 import { LayerFacade } from '../../render/LayerFacade.ts';
-import type { ToolHandler } from '../../render/tools/ToolHandler.ts';
+import type { ToolHandler } from '../../render/tools/abstract/ToolHandler.ts';
 import { ToolHandlerFactory } from '../../render/tools/ToolHandlerFactory.ts';
 import './canvas.css';
 import { Logger } from '../../utils/Logger.ts';

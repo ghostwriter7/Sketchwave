@@ -11,7 +11,7 @@ export interface GlobalContextState {
   currentMouseY: number | null;
   height: number;
   layerFacade: LayerFacade | null;
-  lineWidth: number;
+  size: number;
   width: number;
 }
 
@@ -38,7 +38,7 @@ export const GlobalProvider = (props: ParentProps) => {
     currentMouseY: null,
     height: 300,
     layerFacade: null,
-    lineWidth: 1,
+    size: 1,
     width: 500
   });
 

@@ -1,56 +1,31 @@
-import { ToolHandler } from '../ToolHandler.ts';
 import type { ToolState } from '../models/ToolState.ts';
 import type { LayerFacade } from '../../LayerFacade.ts';
-import { Point } from '../../primitives/Point.ts';
+import { SimpleTool } from '../abstract/SimpleTool.ts';
 
-export class BrushTool extends ToolHandler {
-  private points: Point[] = [];
-  private isDrawing = false;
-  private lastPaintedIndex = 0;
-
-  private readonly halfWidth: number;
+export class BrushTool extends SimpleTool {
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super({ ...toolState, lineCap: 'round', lineJoin: 'round' }, layerFacade);
-    this.halfWidth = this.lineWidth / 2;
   }
 
   public tryCreateLayer(): void {
     if (this.points.length === 0) return;
 
     const points = this.points;
-    const halfWidth = this.halfWidth;
+    const halfWidth = this.halfSize;
 
     this.createLayer((ctx: CanvasRenderingContext2D) => {
       const [{ x, y }] = points;
+      const path = new Path2D();
 
       if (points.length === 1) {
-        const path = new Path2D();
         path.arc(x, y, halfWidth, 0, 2 * Math.PI);
         ctx.fill(path);
       } else {
-        const path = new Path2D();
         path.moveTo(x, y);
-        points.slice(1).forEach(({ x,y }) => path.lineTo(x, y));
+        points.slice(1).forEach(({ x, y }) => path.lineTo(x, y));
         ctx.stroke(path);
       }
-    });
-  }
-
-  protected initializeListeners(): void {
-    this.onMouseDown((event) => {
-      this.isDrawing = true;
-      this.points.push(Point.fromEvent(event));
-      this.renderPreview();
-    });
-
-    this.onMouseUp(() => this.resetState());
-    this.onMouseLeave(() => this.resetState());
-
-    this.onMove((event) => {
-      if (!this.isDrawing) return;
-      this.points.push(Point.fromEvent(event));
-      this.renderPreview();
     });
   }
 
@@ -60,7 +35,7 @@ export class BrushTool extends ToolHandler {
     if (this.points.length === 1) {
       const [{ x, y }] = this.points;
       this.ctx.beginPath();
-      this.ctx.arc(x, y, this.halfWidth, 0, 2 * Math.PI);
+      this.ctx.arc(x, y, this.halfSize, 0, 2 * Math.PI);
       this.ctx.fill();
     } else {
       if (this.points.length === 2) {
@@ -68,9 +43,9 @@ export class BrushTool extends ToolHandler {
         this.ctx.moveTo(this.points[0].x, this.points[0].y);
       }
 
-      const { x, y } = this.points[this.lastPaintedIndex + 1];
+      const { x, y } = this.points[this.lastPointIndex + 1];
       this.ctx.lineTo(x, y);
-      this.lastPaintedIndex++;
+      this.lastPointIndex++;
       this.ctx.stroke();
     }
   }
@@ -86,13 +61,6 @@ export class BrushTool extends ToolHandler {
 
     const blob = await offsetCanvas.convertToBlob();
     this.cursorObjectUrl = URL.createObjectURL(blob);
-    return `url(${this.cursorObjectUrl}) ${this.halfWidth} ${this.halfWidth}, auto`;
-  }
-
-  private resetState(): void {
-    this.isDrawing = false;
-    this.lastPaintedIndex = 0;
-    this.tryCreateLayer();
-    this.points = [];
+    return `url(${this.cursorObjectUrl}) ${this.halfSize} ${this.halfSize}, auto`;
   }
 }

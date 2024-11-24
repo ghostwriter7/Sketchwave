@@ -9,7 +9,7 @@ export const LineThicknessPicker = () => {
 
   const handleWidthChange = (event: Event): void => {
     const { value } = event.target as HTMLInputElement;
-    updateState({ lineWidth: parseInt(value, 10) });
+    updateState({ size: parseInt(value, 10) });
   }
 
   const toggleSizePreview = () => {
@@ -20,7 +20,7 @@ export const LineThicknessPicker = () => {
   const ctx = previewCanvas.getContext('2d')!;
 
   createEffect(() => {
-    const width = state.lineWidth;
+    const width = state.size;
     ctx.beginPath();
     ctx.fillStyle = '#003A61';
     ctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
@@ -36,13 +36,13 @@ export const LineThicknessPicker = () => {
         id="line-thickness-picker"
         type="range"
         step="1"
-        value={state.lineWidth}
+        value={state.size}
         max={100}
         min={1}
         onFocusIn={toggleSizePreview}
         onFocusOut={toggleSizePreview}
         onInput={handleWidthChange}/>
-      <span class="current-width">{state.lineWidth}px</span>
+      <span class="current-width">{state.size}px</span>
       <Show when={showPreview()}>{previewCanvas}</Show>
     </div>
   </>
