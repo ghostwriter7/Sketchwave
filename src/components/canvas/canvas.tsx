@@ -38,6 +38,7 @@ const Canvas = () => {
         layerFacade.renderLayers();
         const toolState = ToolStateFactory.fromState(state);
         activeTool = ToolHandlerFactory.fromToolType(state.activeTool, toolState, layerFacade);
+        activeTool.onInit();
       }
     });
   });
@@ -60,6 +61,7 @@ const Canvas = () => {
     if (state.activeTool) {
       const toolState = ToolStateFactory.fromState(state);
       activeTool = ToolHandlerFactory.fromToolType(state.activeTool, toolState, layerFacade);
+      activeTool.onInit();
     }
   });
 

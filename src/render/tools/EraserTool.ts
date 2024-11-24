@@ -5,6 +5,14 @@ import { applyToolState } from './helpers/apply-tool-state.ts';
 import { SimpleTool } from './abstract/SimpleTool.ts';
 
 export class EraserTool extends SimpleTool {
+  protected override cursorSize = 12;
+  protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
+    ctx.fillStyle = 'white';
+    ctx.strokeStyle = 'black';
+    ctx.fillRect(0, 0, this.cursorSize, this.cursorSize);
+    ctx.strokeRect(0, 0, this.cursorSize, this.cursorSize);
+  }
+
   private static readonly WIDTH = 10;
 
   constructor(_: ToolState, layerFacade: LayerFacade) {
@@ -28,20 +36,6 @@ export class EraserTool extends SimpleTool {
       EraserTool.drawLines(ctx, points);
     }
     this.createLayer(draw);
-  }
-
-  protected async getCustomCursor(): Promise<string> {
-    const canvas = new OffscreenCanvas(12, 12);
-    const ctx = canvas.getContext('2d')!;
-
-    ctx.fillStyle = 'white';
-    ctx.strokeStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-    const blob = await ctx.canvas.convertToBlob();
-    this.cursorObjectUrl = URL.createObjectURL(blob);
-    return `url('${this.cursorObjectUrl}') ${this.halfSize} ${this.halfSize}, auto`;
   }
 
   protected renderPreview(): void {

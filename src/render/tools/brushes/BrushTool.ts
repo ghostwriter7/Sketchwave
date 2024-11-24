@@ -3,6 +3,14 @@ import type { LayerFacade } from '../../LayerFacade.ts';
 import { SimpleTool } from '../abstract/SimpleTool.ts';
 
 export class BrushTool extends SimpleTool {
+  protected override cursorSize = this.lineWidth;
+  protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
+    ctx.fillStyle = this.colour;
+    let x: number, y: number, radius: number;
+    x = y = radius = this.lineWidth / 2;
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.fill();
+  }
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super({ ...toolState, lineCap: 'round', lineJoin: 'round' }, layerFacade);
@@ -48,19 +56,5 @@ export class BrushTool extends SimpleTool {
       this.lastPointIndex++;
       this.ctx.stroke();
     }
-  }
-
-  protected async getCustomCursor(): Promise<string> {
-    const offsetCanvas = new OffscreenCanvas(this.lineWidth, this.lineWidth);
-    const ctx = offsetCanvas.getContext('2d')!;
-    ctx.fillStyle = this.colour;
-    let x: number, y: number, radius: number;
-    x = y = radius = this.lineWidth / 2;
-    ctx.arc(x, y, radius, 0, 2 * Math.PI);
-    ctx.fill();
-
-    const blob = await offsetCanvas.convertToBlob();
-    this.cursorObjectUrl = URL.createObjectURL(blob);
-    return `url(${this.cursorObjectUrl}) ${this.halfSize} ${this.halfSize}, auto`;
   }
 }

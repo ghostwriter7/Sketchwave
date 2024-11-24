@@ -3,6 +3,7 @@ import type { ToolState } from '../models/ToolState.ts';
 import type { LayerFacade } from '../../LayerFacade.ts';
 import { Logger } from '../../../utils/Logger.ts';
 import { applyToolState } from '../helpers/apply-tool-state.ts';
+import { createCursor } from '../helpers/create-cursor.ts';
 
 type EventHandler = (event: MouseEvent) => void;
 
@@ -10,6 +11,9 @@ export abstract class ToolHandler {
   protected abortController = new AbortController();
   protected cursorObjectUrl?: string
   protected halfSize: number;
+
+  protected cursorSize?: number;
+  protected customCursorCreateFn?: (ctx: OffscreenCanvasRenderingContext2D) => void;
 
   protected readonly logger = new Logger(this.constructor as Constructor);
 
@@ -54,7 +58,6 @@ export abstract class ToolHandler {
     this.halfSize = this.toolState.size / 2;
     this.layerFacade.ctx.save();
     applyToolState(this.layerFacade.ctx, toolState);
-    this.onInit();
   }
 
   /**
@@ -74,10 +77,10 @@ export abstract class ToolHandler {
    * A hook to establish canvas' listeners and tool's logic for drawing.
    * Called by a rendering system upon activating a tool.
    */
-  protected async onInit(): Promise<void> {
+  public async onInit(): Promise<void> {
     this.logger.log('Initializing an instance.');
     this.initializeListeners();
-    this.canvas.style.cursor = await this.getCustomCursor();
+    this.canvas.style.cursor = await this.createCursor();
   }
 
   /**
@@ -150,7 +153,13 @@ export abstract class ToolHandler {
    * Should return a Data URL representing a custom cursor for a given tool
    * @protected
    */
-  protected async getCustomCursor(): Promise<string> {
+  protected async createCursor(): Promise<string> {
+    if (this.customCursorCreateFn) {
+      const { objectUrl, cursor } = await createCursor(this.cursorSize!, this.customCursorCreateFn);
+      this.cursorObjectUrl = objectUrl;
+      return cursor;
+    }
+
     return Promise.resolve('pointer');
   }
 }
