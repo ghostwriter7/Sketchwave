@@ -23,10 +23,7 @@ export class EraserTool extends ToolHandler {
 
     const points = this.points;
     const draw = (ctx: CanvasRenderingContext2D): void => this.drawLines(ctx, points);
-    this.layerFacade.pushLayer({
-      tool: this.name,
-      draw
-    });
+    this.createLayer(draw);
   }
 
   public override async onInit(): Promise<void> {

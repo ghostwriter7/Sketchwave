@@ -22,19 +22,26 @@ export class LineTool extends ToolHandler {
     if (this.points.length <= 1) return;
 
     const path = this.createPath();
-    const layer = {
-      tool: this.name,
-      draw: (ctx: CanvasRenderingContext2D) => this.renderPath(path, ctx),
-    }
-    if (layer) this.layerFacade.pushLayer(layer);
+    const lineWidth = this.lineWidth;
+    const colour = this.colour;
+    this.createLayer((ctx: CanvasRenderingContext2D) => {
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = colour;
+      ctx.stroke(path);
+    });
   }
 
   protected override renderPreview(): void {
     super.renderPreview();
     const path = this.createPath();
     path.lineTo(this.previewOnlyPoint!.x, this.previewOnlyPoint!.y);
-    this.renderPath(path);
-  }
+    this.ctx.lineWidth = this.lineWidth;
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    this.ctx.strokeStyle = this.colour;
+    this.ctx.stroke(path);  }
 
   protected initializeListeners(): void {
     this.onClick(this.addPointFromEvent.bind(this));
@@ -70,11 +77,5 @@ export class LineTool extends ToolHandler {
     this.points.forEach(({ x, y }, index) =>
       index === 0 ? path.moveTo(x, y) : path.lineTo(x, y));
     return path;
-  }
-
-  private renderPath(path: Path2D, ctx: CanvasRenderingContext2D = this.ctx): void {
-    ctx.lineWidth = this.lineWidth;
-    ctx.strokeStyle = this.colour;
-    ctx.stroke(path);
   }
 }

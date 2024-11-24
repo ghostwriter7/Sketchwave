@@ -23,23 +23,20 @@ export class BrushTool extends ToolHandler {
     const colour = this.colour;
     const halfWidth = this.halfWidth;
 
-    this.layerFacade.pushLayer({
-      tool: this.name,
-      draw: (ctx: CanvasRenderingContext2D) => {
-        BrushTool.setContextProperties(ctx, lineWidth, colour);
+    this.createLayer((ctx: CanvasRenderingContext2D) => {
+      BrushTool.setContextProperties(ctx, lineWidth, colour);
 
-        const [{ x, y }] = points;
+      const [{ x, y }] = points;
 
-        if (points.length === 1) {
-          const path = new Path2D();
-          path.arc(x, y, halfWidth, 0, 2 * Math.PI);
-          ctx.fill(path);
-        } else {
-          const path = new Path2D();
-          path.moveTo(x, y);
-          points.slice(1).forEach(({ x,y }) => path.lineTo(x, y));
-          ctx.stroke(path);
-        }
+      if (points.length === 1) {
+        const path = new Path2D();
+        path.arc(x, y, halfWidth, 0, 2 * Math.PI);
+        ctx.fill(path);
+      } else {
+        const path = new Path2D();
+        path.moveTo(x, y);
+        points.slice(1).forEach(({ x,y }) => path.lineTo(x, y));
+        ctx.stroke(path);
       }
     });
   }

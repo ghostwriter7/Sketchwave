@@ -76,6 +76,13 @@ export abstract class ToolHandler {
    */
   public abstract tryCreateLayer(): void;
 
+  protected createLayer(drawLayerFn: (ctx: CanvasRenderingContext2D) => void): void {
+    this.layerFacade.pushLayer({
+      tool: this.name,
+      draw: drawLayerFn
+    });
+  }
+
   /**
    * Initializes event listeners required for a concrete tool to function.
    * Called during the onInit hook.
