@@ -6,7 +6,8 @@ export class AirbrushTool extends SimpleTool {
   protected override cursorSize = this.size + 2;
   protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
     ctx.strokeStyle = this.colour;
-    ctx.arc(this.halfSize + 1, this.halfSize + 1, this.halfSize, 0, 2 * Math.PI);
+    const center = this.cursorSize / 2;
+    ctx.arc(center, center, this.size / 2, 0, 2 * Math.PI);
     ctx.stroke();
   };
 
