@@ -48,7 +48,11 @@ export class LayerFacade {
   private createSnapshot(): ImageData {
     const offscreenCanvas = new OffscreenCanvas(this.ctx.canvas.width, this.ctx.canvas.height);
     const ctx = offscreenCanvas.getContext('2d')!;
-    this.stack.forEach((layer) => layer.draw(ctx));
+    this.stack.forEach((layer) => {
+      ctx.save();
+      layer.draw(ctx);
+      ctx.restore();
+    });
     return ctx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
   }
 }

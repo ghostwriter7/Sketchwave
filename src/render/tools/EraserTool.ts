@@ -39,7 +39,6 @@ export class EraserTool extends ToolHandler {
   }
 
   protected initializeListeners(): void {
-
     this.onMouseDown(({ offsetX, offsetY }) => {
       this.points.push(new Point(offsetX, offsetY));
       this.currentPath = new Path2D();
@@ -51,9 +50,9 @@ export class EraserTool extends ToolHandler {
     this.onMouseUp(() => this.resetAndSave());
     this.onMouseLeave(() => this.resetAndSave());
 
-    this.onMove(({ offsetX, offsetY }) => {
+    this.onMove((event) => {
       if (!this.isErasing) return;
-      this.points.push(new Point(offsetX, offsetY));
+      this.points.push(Point.fromEvent(event));
       this.renderPreview();
     });
   }

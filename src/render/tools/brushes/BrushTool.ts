@@ -16,7 +16,7 @@ export class BrushTool extends ToolHandler {
   }
 
   public tryCreateLayer(): void {
-    if (this.points.length < 1) return;
+    if (this.points.length === 0) return;
 
     const points = this.points;
     const lineWidth = this.lineWidth;
@@ -49,7 +49,7 @@ export class BrushTool extends ToolHandler {
 
     this.onMouseDown((event) => {
       this.isDrawing = true;
-      this.points.push(this.createPointFromEvent(event));
+      this.points.push(Point.fromEvent(event));
       this.renderPreview();
     });
 
@@ -58,7 +58,7 @@ export class BrushTool extends ToolHandler {
 
     this.onMove((event) => {
       if (!this.isDrawing) return;
-      this.points.push(this.createPointFromEvent(event));
+      this.points.push(Point.fromEvent(event));
       this.renderPreview();
     });
   }
@@ -96,10 +96,6 @@ export class BrushTool extends ToolHandler {
     const blob = await offsetCanvas.convertToBlob();
     this.cursorObjectUrl = URL.createObjectURL(blob);
     return `url(${this.cursorObjectUrl}) ${this.halfWidth} ${this.halfWidth}, auto`;
-  }
-
-  private createPointFromEvent({ offsetX, offsetY }: MouseEvent): Point {
-    return new Point(offsetX , offsetY );
   }
 
   private resetState(): void {
