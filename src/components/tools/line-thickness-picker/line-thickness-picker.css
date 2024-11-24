@@ -5,7 +5,7 @@
   display: flex;
   flex-flow: row-reverse;
   gap: var(--space-sm);
-  height: 60px;
+  height: 50px;
   left: 0;
   padding: var(--space-sm);
   position: absolute;
@@ -26,5 +26,12 @@
     padding: var(--space-sm);
     position:relative;
     transform: rotate(90deg);
+  }
+
+  .preview-canvas {
+    border-radius: var(--radius);
+    left: -130px;
+    position: absolute;
+    top: 0;
   }
 }
