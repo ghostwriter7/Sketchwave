@@ -16,7 +16,7 @@ const KEYBOARD_MAPPING = {
   rect: 'KeyR',
   line: 'KeyL',
   'color-picker-button': 'KeyC',
-  'line-thickness-button': 'KeyT',
+  'line-thickness-picker': 'KeyT',
   'save-file-button': { key: 'KeyS', ctrl: true },
   'open-file-button': { key: 'KeyO', ctrl: true }
 }
@@ -56,7 +56,9 @@ const Menu = () => {
       if (buttons.some((button) => button.id === matchingActionKey)) {
         updateState({ activeTool: matchingActionKey as ToolType });
       } else {
-        document.getElementById(matchingActionKey)?.click();
+        const element = document.getElementById(matchingActionKey);
+        element?.click();
+        element?.focus();
       }
     }
   });
