@@ -1,6 +1,6 @@
 import type { ToolType } from '../../types/core.type.ts';
 import type { ToolHandler } from './ToolHandler.ts';
-import type { ToolState } from './ToolState.ts';
+import type { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { LineTool } from './LineTool.ts';
 import { RectTool } from './RectTool.ts';

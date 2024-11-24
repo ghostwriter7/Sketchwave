@@ -1,6 +1,6 @@
 import { useGlobalContext } from '../../global-provider.tsx';
 import { createEffect, onMount } from 'solid-js';
-import { ToolState } from '../../render/tools/ToolState.ts';
+import { ToolStateFactory } from '../../render/tools/models/ToolState.ts';
 import { LayerFacade } from '../../render/LayerFacade.ts';
 import type { ToolHandler } from '../../render/tools/ToolHandler.ts';
 import { ToolHandlerFactory } from '../../render/tools/ToolHandlerFactory.ts';
@@ -36,7 +36,7 @@ const Canvas = () => {
       activeTool?.onDestroy();
       if (state.activeTool) {
         layerFacade.renderLayers();
-        const toolState = ToolState.fromState(state);
+        const toolState = ToolStateFactory.fromState(state);
         activeTool = ToolHandlerFactory.fromToolType(state.activeTool, toolState, layerFacade);
       }
     });
@@ -58,7 +58,7 @@ const Canvas = () => {
     activeTool?.onDestroy();
 
     if (state.activeTool) {
-      const toolState = ToolState.fromState(state);
+      const toolState = ToolStateFactory.fromState(state);
       activeTool = ToolHandlerFactory.fromToolType(state.activeTool, toolState, layerFacade);
     }
   });

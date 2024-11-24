@@ -1,5 +1,5 @@
 import { ToolHandler } from './ToolHandler.ts';
-import type { ToolState } from './ToolState.ts';
+import type { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { Point } from '../primitives/Point.ts';
 import { createRectPathFromPoints } from '../../shapes/rectangle.ts';
@@ -33,7 +33,6 @@ export class RectTool extends ToolHandler {
 
   protected renderPreview(): void {
     super.renderPreview();
-    this.ctx.fillStyle = this.colour;
     this.ctx.fill(createRectPathFromPoints(this.points[0], this.tempPoint!));
   }
 
@@ -41,12 +40,8 @@ export class RectTool extends ToolHandler {
     if (this.points.length !== 2) return;
 
     const path = createRectPathFromPoints(...this.points as [Point, Point]);
-    const colour = this.colour;
-
-    this.createLayer((ctx: CanvasRenderingContext2D) => {
-      ctx.fillStyle = colour;
-      ctx.fill(path);
-    });
+    this.createLayer((ctx: CanvasRenderingContext2D) => ctx.fill(path)
+    );
   }
 
   protected override reset(): void {

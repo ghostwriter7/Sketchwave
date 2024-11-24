@@ -1,7 +1,8 @@
 import type { Constructor } from '../../types/core.type.ts';
-import type { ToolState } from './ToolState.ts';
+import type { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { Logger } from '../../utils/Logger.ts';
+import { applyToolState } from './helpers/apply-tool-state.ts';
 
 type EventHandler = (event: MouseEvent) => void;
 
@@ -16,7 +17,7 @@ export abstract class ToolHandler {
   }
 
   protected get colour(): string {
-    return this.toolState.colour;
+    return this.toolState.fillStyle;
   }
 
   protected get ctx(): CanvasRenderingContext2D {
@@ -45,6 +46,8 @@ export abstract class ToolHandler {
 
   protected constructor(protected readonly toolState: ToolState,
                         protected readonly layerFacade: LayerFacade) {
+    this.layerFacade.ctx.save();
+    applyToolState(this.layerFacade.ctx, toolState);
     this.onInit();
   }
 
@@ -58,6 +61,7 @@ export abstract class ToolHandler {
     this.tryCreateLayer();
     this.canvas.style.cursor = 'pointer';
     if (this.cursorObjectUrl) URL.revokeObjectURL(this.cursorObjectUrl);
+    this.layerFacade.ctx.restore();
   }
 
   /**
@@ -77,9 +81,15 @@ export abstract class ToolHandler {
   public abstract tryCreateLayer(): void;
 
   protected createLayer(drawLayerFn: (ctx: CanvasRenderingContext2D) => void): void {
+    const toolState = this.toolState;
+    const tool = this.name;
+
     this.layerFacade.pushLayer({
-      tool: this.name,
-      draw: drawLayerFn
+      tool,
+      draw: (ctx: CanvasRenderingContext2D) => {
+        applyToolState(ctx, toolState);
+        drawLayerFn(ctx);
+      }
     });
   }
 

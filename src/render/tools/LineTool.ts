@@ -1,5 +1,5 @@
 import { ToolHandler } from './ToolHandler.ts';
-import type { ToolState } from './ToolState.ts';
+import type { ToolState } from './models/ToolState.ts';
 import { Point } from '../primitives/Point.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 
@@ -15,32 +15,20 @@ export class LineTool extends ToolHandler {
     toolState: ToolState,
     layerFacade: LayerFacade
   ) {
-    super(toolState, layerFacade);
+    super({ ...toolState, lineJoin: 'round', lineCap: 'round' }, layerFacade);
   }
 
   public tryCreateLayer(): void {
     if (this.points.length <= 1) return;
 
     const path = this.createPath();
-    const lineWidth = this.lineWidth;
-    const colour = this.colour;
-    this.createLayer((ctx: CanvasRenderingContext2D) => {
-      ctx.lineWidth = lineWidth;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = colour;
-      ctx.stroke(path);
-    });
+    this.createLayer((ctx: CanvasRenderingContext2D) => ctx.stroke(path));
   }
 
   protected override renderPreview(): void {
     super.renderPreview();
     const path = this.createPath();
     path.lineTo(this.previewOnlyPoint!.x, this.previewOnlyPoint!.y);
-    this.ctx.lineWidth = this.lineWidth;
-    this.ctx.lineCap = 'round';
-    this.ctx.lineJoin = 'round';
-    this.ctx.strokeStyle = this.colour;
     this.ctx.stroke(path);  }
 
   protected initializeListeners(): void {

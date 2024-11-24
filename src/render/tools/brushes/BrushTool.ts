@@ -1,5 +1,5 @@
 import { ToolHandler } from '../ToolHandler.ts';
-import type { ToolState } from '../ToolState.ts';
+import type { ToolState } from '../models/ToolState.ts';
 import type { LayerFacade } from '../../LayerFacade.ts';
 import { Point } from '../../primitives/Point.ts';
 
@@ -11,7 +11,7 @@ export class BrushTool extends ToolHandler {
   private readonly halfWidth: number;
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
-    super(toolState, layerFacade);
+    super({ ...toolState, lineCap: 'round', lineJoin: 'round' }, layerFacade);
     this.halfWidth = this.lineWidth / 2;
   }
 
@@ -19,13 +19,9 @@ export class BrushTool extends ToolHandler {
     if (this.points.length === 0) return;
 
     const points = this.points;
-    const lineWidth = this.lineWidth;
-    const colour = this.colour;
     const halfWidth = this.halfWidth;
 
     this.createLayer((ctx: CanvasRenderingContext2D) => {
-      BrushTool.setContextProperties(ctx, lineWidth, colour);
-
       const [{ x, y }] = points;
 
       if (points.length === 1) {
@@ -42,8 +38,6 @@ export class BrushTool extends ToolHandler {
   }
 
   protected initializeListeners(): void {
-    BrushTool.setContextProperties(this.ctx, this.lineWidth, this.colour);
-
     this.onMouseDown((event) => {
       this.isDrawing = true;
       this.points.push(Point.fromEvent(event));
@@ -100,12 +94,5 @@ export class BrushTool extends ToolHandler {
     this.lastPaintedIndex = 0;
     this.tryCreateLayer();
     this.points = [];
-  }
-
-  private static setContextProperties(ctx: CanvasRenderingContext2D, lineWidth: number, colour: string): void {
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = ctx.fillStyle = colour;
   }
 }

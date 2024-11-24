@@ -1,7 +1,8 @@
 import { ToolHandler } from './ToolHandler.ts';
-import type { ToolState } from './ToolState.ts';
+import { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { Point } from '../primitives/Point.ts';
+import { applyToolState } from './helpers/apply-tool-state.ts';
 
 export class EraserTool extends ToolHandler {
   private isErasing = false;
@@ -12,27 +13,28 @@ export class EraserTool extends ToolHandler {
 
   private readonly WIDTH = 10;
   private readonly HALF_WIDTH = 5;
-  private readonly COLOR = 'white';
 
-  constructor(toolState: ToolState, layerFacade: LayerFacade) {
-    super(toolState, layerFacade);
+  constructor(_: ToolState, layerFacade: LayerFacade) {
+    super({
+      fillStyle: 'white',
+      strokeStyle: 'white',
+      lineWidth: 10,
+      lineJoin: 'bevel',
+      lineCap: 'butt'
+    }, layerFacade);
   }
 
   public tryCreateLayer(): void {
     if (this.points.length === 0) return;
 
     const points = this.points;
-    const draw = (ctx: CanvasRenderingContext2D): void => this.drawLines(ctx, points);
+    const toolState = this.toolState;
+
+    const draw = (ctx: CanvasRenderingContext2D): void => {
+      applyToolState(ctx, toolState);
+      this.drawLines(ctx, points);
+    }
     this.createLayer(draw);
-  }
-
-  public override async onInit(): Promise<void> {
-    await super.onInit();
-
-    this.ctx.strokeStyle = this.COLOR;
-    this.ctx.fillStyle = this.COLOR;
-    this.ctx.lineWidth = this.WIDTH;
-    this.ctx.lineJoin = 'bevel';
   }
 
   protected initializeListeners(): void {
@@ -68,9 +70,8 @@ export class EraserTool extends ToolHandler {
     const ctx = canvas.getContext('2d')!;
 
     ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 1;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
     const blob = await ctx.canvas.convertToBlob();
@@ -94,13 +95,9 @@ export class EraserTool extends ToolHandler {
     if (points.length < 1) return;
 
     if (points.length === 1) {
-      ctx.fillStyle = this.COLOR;
       ctx.fillRect(points[0].x, points[0].y, this.WIDTH, this.WIDTH);
     } else {
-      ctx.strokeStyle = this.COLOR;
       ctx.beginPath();
-      ctx.lineWidth = this.WIDTH;
-      ctx.lineJoin = 'bevel';
       ctx.moveTo(points[0].x + this.HALF_WIDTH, points[0].y + this.HALF_WIDTH);
       points.slice(1).forEach(({ x, y }) => {
         ctx.lineTo(x + this.HALF_WIDTH, y + this.HALF_WIDTH);
