@@ -6,7 +6,7 @@ import { LineTool } from './LineTool.ts';
 import { RectTool } from './RectTool.ts';
 import { EraserTool } from './EraserTool.ts';
 import { BrushTool } from './brushes/BrushTool.ts';
-import { AirbrushTool } from './brushes/AirbrushTool.ts';
+import { AirbrushTool } from './brushes/airbrush/AirbrushTool.ts';
 
 export class ToolHandlerFactory {
   private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {

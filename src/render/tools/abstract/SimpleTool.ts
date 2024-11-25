@@ -15,8 +15,7 @@ export abstract class SimpleTool extends ToolHandler {
   protected initializeListeners(): void {
     this.onMouseDown((event) => {
       this.isWorking = true;
-      this.points.push(Point.fromEvent(event));
-      this.renderPreview();
+      this.handleEvent(event);
     });
 
     this.onMouseUp(() => this.resetState());
@@ -24,8 +23,7 @@ export abstract class SimpleTool extends ToolHandler {
 
     this.onMove((event) => {
       if (!this.isWorking) return;
-      this.points.push(Point.fromEvent(event));
-      this.renderPreview();
+      this.handleEvent(event);
     });
   }
 
@@ -35,5 +33,11 @@ export abstract class SimpleTool extends ToolHandler {
     this.tryCreateLayer();
     this.points = [];
     this.lastPointIndex = 0;
+  }
+
+  private handleEvent(event: MouseEvent): void {
+    const point = Point.fromEvent(event);
+    this.points.push(point);
+    this.renderPreview();
   }
 }
