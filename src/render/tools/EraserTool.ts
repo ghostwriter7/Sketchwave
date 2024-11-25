@@ -39,8 +39,6 @@ export class EraserTool extends SimpleTool {
   }
 
   protected renderPreview(): void {
-    super.renderPreview();
-
     const [{ x, y }] = this.points;
     if (this.points.length === 1) {
       this.ctx.fillRect(x - 5, y - 5, EraserTool.WIDTH, EraserTool.WIDTH);

@@ -38,8 +38,6 @@ export class BrushTool extends SimpleTool {
   }
 
   protected override renderPreview(): void {
-    super.renderPreview();
-
     if (this.points.length === 1) {
       const [{ x, y }] = this.points;
       this.ctx.beginPath();
