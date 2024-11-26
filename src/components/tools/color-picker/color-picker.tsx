@@ -171,7 +171,7 @@ export const ColorPicker = () => {
   }
 
   return <>
-    <input id="color-picker-button" class="button" ref={triggerRef!} type="color" onClick={toggleColorPicker} title="Color (C)"/>
+    <input tabindex="0" id="color-picker-button" class="button interactive" ref={triggerRef!} type="color" onClick={toggleColorPicker} title="Color (C)"/>
     <Card ref={popoverRef!} title="Color picker" id="color-picker" popover="auto">
       <div class="color-picker">
         <div class="preview" ref={previewRef!}></div>

@@ -52,8 +52,11 @@ export const BrushPicker = () => {
   }
 
   return <div class="wrapper">
-    <button id="brushes-picker" classList={{ active: brushes.some((brush) => brush.id == state.activeTool) }}
-            popovertarget="brushes" title="Brushes (B)">
+    <button
+      classList={{ active: brushes.some((brush) => brush.id == state.activeTool) }}
+      id="brushes-picker"
+      popovertarget="brushes"
+      title="Brushes (B)">
       <span class="material-symbols-outlined">brush</span>
     </button>
     <Card ref={popoverRef!} id="brushes" title="Brushes" popover="auto">

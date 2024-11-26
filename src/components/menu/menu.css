@@ -1,6 +1,7 @@
 .menu {
   align-items: center;
   background: var(--bg-secondary);
+  border-bottom: 1px solid var(--clr-secondary);
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-md);

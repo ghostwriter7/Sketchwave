@@ -2,6 +2,7 @@ import { useGlobalContext } from '../../../global-provider.tsx';
 import './line-thickness-picker.css';
 import { createEffect, createSignal, Show } from 'solid-js';
 import { rgbToHex } from '../../../color/rgb-to-hex.ts';
+import { ThemeHelper } from '../../../helpers/theme.helper.ts';
 
 export const LineThicknessPicker = () => {
   const { state, updateState } = useGlobalContext();
@@ -21,9 +22,13 @@ export const LineThicknessPicker = () => {
 
   createEffect(() => {
     const width = state.size;
+    ctx.fillStyle = ThemeHelper.getColor('clr-accent');
+    ctx.roundRect(0, 0, previewCanvas.width, previewCanvas.height);
+    ctx.fill();
+
     ctx.beginPath();
-    ctx.fillStyle = '#003A61';
-    ctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+    ctx.fillStyle = ThemeHelper.getColor('bg-secondary');
+    ctx.fillRect(2, 2, previewCanvas.width - 4, previewCanvas.height - 4);
     ctx.fillStyle = rgbToHex(...state.color);
     ctx.arc(60, 60, width / 2, 0, 2 * Math.PI);
     ctx.fill();

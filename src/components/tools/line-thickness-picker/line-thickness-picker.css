@@ -1,6 +1,7 @@
 .line-thickness {
   align-items: center;
   background: var(--bg-secondary);
+  border: 1px solid var(--clr-secondary);
   border-radius: var(--radius);
   display: flex;
   flex-flow: row-reverse;
@@ -19,10 +20,15 @@
     flex: 1;
   }
 
+  &:has(input:focus) {
+    border: 1px solid var(--clr-primary);
+  }
+
   .current-width {
-    background: var(--bg-primary);
+    background: var(--bg-active);
     border-radius: var(--radius);
     color: var(--clr-primary);
+    outline: 1px solid var(--clr-primary);
     padding: var(--space-sm);
     position:relative;
     transform: rotate(90deg);

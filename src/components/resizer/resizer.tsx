@@ -3,6 +3,7 @@ import { createEffect, onMount } from 'solid-js';
 import { Point } from '../../render/primitives/Point.ts';
 import { calculateDistance } from '../../math/distance.ts';
 import { useGlobalContext } from '../../global-provider.tsx';
+import { ThemeHelper } from '../../helpers/theme.helper.ts';
 
 export const Resizer = () => {
   const { state, setDimensions } = useGlobalContext();
@@ -71,7 +72,7 @@ export const Resizer = () => {
     renderIndicators(x, y, width, height);
     ctx.setLineDash([4, 2]);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = 'red';
+    ctx.strokeStyle = ThemeHelper.getColor('clr-primary');
     ctx.strokeRect(x, y, width, height);
   }
 

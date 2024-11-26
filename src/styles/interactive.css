@@ -1,0 +1,28 @@
+button,
+.interactive {
+  background-color: var(--bg-primary);
+  color: var(--clr-primary);
+
+  &:hover {
+    background-color: var(--bg-hover);
+  }
+
+  &:focus {
+    box-shadow: 0 0 var(--radius) rgba(0, 123, 255, 0.5);
+    outline: 2px solid var(--clr-accent);
+    outline-offset: 2px;
+  }
+
+  &:active, &.active {
+    background-color: var(--bg-active);
+    outline: 2px solid var(--clr-accent);
+    outline-offset: -1px;
+  }
+
+  &:disabled {
+    background-color: var(--bg-disabled);
+    color: var(--clr-disabled);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}

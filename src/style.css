@@ -1,25 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@1,400;1,500');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500');
+@import './styles/interactive.css';
 
 :root {
-  --clr-disabled: grey; /* to be defined */
-  --clr-primary: #00406C;
-  --clr-secondary: #00111C;
-  --clr-accent: #A1E887;
-  --clr-hover: color-mix(in srgb, var(--clr-primary) 80%, white 20%);
+  --bright-navy: #1F2233;
+
+  --gray: #4A516B;
+
+  --clr-disabled: grey;
+  --clr-primary: #83FCFC;
+  --clr-secondary: #8E929B;
+  --clr-accent: #83FCFC;
+  --clr-hover: #83FCFC;
   --clr-active: #001523;
 
-  --bg-disabled: grey; /* to be defined */
-  --bg-primary: #001523;
-  --bg-secondary: #003A61;
+  --bg-disabled: grey;
+  --bg-primary: #090B10;
+  --bg-secondary: #0F111A;
   --bg-accent: #eb8e9f;
-  --bg-hover: color-mix(in srgb, var(--bg-primary) 60%, var(--bg-secondary) 40%);
-  --bg-active: #eb8e9f;
+  --bg-hover: #427A7F;
+  --bg-active: #427A7F;
 
   --radius: 4px;
 
   --space-sm: 4px;
   --space-md: 8px;
 }
+
 
 body {
   display: flex;
@@ -35,8 +41,6 @@ body {
 }
 
 button, .button {
-  background-color: var(--bg-primary);
-  color: var(--clr-primary);
   border: none;
   border-radius: var(--radius);
   padding: 6px;
@@ -44,31 +48,6 @@ button, .button {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   user-select: none;
-
-  &:hover {
-    background-color: var(--bg-hover);
-    color: var(--clr-hover);
-  }
-
-  &:focus {
-    outline: 2px solid #80bdff;
-    outline-offset: 2px;
-    box-shadow: 0 0 var(--radius) rgba(0, 123, 255, 0.5);
-  }
-
-  &:active, &.active {
-    background-color: var(--bg-active);
-    outline: 2px solid var(--bg-primary);
-    outline-offset: -1px;
-    color: var(--clr-active);
-  }
-
-  &:disabled {
-    background-color: var(--bg-disabled);
-    color: var(--clr-disabled);
-    cursor: not-allowed;
-    box-shadow: none;
-  }
 
   &:has(.material-symbols-outlined) {
     display: flex;
@@ -122,4 +101,8 @@ ul {
 
 li {
   list-style: none;
+}
+
+.material-symbols-outlined {
+  color: var(--clr-primary);
 }
