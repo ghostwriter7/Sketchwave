@@ -1,5 +1,5 @@
 import './brush-picker.css';
-import { For } from 'solid-js';
+import { For, onMount } from 'solid-js';
 import { Card } from '../card/card.tsx';
 import { useGlobalContext } from '../../global-provider.tsx';
 
@@ -51,6 +51,14 @@ export const BrushPicker = () => {
     }
   }
 
+  onMount(() => {
+    popoverRef.addEventListener('toggle', ({ newState }: ToggleEvent) => {
+      if (newState === 'open') {
+        (popoverRef.querySelector('button') as HTMLButtonElement).focus();
+      }
+    });
+  });
+
   return <div class="wrapper">
     <button
       classList={{ active: brushes.some((brush) => brush.id == state.activeTool) }}
@@ -63,7 +71,12 @@ export const BrushPicker = () => {
       <ul class="dropdown" onClick={handleClick}>
         <For each={brushes}>
           {({ id, label }) =>
-            <li data-tool={id} classList={{ active: state.activeTool === id }} id={id}>{label}</li>}
+            <li>
+              <button
+                data-tool={id}
+                classList={{ active: state.activeTool === id }}
+                id={id}>{label}</button>
+            </li>}
         </For>
       </ul>
     </Card>
