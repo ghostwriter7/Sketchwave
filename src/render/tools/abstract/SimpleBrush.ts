@@ -3,7 +3,7 @@ import type { ToolState } from '../models/ToolState.ts';
 import type { LayerFacade } from '../../LayerFacade.ts';
 import { Point } from '../../primitives/Point.ts';
 
-export abstract class SimpleTool extends ToolHandler {
+export abstract class SimpleBrush extends ToolHandler {
   protected isWorking = false;
   protected points: Point[] = [];
   protected lastPointIndex = 0;

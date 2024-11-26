@@ -1,10 +1,10 @@
 import type { ToolState } from '../../models/ToolState.ts';
 import { type LayerFacade } from '../../../LayerFacade.ts';
-import { SimpleTool } from '../../abstract/SimpleTool.ts';
+import { SimpleBrush } from '../../abstract/SimpleBrush.ts';
 import { Point } from '../../../primitives/Point.ts';
 import { createRandomPoints } from '../../../../math/create-random-points-in-circle.ts';
 
-export class AirbrushTool extends SimpleTool {
+export class AirbrushTool extends SimpleBrush {
   protected override cursorSize = this.size + 2;
   protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
     ctx.strokeStyle = this.colour;
@@ -18,10 +18,6 @@ export class AirbrushTool extends SimpleTool {
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
-  }
-
-  public onDestroy(): void {
-    super.onDestroy();
   }
 
   public tryCreateLayer(): void {
@@ -43,6 +39,7 @@ export class AirbrushTool extends SimpleTool {
     const point = this.points[this.lastPointIndex];
     const points = createRandomPoints(point, this.halfSize, this.randomPointsCount);
     points.forEach(({ x, y }) => this.ctx.rect(x, y, 1, 1));
+    this.randomPoints.push(points);
     this.ctx.fill()
     this.lastPointIndex++;
   }

@@ -1,8 +1,8 @@
 import type { ToolState } from '../models/ToolState.ts';
 import type { LayerFacade } from '../../LayerFacade.ts';
-import { SimpleTool } from '../abstract/SimpleTool.ts';
+import { SimpleBrush } from '../abstract/SimpleBrush.ts';
 
-export class BrushTool extends SimpleTool {
+export class BrushTool extends SimpleBrush {
   protected override cursorSize = this.lineWidth;
   protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
     ctx.fillStyle = this.colour;

@@ -2,9 +2,9 @@ import { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { Point } from '../primitives/Point.ts';
 import { applyToolState } from './helpers/apply-tool-state.ts';
-import { SimpleTool } from './abstract/SimpleTool.ts';
+import { SimpleBrush } from './abstract/SimpleBrush.ts';
 
-export class EraserTool extends SimpleTool {
+export class EraserTool extends SimpleBrush {
   protected override cursorSize = 12;
   protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
     ctx.fillStyle = 'white';
