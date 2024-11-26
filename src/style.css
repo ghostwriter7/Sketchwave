@@ -26,6 +26,10 @@
   --space-md: 8px;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 
 body {
   display: flex;

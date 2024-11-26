@@ -4,20 +4,26 @@
   border: 1px solid var(--clr-accent);
   border-radius: var(--radius);
   display: flex;
-  flex-flow: row-reverse;
+  flex-direction: column;
   gap: var(--space-sm);
-  height: 50px;
-  left: 0;
+  height: 50vh;
+  left: var(--space-md);
   padding: var(--space-sm);
   position: absolute;
   top: 50%;
-  transform: rotate(-90deg) translateY(calc(50vh* -0.5 + 41px));
+  transform: translateY(-50%);
   transform-origin: center;
   z-index: 5;
-  width: 50vh;
+  width: 61px;
 
   input {
+    direction: rtl;
     flex: 1;
+    writing-mode: vertical-lr;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   &:has(input:focus) {
@@ -30,14 +36,16 @@
     color: var(--clr-primary);
     outline: 1px solid var(--clr-primary);
     padding: var(--space-sm);
-    position:relative;
-    transform: rotate(90deg);
+    position: relative;
+    width: 100%;
+    text-align: center;
   }
 
   .preview-canvas {
     border-radius: var(--radius);
-    left: -130px;
+    left: 70px;
     position: absolute;
-    top: 0;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
