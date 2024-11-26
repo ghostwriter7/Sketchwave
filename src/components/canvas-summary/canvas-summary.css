@@ -1,7 +1,7 @@
 .canvas-summary {
   align-items: center;
   background-color: var(--bg-secondary);
-  border-top: 1px solid var(--clr-secondary);
+  border-top: 1px solid var(--clr-accent);
   color: var(--clr-secondary);
   display: flex;
   font-size: 1em;
