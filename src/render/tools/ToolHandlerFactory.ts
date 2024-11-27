@@ -7,11 +7,13 @@ import { RectTool } from './RectTool.ts';
 import { EraserTool } from './EraserTool.ts';
 import { BrushTool } from './brushes/BrushTool.ts';
 import { AirbrushTool } from './brushes/airbrush/AirbrushTool.ts';
+import { CalligraphyBrushTool } from './brushes/caligraphy-brush/CalligraphyBrushTool.ts';
 
 export class ToolHandlerFactory {
   private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
     airbrush: AirbrushTool,
     brush: BrushTool,
+    calligraphyBrush: CalligraphyBrushTool,
     eraser: EraserTool,
     line: LineTool,
     rect: RectTool,

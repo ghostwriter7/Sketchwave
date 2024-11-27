@@ -15,8 +15,9 @@ export class EraserTool extends SimpleBrush {
 
   private static readonly WIDTH = 10;
 
-  constructor(_: ToolState, layerFacade: LayerFacade) {
+  constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super({
+      ...toolState,
       fillStyle: 'white',
       strokeStyle: 'white',
       size: 10,

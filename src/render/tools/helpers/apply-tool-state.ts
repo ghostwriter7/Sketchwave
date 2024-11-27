@@ -6,4 +6,6 @@ export const applyToolState = (ctx: CanvasRenderingContext2D, toolState: ToolSta
   if (toolState.lineJoin) ctx.lineJoin = toolState.lineJoin;
   if (toolState.size) ctx.lineWidth = toolState.size;
   if (toolState.strokeStyle) ctx.strokeStyle = toolState.strokeStyle;
+  if (toolState.shadowBlur) ctx.shadowBlur = toolState.shadowBlur;
+  if (toolState.shadowColor) ctx.shadowColor = toolState.shadowColor;
 }
