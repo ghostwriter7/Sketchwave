@@ -1,6 +1,7 @@
 import { SimpleBrush } from '../../abstract/SimpleBrush.ts';
 import type { ToolState } from '../../models/ToolState.ts';
 import { type LayerFacade } from '../../../LayerFacade.ts';
+import { applyToolState } from '../../helpers/apply-tool-state.ts';
 
 export class CalligraphyBrushTool extends SimpleBrush {
   protected override cursorSize = this.size + 2;
@@ -13,6 +14,7 @@ export class CalligraphyBrushTool extends SimpleBrush {
 
   private readonly vec2: [number, number];
   private readonly invertedVec2: [number, number];
+  private offscreenCtx: OffscreenCanvasRenderingContext2D;
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super({ ...toolState, shadowBlur: 1 }, layerFacade);
@@ -23,6 +25,9 @@ export class CalligraphyBrushTool extends SimpleBrush {
     const y = Math.sin(angle) * radius;
     this.vec2 = [x, y];
     this.invertedVec2 = [-x, -y];
+
+    this.offscreenCtx = new OffscreenCanvas(this.width, this.height).getContext('2d')!;
+    applyToolState(this.offscreenCtx, this.toolState);
   }
 
   public tryCreateLayer(): void {
@@ -31,6 +36,7 @@ export class CalligraphyBrushTool extends SimpleBrush {
     const points = this.points;
     const [posX, posY] = this.vec2;
     const [negX, negY] = this.invertedVec2;
+    const offscreenCanvas = this.offscreenCtx.canvas;
 
     this.createLayer((ctx: CanvasRenderingContext2D) => {
       if (points.length === 1) {
@@ -41,32 +47,8 @@ export class CalligraphyBrushTool extends SimpleBrush {
         ctx.lineTo(x + posX, y + posY);
         ctx.stroke();
       } else {
-
-        ctx.beginPath();
-
-        const [{ x, y }] = points;
-        ctx.moveTo(x + posX, y + posY);
-
-        for (let i = 1; i < points.length; i++) {
-          const { x: px, y: py } = points[i - 1];
-          const { x: cx, y: cy } = points[i];
-
-          ctx.lineTo(px + posX, py + posY);
-          ctx.lineTo(cx + posX, cy + posY);
-        }
-
-        for (let i = points.length - 1; i > 0; i--) {
-          const { x: cx, y: cy } = points[i];
-          const { x: nx, y: ny } = points[i - 1];
-
-          ctx.lineTo(cx + negX, cy + negY);
-          ctx.lineTo(nx + negX, ny + negY);
-        }
-
-        ctx.closePath();
-        ctx.fill()
+        ctx.drawImage(offscreenCanvas, 0, 0);
       }
-
     });
   }
 
@@ -81,28 +63,36 @@ export class CalligraphyBrushTool extends SimpleBrush {
       return;
     }
 
-    this.ctx.beginPath();
-
     const [{ x, y }] = this.points;
-    this.ctx.moveTo(x + this.vec2[0], y + this.vec2[1]);
+    this.offscreenCtx.beginPath();
+    this.offscreenCtx.moveTo(x + this.vec2[0], y + this.vec2[1]);
 
     for (let i = 1; i < this.points.length; i++) {
       const { x: px, y: py } = this.points[i - 1];
       const { x: cx, y: cy } = this.points[i];
 
-      this.ctx.lineTo(px + this.vec2[0], py + this.vec2[1]);
-      this.ctx.lineTo(cx + this.vec2[0], cy + this.vec2[1]);
+      this.offscreenCtx.lineTo(px + this.vec2[0], py + this.vec2[1]);
+      this.offscreenCtx.lineTo(cx + this.vec2[0], cy + this.vec2[1]);
     }
 
     for (let i = this.points.length - 1; i > 0; i--) {
       const { x: cx, y: cy } = this.points[i];
       const { x: nx, y: ny } = this.points[i - 1];
 
-      this.ctx.lineTo(cx + this.invertedVec2[0], cy + this.invertedVec2[1]);
-      this.ctx.lineTo(nx + this.invertedVec2[0], ny + this.invertedVec2[1]);
+      this.offscreenCtx.lineTo(cx + this.invertedVec2[0], cy + this.invertedVec2[1]);
+      this.offscreenCtx.lineTo(nx + this.invertedVec2[0], ny + this.invertedVec2[1]);
     }
 
-    this.ctx.closePath();
-    this.ctx.fill()
+    this.offscreenCtx.closePath();
+    this.offscreenCtx.fill();
+
+    super.renderPreview();
+    this.ctx.drawImage(this.offscreenCtx.canvas, 0, 0);
+  }
+
+  protected override resetState(): void {
+    super.resetState();
+    this.offscreenCtx = new OffscreenCanvas(this.width, this.height).getContext('2d')!;
+    applyToolState(this.offscreenCtx, this.toolState);
   }
 }
