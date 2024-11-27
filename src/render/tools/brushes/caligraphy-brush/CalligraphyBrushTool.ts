@@ -26,6 +26,8 @@ export class CalligraphyBrushTool extends SimpleBrush {
   }
 
   public tryCreateLayer(): void {
+    if (this.points.length == 0) return;
+
     const points = this.points;
     const [posX, posY] = this.vec2;
     const [negX, negY] = this.invertedVec2;
