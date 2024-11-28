@@ -6,14 +6,14 @@
 
   --gray: #4A516B;
 
-  --clr-disabled: grey;
+  --clr-disabled: #80CED7;
   --clr-primary: #83FCFC;
   --clr-secondary: #8E929B;
   --clr-accent: #83FCFC;
   --clr-hover: #83FCFC;
   --clr-active: #001523;
 
-  --bg-disabled: grey;
+  --bg-disabled: #5A7D7C;
   --bg-primary: #090B10;
   --bg-secondary: #0F111A;
   --bg-accent: #eb8e9f;

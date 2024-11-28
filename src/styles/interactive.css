@@ -22,7 +22,11 @@ button,
   &:disabled {
     background-color: var(--bg-disabled);
     color: var(--clr-disabled);
-    cursor: not-allowed;
+    cursor: default;
     box-shadow: none;
+
+    & .material-symbols-outlined {
+      color: var(--clr-disabled);
+    }
   }
 }
