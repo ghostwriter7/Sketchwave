@@ -15,7 +15,7 @@ export class ToolStateFactory {
       size: state.size,
       strokeStyle: colour,
       shadowBlur: 0,
-      shadowColor: colour.replace(')', ', 0.5)')
+      shadowColor: colour.replace(')', ', 0.9)')
     };
   }
 }

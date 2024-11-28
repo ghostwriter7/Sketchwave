@@ -17,7 +17,7 @@ export class CalligraphyBrushTool extends SimpleBrush {
   private offscreenCtx: OffscreenCanvasRenderingContext2D;
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
-    super({ ...toolState, shadowBlur: 1 }, layerFacade);
+    super({ ...toolState, shadowBlur: 2, shadowColor: toolState.fillStyle.replace(')', ', 0.9)') }, layerFacade);
 
     const radius = this.halfSize;
     const angle = -45;
