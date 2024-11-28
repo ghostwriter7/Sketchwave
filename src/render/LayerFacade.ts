@@ -1,22 +1,35 @@
 import type { Layer } from '../types/core.type.ts';
 import { Logger } from '../utils/Logger.ts';
 import type { GlobalContextState } from '../global-provider.tsx';
+import { type Accessor, createSignal, type Setter } from 'solid-js';
 
 export class LayerFacade {
+  public readonly canUndo: Accessor<boolean>;
+  public readonly canRedo: Accessor<boolean>;
+
   private stack: Layer[] = [];
   private history: Layer[] = [];
   private readonly logger = new Logger(LayerFacade)
   private snapshot: ImageData;
 
   private nextLayerIndex = 0;
+  private readonly setCanUndo: Setter<boolean>;
+  private readonly setCanRedo: Setter<boolean>;
 
   public get ctx(): CanvasRenderingContext2D {
     return this.state.ctx!;
   }
 
-  constructor(private readonly state: GlobalContextState,
-              private readonly setCanUndo: (value: boolean) => void,
-              private readonly setCanRedo: (value: boolean) => void) {
+  constructor(private readonly state: GlobalContextState) {
+    const [canUndo, setCanUndo] = createSignal(false);
+    const [canRedo, setCanRedo] = createSignal(false);
+
+    this.canUndo = canUndo;
+    this.canRedo = canRedo;
+
+    this.setCanRedo = setCanRedo;
+    this.setCanUndo = setCanUndo;
+
     this.stack.push({
       order: this.nextLayerIndex,
       tool: LayerFacade.name,
