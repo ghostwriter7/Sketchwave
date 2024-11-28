@@ -5,6 +5,8 @@ import { type LayerFacade } from './render/LayerFacade.ts';
 
 export interface GlobalContextState {
   activeTool?: ToolType;
+  canUndo: boolean;
+  canRedo: boolean;
   color: [number, number, number];
   ctx: CanvasRenderingContext2D | null;
   currentMouseX: number | null;
@@ -17,21 +19,23 @@ export interface GlobalContextState {
 
 interface GlobalContextActions {
   setCtx(ctx: CanvasRenderingContext2D): void;
-
   setDimensions(width: number, height: number): void;
-
   setLayerFacade(layerFacade: LayerFacade): void;
-
   setMousePos<T extends number | null>(x: T, y: T): void;
-
   state: GlobalContextState;
   updateState: (state: Partial<GlobalContextState>) => void;
+  setCanUndo: (value: boolean) => void;
+  setCanRedo: (value: boolean) => void;
+  undo(): void;
+  redo(): void;
 }
 
 const GlobalContext = createContext<GlobalContextActions>();
 
 export const GlobalProvider = (props: ParentProps) => {
   const [state, setState] = createStore<GlobalContextState>({
+    canRedo: false,
+    canUndo: false,
     color: [0, 0, 0],
     ctx: null,
     currentMouseX: null,
@@ -45,10 +49,14 @@ export const GlobalProvider = (props: ParentProps) => {
   const facade: GlobalContextActions = {
     state,
     setCtx: (ctx: CanvasRenderingContext2D) => setState('ctx', ctx),
+    setCanUndo: (value: boolean) => setState('canUndo', value),
+    setCanRedo: (value: boolean) => setState('canRedo', value),
     setLayerFacade: (layerFacade: LayerFacade) => setState('layerFacade', layerFacade),
     setMousePos: <T extends number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y }),
     setDimensions: (width: number, height: number) => setState({ width, height }),
-    updateState: (state: Partial<GlobalContextState>) => setState({ ...state })
+    updateState: (state: Partial<GlobalContextState>) => setState({ ...state }),
+    undo: () => state.layerFacade!.undoLayer(),
+    redo: () => state.layerFacade!.redoLayer()
   }
 
   return <GlobalContext.Provider value={{ ...facade }}>{props.children}</GlobalContext.Provider>

@@ -8,6 +8,7 @@ import { SaveButton } from '../save-button/save-button.tsx';
 import { OpenFileButton } from '../open-file-button/open-file-button.tsx';
 import { FullScreenButton } from '../full-screen-button/full-screen-button.tsx';
 import { BrushPicker } from '../brush-picker/brush-picker.tsx';
+import { UndoRedoButton } from '../undo-redo-button/undo-redo-button.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -32,6 +33,7 @@ const Menu = () => {
   return <nav class="menu" onClick={handleClick}>
     <SaveButton/>
     <OpenFileButton/>
+    <UndoRedoButton />
     <For each={buttons}>
       {({ id, icon, title }) =>
         <button classList={{ active: state.activeTool === id }} data-tool={id} title={title}>

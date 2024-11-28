@@ -4,21 +4,28 @@ import type { GlobalContextState } from '../global-provider.tsx';
 
 export class LayerFacade {
   private stack: Layer[] = [];
+  private history: Layer[] = [];
   private readonly logger = new Logger(LayerFacade)
   private snapshot: ImageData;
+
+  private nextLayerIndex = 0;
 
   public get ctx(): CanvasRenderingContext2D {
     return this.state.ctx!;
   }
 
-  constructor(private readonly state: GlobalContextState) {
+  constructor(private readonly state: GlobalContextState,
+              private readonly setCanUndo: (value: boolean) => void,
+              private readonly setCanRedo: (value: boolean) => void) {
     this.stack.push({
+      order: this.nextLayerIndex,
       tool: LayerFacade.name,
       draw: (ctx: CanvasRenderingContext2D) => {
         ctx.fillStyle = '#fff';
         ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
       }
     });
+    this.nextLayerIndex++;
     this.snapshot = this.createSnapshot();
   }
 
@@ -31,9 +38,11 @@ export class LayerFacade {
   }
 
   public pushLayer(layer: Layer): void {
-    this.stack.push(layer);
+    this.stack.push({ ...layer, order: this.nextLayerIndex });
+    this.nextLayerIndex++;
     this.logger.log(`A new layer created by ${layer.tool}. Current count: ${this.stack.length}`);
     this.refreshSnapshot();
+    this.setCanUndo(true);
   }
 
   public refreshSnapshot(): void {
@@ -43,6 +52,31 @@ export class LayerFacade {
   public renderLayers(): void {
     this.logger.log(`Rendering layers...`);
     this.ctx.putImageData(this.snapshot, 0, 0);
+  }
+
+  public redoLayer(): void {
+    if (this.history.length < 1) return;
+
+    const layer = this.history.pop()!
+    this.logger.log(`Redoing layer (order: ${layer.order})`);
+    this.stack.push(layer);
+    this.stack.sort((a, b) => a.order! - b.order!);
+    this.refreshSnapshot();
+    this.renderLayers();
+    this.setCanRedo(this.history.length > 0);
+    this.setCanUndo(true);
+  }
+
+  public undoLayer(): void {
+    if (this.stack.length <= 1) return;
+
+    const lastLayer = this.stack.pop()!;
+    this.logger.log(`Undoing last layer (order: ${lastLayer.order})`);
+    this.history.push(lastLayer);
+    this.refreshSnapshot();
+    this.renderLayers();
+    this.setCanUndo(this.stack.length > 1);
+    this.setCanRedo(true);
   }
 
   private createSnapshot(): ImageData {
