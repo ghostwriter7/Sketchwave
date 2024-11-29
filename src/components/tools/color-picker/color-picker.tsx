@@ -6,6 +6,7 @@ import { getRGBFromPixel } from '../../../color/get-rgb-from-pixel.ts';
 import { useGlobalContext } from '../../../global-provider.tsx';
 import { rgbToHex } from '../../../color/rgb-to-hex.ts';
 import { Card } from '../../card/card.tsx';
+import { Point } from '../../../render/primitives/Point.ts';
 
 const CONFIG = {
   inlineMargin: 25,
@@ -92,7 +93,7 @@ const drawPicker = (ctx: CanvasRenderingContext2D, hue = 0) => {
   ctx.putImageData(imageData, 0, 0);
 }
 
-const drawSelectorAt = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+const drawSelectorAt = (ctx: CanvasRenderingContext2D, { x, y }: Point) => {
   ctx.beginPath();
   ctx.strokeStyle = 'white';
   ctx.arc(x, y, 8, 0, FULL_CIRCLE);
@@ -129,7 +130,7 @@ export const ColorPicker = () => {
       if (offsetX < CONFIG.inlineMargin || offsetX > CONFIG.width - CONFIG.inlineMargin) return;
       sliderCtx.clearRect(0, 0, sliderRef.width, sliderRef.height);
       drawSlider(sliderCtx);
-      const [red, green, blue] = getRGBFromPixel(sliderCtx, offsetX, 15);
+      const [red, green, blue] = getRGBFromPixel(sliderCtx, new Point(offsetX, 15));
       setHue(rgbToHue(red, green, blue));
       drawSliderHandle(sliderCtx, offsetX, `rgb(${red}, ${green}, ${blue})`);
     }
@@ -145,21 +146,19 @@ export const ColorPicker = () => {
     triggerRef.value = rgbToHex(red, green, blue);
   });
 
-  const handlePickerClick = (event: MouseEvent) => {
-    const { offsetX, offsetY } = event;
+  const handleColorChange = (event: MouseEvent) => {
+    const point = Point.fromEvent(event);
     pickerCtx.clearRect(0, 0, pickerCtx.canvas.width, pickerCtx.canvas.height);
     drawPicker(pickerCtx, hue());
-    drawSelectorAt(pickerCtx, offsetX, offsetY);
-    updateState({ color: getRGBFromPixel(pickerCtx, offsetX, offsetY) });
+    drawSelectorAt(pickerCtx, point);
+    updateState({ color: getRGBFromPixel(pickerCtx, point) });
   }
 
   const handlePickerMove = (event: MouseEvent) => {
     if (event.buttons !== 1) return;
-    const { offsetX, offsetY } = event;
-    pickerCtx.clearRect(0, 0, pickerCtx.canvas.width, pickerCtx.canvas.height);
-    drawPicker(pickerCtx, hue());
-    drawSelectorAt(pickerCtx, offsetX, offsetY);
-    const [red, green, blue] = getRGBFromPixel(pickerCtx, offsetX, offsetY);
+    const point = Point.fromEvent(event);
+    handleColorChange(event);
+    const [red, green, blue] = getRGBFromPixel(pickerCtx, point);
     previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
   }
 
@@ -171,7 +170,8 @@ export const ColorPicker = () => {
   }
 
   return <>
-    <input tabindex="0" id="color-picker-button" class="button interactive" ref={triggerRef!} type="color" onClick={toggleColorPicker} title="Color (C)"/>
+    <input tabindex="0" id="color-picker-button" class="button interactive" ref={triggerRef!} type="color"
+           onClick={toggleColorPicker} title="Color (C)"/>
     <Card ref={popoverRef!} title="Color picker" id="color-picker" popover="auto">
       <div class="color-picker">
         <div class="preview" ref={previewRef!}></div>
@@ -180,7 +180,7 @@ export const ColorPicker = () => {
           ref={pickerRef!}
           width={CONFIG.width}
           height={CONFIG.pickerHeight}
-          onClick={handlePickerClick}
+          onClick={handleColorChange}
           onMouseMove={handlePickerMove}
         >
         </canvas>
