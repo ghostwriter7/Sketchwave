@@ -6,9 +6,11 @@ import { calculateDistance } from '../../../../math/distance.ts';
 export class OilBrush extends SimpleBrush {
   private readonly strokeLength = 250;
   private readonly minRadius: number;
+  private readonly minAlpha = 0.2;
   private readonly twentyPercentOfStrokeLength = this.strokeLength * 0.2;
   private readonly eightyPercentOfStrokeLength = this.strokeLength - this.twentyPercentOfStrokeLength;
   private readonly radiusScalingRatio = this.halfSize / this.twentyPercentOfStrokeLength;
+  private readonly alphaScalingRatio = 1 / this.twentyPercentOfStrokeLength;
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
@@ -21,6 +23,7 @@ export class OilBrush extends SimpleBrush {
 
   protected renderPreview() {
     if (this.points.length < 1) return;
+    super.renderPreview();
 
     let currentStrokeLength = 0;
 
@@ -37,6 +40,7 @@ export class OilBrush extends SimpleBrush {
       this.ctx.beginPath();
 
       const radius = this.calculateRadius(currentStrokeLength);
+      this.ctx.globalAlpha = this.calculateAlpha(currentStrokeLength);
 
       this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
       this.ctx.fill();
@@ -54,5 +58,18 @@ export class OilBrush extends SimpleBrush {
     }
 
     return this.halfSize;
+  }
+
+  private calculateAlpha(currentStrokeLength: number): number {
+    if (currentStrokeLength <= this.twentyPercentOfStrokeLength) {
+      return Math.max(currentStrokeLength * this.alphaScalingRatio, this.minAlpha);
+    }
+
+    if (currentStrokeLength >= this.eightyPercentOfStrokeLength) {
+      const remainingLength = this.strokeLength - currentStrokeLength;
+      return Math.max(remainingLength * this.alphaScalingRatio, this.minAlpha);
+    }
+
+    return 1;
   }
 }

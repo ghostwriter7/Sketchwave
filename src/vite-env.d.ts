@@ -8,6 +8,7 @@ type Type = {
 }
 
 interface Window {
+  ctx: CanvasRenderingContext2D;
   showOpenFilePicker(options: {
     excludeAcceptAllOption?: boolean,
     multiple?: boolean,

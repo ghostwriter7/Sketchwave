@@ -9,7 +9,7 @@ import { Logger } from '../../utils/Logger.ts';
 import { Resizer } from '../resizer/resizer.tsx';
 
 const Canvas = () => {
-  const { state, setCtx, setLayerFacade, setMousePos, setCanUndo, setCanRedo } = useGlobalContext();
+  const { state, setCtx, setLayerFacade, setMousePos } = useGlobalContext();
 
   const canvasRef = <canvas
     class="canvas"
@@ -20,8 +20,11 @@ const Canvas = () => {
   </canvas> as HTMLCanvasElement;
 
   const ctx = canvasRef.getContext('2d')!
+
+  window.ctx = ctx;
+
   setCtx(ctx);
-  const layerFacade = new LayerFacade(state, setCanUndo, setCanRedo);
+  const layerFacade = new LayerFacade(state);
   setLayerFacade(layerFacade)
 
   const logger = new Logger('Canvas')
