@@ -8,6 +8,7 @@ import { EraserTool } from './EraserTool.ts';
 import { BrushTool } from './brushes/BrushTool.ts';
 import { AirbrushTool } from './brushes/airbrush/AirbrushTool.ts';
 import { CalligraphyBrushTool } from './brushes/caligraphy-brush/CalligraphyBrushTool.ts';
+import { OilBrush } from './brushes/oil-brush/OilBrush.ts';
 
 export class ToolHandlerFactory {
   private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
@@ -16,6 +17,7 @@ export class ToolHandlerFactory {
     calligraphyBrush: CalligraphyBrushTool,
     eraser: EraserTool,
     line: LineTool,
+    oilBrush: OilBrush,
     rect: RectTool,
   }
 
