@@ -7,7 +7,7 @@ import { getMidPoints } from '../../../../math/get-mid-points.ts';
 import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
 import { applyToolState } from '../../helpers/apply-tool-state.ts';
 
-export class OilBrush extends SimpleBrush {
+export class PastelBrush extends SimpleBrush {
   protected cursorSize = this.size + 2;
   protected customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
     ctx.strokeStyle = this.colour;
@@ -19,19 +19,18 @@ export class OilBrush extends SimpleBrush {
   protected override onNewPoint = (point: Point) => {
     if (this.points.length == 0) {
       this.points.push(point);
-      return;
-    }
-
-    const prevPoint = this.points.at(-1)!;
-    const distance = calculateDistance(prevPoint, point);
-
-    if (distance > 1) {
-      this.points.push(...getMidPoints(prevPoint, point));
     } else {
-      this.points.push(point);
-    }
+      const prevPoint = this.points.at(-1)!;
+      const distance = calculateDistance(prevPoint, point);
 
-    if (this.points.length >= 2) this.renderPreview();
+      if (distance > 1) {
+        this.points.push(...getMidPoints(prevPoint, point));
+      } else {
+        this.points.push(point);
+      }
+
+      this.renderPreview();
+    }
   };
 
   private readonly firstRange: [number, number];
@@ -92,7 +91,7 @@ export class OilBrush extends SimpleBrush {
           const jitterX = (Math.random() - 0.5) * this.radius * 0.5;
           const jitterY = (Math.random() - 0.5) * this.radius * 0.5;
 
-          const alpha = primaryAlpha * (Math.random() * (j % 2 == 0 ? 0.5 : 0.05));
+          const alpha = Math.random() > 0.95 ? primaryAlpha : primaryAlpha * (Math.random() * (j % 2 == 0 ? 0.5 : 0.05));
 
           this.offscreenCtx.beginPath();
           const offsetY = j * this.radius + Math.sign(j) * halfRadius;

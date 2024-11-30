@@ -7,27 +7,22 @@ export const BrushPicker = () => {
   const { state } = useGlobalContext();
   const brushes = [
     {
-      // Simple arcs
       'label': 'Brush',
       'id': 'brush'
     },
     {
-      // Random dots on a given arc area
       'label': 'Airbrush',
       'id': 'airbrush'
     },
     {
-      // Short line at 45 degrees
       'label': 'Calligraphy Brush',
       'id': 'calligraphyBrush'
     },
     {
-      // Circle, semi-transparent straps along the brush's hair, runs out of paint
-      'label': 'Oil Brush',
-      'id': 'oilBrush'
+      'label': 'Pastel Brush',
+      'id': 'pastelBrush'
     },
     {
-      // Circle, semi-transparent, focus on building layers when drawing on itself
       'label': 'Marker',
       'id': 'marker'
     },

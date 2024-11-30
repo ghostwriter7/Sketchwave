@@ -8,7 +8,7 @@ import { EraserTool } from './EraserTool.ts';
 import { BrushTool } from './brushes/BrushTool.ts';
 import { AirbrushTool } from './brushes/airbrush/AirbrushTool.ts';
 import { CalligraphyBrushTool } from './brushes/caligraphy-brush/CalligraphyBrushTool.ts';
-import { OilBrush } from './brushes/oil-brush/OilBrush.ts';
+import { PastelBrush } from './brushes/oil-brush/PastelBrush.ts';
 import { Marker } from './brushes/marker/Marker.ts';
 
 export class ToolHandlerFactory {
@@ -19,7 +19,7 @@ export class ToolHandlerFactory {
     eraser: EraserTool,
     line: LineTool,
     marker: Marker,
-    oilBrush: OilBrush,
+    pastelBrush: PastelBrush,
     rect: RectTool,
   }
 
