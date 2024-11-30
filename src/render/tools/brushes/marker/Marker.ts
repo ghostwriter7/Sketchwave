@@ -5,6 +5,7 @@ import { calculateDistance } from '../../../../math/distance.ts';
 import type { Point } from '../../../primitives/Point.ts';
 import { renderCircles } from '../../../utils/render-circles.ts';
 import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
+import { getMidPoints } from '../../../../math/get-mid-points.ts';
 
 export class Marker extends SimpleBrush {
   protected override cursorSize = this.size + 2;
@@ -20,22 +21,12 @@ export class Marker extends SimpleBrush {
       this.points.push(point);
     } else {
       const prevPoint = this.points.at(-1)!;
-      const distance = calculateDistance(prevPoint, point);
-      if (distance > 1) {
-        const dx = point.x - prevPoint.x;
-        const dy = point.y - prevPoint.y;
-        const normalizedVec = [dx / distance, dy / distance];
-        const count = Math.floor(distance);
 
-        const midPoints = Array.from({ length: count }, (_, i) => ({
-          x: prevPoint.x + normalizedVec[0] * (i + 1),
-          y: prevPoint.y + normalizedVec[1] * (i + 1),
-        }));
-
-        this.points.push(...midPoints);
-      } else {
-        this.points.push(point);
+      if (calculateDistance(prevPoint, point) > 1) {
+        this.points.push(...getMidPoints(prevPoint, point));
       }
+
+      this.points.push(point);
     }
 
     this.renderPreview();
