@@ -86,15 +86,15 @@ export class PastelBrush extends SimpleBrush {
         const halfRadius = this.radius / 2;
         const halfOfRemainingStreams = remainingStreams / 2;
 
-        for (let j = -halfOfRemainingStreams; j < halfOfRemainingStreams; j++) {
-          if (j == 0) continue;
+        for (let i = -halfOfRemainingStreams; i < halfOfRemainingStreams; i++) {
+          if (i == 0) continue;
           const jitterX = (Math.random() - 0.5) * this.radius * 0.5;
           const jitterY = (Math.random() - 0.5) * this.radius * 0.5;
 
-          const alpha = Math.random() > 0.95 ? primaryAlpha : primaryAlpha * (Math.random() * (j % 2 == 0 ? 0.5 : 0.05));
+          const alpha = Math.random() > 0.85 ? primaryAlpha : primaryAlpha * (Math.random() * (i % 2 == 0 ? 0.5 : 0.05));
 
           this.offscreenCtx.beginPath();
-          const offsetY = j * this.radius + Math.sign(j) * halfRadius;
+          const offsetY = i * this.radius + Math.sign(i) * halfRadius;
           this.offscreenCtx.fillStyle = stringifyRgb(this.toolState.color, alpha);
           const radiusVariety = this.radius * (Math.random() + 0.55);
           this.offscreenCtx.arc(x + jitterX, y + jitterY + offsetY, radiusVariety, 0, 2 * Math.PI);

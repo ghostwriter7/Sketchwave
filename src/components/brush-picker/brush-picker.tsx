@@ -25,16 +25,6 @@ export const BrushPicker = () => {
     {
       'label': 'Marker',
       'id': 'marker'
-    },
-    {
-      // Cross, small, small variations in depth between pixels, semi transparent
-      'label': 'Natural Pencil',
-      'id': 'naturalPencil'
-    },
-    {
-      // Similar to the Oil brush, but much softer, initially fairly bright and decreasing it till gone
-      'label': 'Watercolor Brush',
-      'id': 'watercolorBrush'
     }
   ]
 
