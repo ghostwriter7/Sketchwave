@@ -10,12 +10,14 @@ export interface Layer {
   draw(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D): void;
 }
 
-export type ToolType = 'airbrush' |
-  'brush' |
-  'calligraphyBrush' |
-  'eraser' |
-  'oilBrush' |
-  'rect' |
-  'line';
+export type ToolType =
+  'airbrush'
+  | 'brush'
+  | 'calligraphyBrush'
+  | 'eraser'
+  | 'oilBrush'
+  | 'marker'
+  | 'rect'
+  | 'line';
 
 export type Constructor = new (...args: any) => any;

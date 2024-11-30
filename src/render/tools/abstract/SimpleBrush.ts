@@ -7,6 +7,7 @@ export abstract class SimpleBrush extends ToolHandler {
   protected isWorking = false;
   protected points: Point[] = [];
   protected lastPointIndex = 0;
+  protected onNewPoint?: (point: Point) => void;
 
   protected constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
@@ -37,7 +38,12 @@ export abstract class SimpleBrush extends ToolHandler {
 
   private handleEvent(event: MouseEvent): void {
     const point = Point.fromEvent(event);
-    this.points.push(point);
-    this.renderPreview();
+
+    if (this.onNewPoint) {
+      this.onNewPoint(point);
+    } else {
+      this.points.push(point);
+      this.renderPreview();
+    }
   }
 }
