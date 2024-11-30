@@ -4,11 +4,12 @@ import { type LayerFacade } from '../../../LayerFacade.ts';
 import { calculateDistance } from '../../../../math/distance.ts';
 import type { Point } from '../../../primitives/Point.ts';
 import { renderCircles } from '../../../utils/render-circles.ts';
+import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
 
 export class Marker extends SimpleBrush {
   protected override cursorSize = this.size + 2;
   protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
-    ctx.fillStyle = this.toolState.fillStyle.replace(', 0.05)', ', 0.5)');
+    ctx.fillStyle = stringifyRgb(this.toolState.color, 0.25);
     const center = this.cursorSize / 2;
     ctx.arc(center, center, this.size / 2, 0, 2 * Math.PI);
     ctx.fill();
@@ -41,7 +42,7 @@ export class Marker extends SimpleBrush {
   }
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
-    super({ ...toolState, fillStyle: toolState.fillStyle.replace(')', ', 0.05)') }, layerFacade);
+    super({ ...toolState, fillStyle: stringifyRgb(toolState.color, 0.01) }, layerFacade);
   }
 
   public tryCreateLayer(): void {
