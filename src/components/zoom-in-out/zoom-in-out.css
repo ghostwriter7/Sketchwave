@@ -1,0 +1,6 @@
+.zoom-in-out {
+  align-items: center;
+  display: flex;
+  gap: var(--space-md);
+  margin-left: auto;
+}

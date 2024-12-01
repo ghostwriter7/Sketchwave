@@ -1,6 +1,7 @@
 import './canvas-summary.css';
 import { useGlobalContext } from '../../global-provider.tsx';
 import { Show } from 'solid-js';
+import { ZoomInOut } from '../zoom-in-out/zoom-in-out.tsx';
 
 export const CanvasSummary = () => {
   const { state } = useGlobalContext();
@@ -14,5 +15,6 @@ export const CanvasSummary = () => {
     |
     <span class="material-symbols-outlined">check_box_outline_blank</span>
     <span>{width()} x {height()}px</span>
+    <ZoomInOut />
   </footer>
 }

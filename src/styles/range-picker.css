@@ -1,0 +1,25 @@
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  flex: 1;
+
+  &::-webkit-slider-runnable-track {
+    background: var(--bg-primary);
+    border-radius: var(--radius);
+    width: 8px;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: var(--clr-accent);
+    border-radius: 50%;
+    height: 8px;
+    width: 8px;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}

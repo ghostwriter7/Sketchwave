@@ -32,10 +32,10 @@ export const GlobalProvider = (props: ParentProps) => {
     ctx: null,
     currentMouseX: null,
     currentMouseY: null,
-    height: innerHeight - 300,
+    height: innerHeight * 0.7,
     layerFacade: null,
     size: 1,
-    width: innerWidth - 500
+    width: innerWidth * 0.8
   });
 
   const facade: GlobalContextActions = {

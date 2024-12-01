@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500');
 @import './styles/interactive.css';
+@import './styles/range-picker.css';
 
 :root {
   --bright-navy: #1F2233;
