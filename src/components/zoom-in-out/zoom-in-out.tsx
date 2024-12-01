@@ -3,10 +3,12 @@ import { useGlobalContext } from '../../global-provider.tsx';
 
 export const ZoomInOut = () => {
   const { state, setScale } = useGlobalContext();
+  let ref: number;
 
   const handleInput = (event: Event) => {
     const { value } = event.target as HTMLInputElement;
-    setScale(parseFloat(value));
+    if (ref) clearTimeout(ref)
+    ref = setTimeout(() => setScale(parseFloat(value)), 100);
   }
 
   const increaseScale = () => setScale(Math.max(state.scale - .1, .1));
