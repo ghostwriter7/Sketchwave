@@ -37,8 +37,8 @@ export const BrushPicker = () => {
   }
 
   onMount(() => {
-    popoverRef.addEventListener('toggle', ({ newState }: ToggleEvent) => {
-      if (newState === 'open') {
+    popoverRef.addEventListener('toggle', (event: Event) => {
+      if ((event as ToggleEvent).newState === 'open') {
         (popoverRef.querySelector('button') as HTMLButtonElement).focus();
       }
     });
