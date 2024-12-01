@@ -14,6 +14,9 @@ const Canvas = () => {
   const canvasRef = <canvas
     class="canvas"
     height={state.height}
+    style={{
+      transform: `scale(${state.scale})`,
+    }}
     width={state.width}
     onMouseLeave={() => setMousePos(null, null)}
     onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY)}>

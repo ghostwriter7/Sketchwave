@@ -4,3 +4,12 @@
   gap: var(--space-md);
   margin-left: auto;
 }
+
+.pointer {
+  cursor: pointer;
+}
+
+.disabled {
+  color: var(--clr-disabled);
+  pointer-events: none;
+}

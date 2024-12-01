@@ -11,6 +11,7 @@ export interface GlobalContextState {
   currentMouseY: number | null;
   height: number;
   layerFacade: LayerFacade | null;
+  scale: number;
   size: number;
   width: number;
 }
@@ -20,6 +21,7 @@ interface GlobalContextActions {
   setDimensions(width: number, height: number): void;
   setLayerFacade(layerFacade: LayerFacade): void;
   setMousePos<T extends number | null>(x: T, y: T): void;
+  setScale(scale: number): void;
   state: GlobalContextState;
   updateState: (state: Partial<GlobalContextState>) => void;
 }
@@ -34,6 +36,7 @@ export const GlobalProvider = (props: ParentProps) => {
     currentMouseY: null,
     height: innerHeight * 0.7,
     layerFacade: null,
+    scale: 1,
     size: 1,
     width: innerWidth * 0.8
   });
@@ -44,6 +47,7 @@ export const GlobalProvider = (props: ParentProps) => {
     setLayerFacade: (layerFacade: LayerFacade) => setState('layerFacade', layerFacade),
     setMousePos: <T extends number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y }),
     setDimensions: (width: number, height: number) => setState({ width, height }),
+    setScale: (scale: number) => setState({ scale }),
     updateState: (state: Partial<GlobalContextState>) => setState({ ...state }),
   }
 
