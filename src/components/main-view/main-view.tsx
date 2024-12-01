@@ -10,21 +10,24 @@ export const MainView = () => {
   let mainRef!: HTMLElement;
 
   createEffect(() => {
-    if (state.scale) {
-      const canvas = document.querySelector('.canvas') as HTMLCanvasElement;
+    state.scale;
+    const canvas = document.querySelector('.canvas') as HTMLCanvasElement;
 
-      if (canvas) {
-        const { width: canvasWidth, height: canvasHeight } = canvas.getBoundingClientRect();
-        const { width: mainWidth, height: mainHeight } = wrapperRef.getBoundingClientRect();
+    if (canvas) {
+      const { width: canvasWidth, height: canvasHeight } = canvas.getBoundingClientRect();
+      const { width: mainWidth, height: mainHeight } = wrapperRef.getBoundingClientRect();
 
-        const showHorizontalScrollbar = canvasWidth > mainWidth;
-        const showVerticalScrollbar = canvasHeight > mainHeight;
+      const showHorizontalScrollbar = canvasWidth > mainWidth;
+      const showVerticalScrollbar = canvasHeight > mainHeight;
 
-        wrapperRef.style.width = showHorizontalScrollbar ? `${canvasWidth}px` : '100%';
-        wrapperRef.style.height = showVerticalScrollbar ? `${canvasHeight}px` : '100%';
+      wrapperRef.style.width = showHorizontalScrollbar ? `${canvasWidth}px` : '100%';
+      wrapperRef.style.height = showVerticalScrollbar ? `${canvasHeight}px` : '100%';
 
-        mainRef.style.overflowX = showHorizontalScrollbar ? 'scroll' : 'hidden';
-        mainRef.style.overflowY = showVerticalScrollbar ? 'scroll' : 'hidden';
+      mainRef.style.overflowX = showHorizontalScrollbar ? 'scroll' : 'hidden';
+      mainRef.style.overflowY = showVerticalScrollbar ? 'scroll' : 'hidden';
+
+      if (!showVerticalScrollbar && !showVerticalScrollbar) {
+        mainRef.scrollTop = 0;
       }
     }
   });
