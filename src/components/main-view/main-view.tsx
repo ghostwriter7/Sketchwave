@@ -19,17 +19,12 @@ export const MainView = () => {
 
         const showHorizontalScrollbar = canvasWidth > mainWidth;
         const showVerticalScrollbar = canvasHeight > mainHeight;
-        if (!showHorizontalScrollbar && !showVerticalScrollbar) {
-          mainRef.style.overflow = 'hidden';
-          wrapperRef.style.width = '100%';
-          wrapperRef.style.height = '100%';
-        } else {
-          wrapperRef.style.width = showHorizontalScrollbar ? `${canvasWidth}px` : '100%';
-          wrapperRef.style.height = showVerticalScrollbar ? `${canvasHeight}px` : '100%';
 
-          mainRef.style.overflowX = showHorizontalScrollbar ? 'scroll' : 'hidden';
-          mainRef.style.overflowY = showVerticalScrollbar ? 'scroll' : 'hidden';
-        }
+        wrapperRef.style.width = showHorizontalScrollbar ? `${canvasWidth}px` : '100%';
+        wrapperRef.style.height = showVerticalScrollbar ? `${canvasHeight}px` : '100%';
+
+        mainRef.style.overflowX = showHorizontalScrollbar ? 'scroll' : 'hidden';
+        mainRef.style.overflowY = showVerticalScrollbar ? 'scroll' : 'hidden';
       }
     }
   });

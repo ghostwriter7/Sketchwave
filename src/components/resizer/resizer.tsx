@@ -8,7 +8,7 @@ import { ThemeHelper } from '../../helpers/theme.helper.ts';
 export const Resizer = () => {
   const { state, setDimensions } = useGlobalContext();
 
-  const canvasRef = <canvas class="resizer" width={innerWidth - 100} height={innerHeight - 100} /> as HTMLCanvasElement;
+  const canvasRef = <canvas class="resizer" width={innerWidth} height={innerHeight}/> as HTMLCanvasElement;
   const ctx = canvasRef.getContext('2d')!;
 
   let indicators: Point[];
@@ -31,6 +31,11 @@ export const Resizer = () => {
     cursorIndex = indicators.findIndex((indicatorPoint) => calculateDistance(point, indicatorPoint) < 10);
     canvasRef.style.cursor = cursorIndex !== -1 ? cursors[cursorIndex] : 'default';
     canvasRef.style.zIndex = 'unset';
+  }
+
+  const getActualCanvasDimensions = (): { width: number, height: number } => {
+    const { width, height } = document.querySelector('.canvas')!.getBoundingClientRect();
+    return { width, height };
   }
 
   const renderIndicators = (x: number, y: number, width: number, height: number) => {
@@ -56,15 +61,22 @@ export const Resizer = () => {
       .forEach(({ x, y }) => ctx.fillRect(x, y, squareDimension, squareDimension));
   }
 
-  const getOriginXAndY = () => ({
-    originX: canvasRef.width / 2 - state.width / 2,
-    originY: canvasRef.height / 2 - state.height / 2
-  })
+  const getOriginXAndY = () => {
+    const { width, height } = getActualCanvasDimensions();
+    return {
+      originX: canvasRef.width / 2 - width / 2,
+      originY: canvasRef.height / 2 - height / 2
+    };
+  }
 
   createEffect(() => {
-    const { originX, originY } = getOriginXAndY();
-    ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
-    renderIndicators(originX, originY, state.width, state.height);
+    if (state.scale || state.width || state.height) {
+      const { width, height } = getActualCanvasDimensions();
+      const { originX, originY } = getOriginXAndY();
+
+      ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+      renderIndicators(originX, originY, width, height);
+    }
   });
 
 
@@ -103,7 +115,8 @@ export const Resizer = () => {
       canvasRef.style.zIndex = '2';
 
       const { offsetY, offsetX } = event;
-      const { height, width } = state;
+      const { height, width } = getActualCanvasDimensions();
+
       const { originX: currentOriginX, originY: currentOriginY } = getOriginXAndY();
 
       const cursorName = cursors[cursorIndex];
@@ -139,8 +152,11 @@ export const Resizer = () => {
   }
 
   const handleMouseUp = () => {
-    if (isDragging && (newWidth !== state.width || newHeight !== state.height)) {
-      setDimensions(newWidth, newHeight);
+    if (!isDragging) return;
+
+    const { width, height } = getActualCanvasDimensions();
+    if (newWidth !== width || newHeight !== height) {
+      setDimensions(newWidth / state.scale, newHeight / state.scale);
     }
     isDragging = false;
     canvasRef.style.zIndex = 'unset';
