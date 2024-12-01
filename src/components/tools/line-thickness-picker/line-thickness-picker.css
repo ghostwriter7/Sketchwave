@@ -10,7 +10,7 @@
   left: var(--space-md);
   padding: var(--space-sm);
   padding-bottom: calc(28px + var(--space-sm)) ;
-  position: absolute;
+  position: fixed;
   top: 50%;
   transform: translateY(-50%);
   transform-origin: center;
@@ -34,7 +34,7 @@
     font-size: 0.75em;
     outline: 1px solid var(--clr-primary);
     padding: var(--space-sm);
-    position: absolute;
+    position: fixed;
     width: 40px;
     text-align: center;
   }
@@ -42,7 +42,7 @@
   .preview-canvas {
     border-radius: var(--radius);
     left: 40px;
-    position: absolute;
+    position: fixed;
     top: 50%;
     transform: translateY(-50%);
   }

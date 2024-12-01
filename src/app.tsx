@@ -14,7 +14,9 @@ const App = () => {
     'undo': { key: 'KeyZ', ctrl: true },
     'redo': { key: 'KeyY', ctrl: true },
     'save-file-button': { key: 'KeyS', ctrl: true },
-    'open-file-button': { key: 'KeyO', ctrl: true }
+    'open-file-button': { key: 'KeyO', ctrl: true },
+    'zoom': 'KeyZ',
+    'cancel': 'Escape'
   }
 
   document.addEventListener('keydown', (event) => {
@@ -27,10 +29,14 @@ const App = () => {
     })?.[0];
 
     if (matchingActionKey) {
-      event.preventDefault();
-      const element = document.getElementById(matchingActionKey) || document.querySelector(`[data-tool="${matchingActionKey}"]`);
-      element?.click();
-      element?.focus();
+      if (matchingActionKey == 'cancel') {
+        (document.activeElement as HTMLElement)?.blur();
+      } else {
+        event.preventDefault();
+        const element = document.getElementById(matchingActionKey) || document.querySelector(`[data-tool="${matchingActionKey}"]`);
+        element?.click();
+        element?.focus();
+      }
     }
   });
 

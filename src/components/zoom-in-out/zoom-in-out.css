@@ -3,6 +3,13 @@
   display: flex;
   gap: var(--space-md);
   margin-left: auto;
+
+  &:has(input:focus) {
+    background-color: var(--bg-active);
+    border-radius: var(--radius);
+    color: var(--clr-hover);
+    padding-inline: 8px;
+  }
 }
 
 .pointer {

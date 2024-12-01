@@ -37,7 +37,7 @@ export const MainView = () => {
 
   return <main class="scroller" ref={mainRef!}>
     <LineThicknessPicker/>
-    <div class="wrapper" ref={wrapperRef!}>
+    <div class="canvas-wrapper" ref={wrapperRef!}>
       <Canvas/>
     </div>
   </main>
