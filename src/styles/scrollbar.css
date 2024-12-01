@@ -1,0 +1,6 @@
+@supports (scrollbar-width:  auto) {
+  .scroller {
+    scrollbar-color: var(--clr-primary) var(--bg-secondary);
+    scrollbar-width: thin;
+  }
+}
