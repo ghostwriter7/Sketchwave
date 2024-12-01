@@ -1,8 +1,7 @@
-import Canvas from './components/canvas/canvas.tsx';
 import Menu from './components/menu/menu.tsx';
 import { GlobalProvider } from './global-provider.tsx';
 import { CanvasSummary } from './components/canvas-summary/canvas-summary.tsx';
-import { LineThicknessPicker } from './components/tools/line-thickness-picker/line-thickness-picker.tsx';
+import { MainView } from './components/main-view/main-view.tsx';
 
 const App = () => {
   const KEYBOARD_MAPPING = {
@@ -38,10 +37,7 @@ const App = () => {
   return <>
     <GlobalProvider>
       <Menu/>
-      <main>
-        <LineThicknessPicker/>
-        <Canvas/>
-      </main>
+      <MainView/>
       <CanvasSummary/>
     </GlobalProvider>
   </>;
