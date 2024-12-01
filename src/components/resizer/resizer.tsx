@@ -70,13 +70,12 @@ export const Resizer = () => {
   }
 
   createEffect(() => {
-    if (state.scale || state.width || state.height) {
-      const { width, height } = getActualCanvasDimensions();
-      const { originX, originY } = getOriginXAndY();
+    state.scale; state.width; state.height;
+    const { width, height } = getActualCanvasDimensions();
+    const { originX, originY } = getOriginXAndY();
 
-      ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
-      renderIndicators(originX, originY, width, height);
-    }
+    ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+    renderIndicators(originX, originY, width, height);
   });
 
 
