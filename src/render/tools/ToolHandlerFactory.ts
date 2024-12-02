@@ -10,6 +10,7 @@ import { AirbrushTool } from './brushes/airbrush/AirbrushTool.ts';
 import { CalligraphyBrushTool } from './brushes/caligraphy-brush/CalligraphyBrushTool.ts';
 import { PastelBrush } from './brushes/oil-brush/PastelBrush.ts';
 import { Marker } from './brushes/marker/Marker.ts';
+import { ShapeTool } from './shapes/ShapeTool.ts';
 
 export class ToolHandlerFactory {
   private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
@@ -21,6 +22,7 @@ export class ToolHandlerFactory {
     marker: Marker,
     pastelBrush: PastelBrush,
     rect: RectTool,
+    shape: ShapeTool,
   }
 
   public static fromToolType(toolType: ToolType, toolState: ToolState, layerFacade: LayerFacade): ToolHandler {

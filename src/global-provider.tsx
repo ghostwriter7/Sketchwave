@@ -3,6 +3,10 @@ import { createStore } from 'solid-js/store';
 import type { ToolType } from './types/core.type.ts';
 import { type LayerFacade } from './render/LayerFacade.ts';
 
+export interface ToolProperties {
+  shapeType?: 'rect' | 'circle' | 'ellipse';
+}
+
 export interface GlobalContextState {
   activeTool?: ToolType;
   color: [number, number, number];
@@ -14,6 +18,7 @@ export interface GlobalContextState {
   scale: number;
   size: number;
   width: number;
+  toolProperties?: ToolProperties;
 }
 
 interface GlobalContextActions {

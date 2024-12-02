@@ -16,6 +16,7 @@ const App = () => {
     'save-file-button': { key: 'KeyS', ctrl: true },
     'open-file-button': { key: 'KeyO', ctrl: true },
     'zoom': 'KeyZ',
+    'shape': 'KeyS',
     'cancel': 'Escape'
   }
 

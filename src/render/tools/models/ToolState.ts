@@ -1,8 +1,15 @@
-import type { GlobalContextState } from '../../../global-provider.tsx';
+import type { GlobalContextState, ToolProperties } from '../../../global-provider.tsx';
 import { stringifyRgb } from '../../../color/stringify-rgb.ts';
 
 export type ToolState = Pick<CanvasRenderingContext2D, | 'lineCap' | 'lineJoin' | 'shadowBlur' | 'shadowColor'>
-  & { fillStyle: string; shadowColor: string; strokeStyle: string; size: number, color: [number, number, number]; };
+  & {
+  fillStyle: string;
+  shadowColor: string;
+  strokeStyle: string;
+  size: number,
+  color: [number, number, number];
+  toolProperties?: ToolProperties
+};
 
 export class ToolStateFactory {
   public static fromState(state: GlobalContextState): ToolState {
@@ -17,7 +24,8 @@ export class ToolStateFactory {
       size: state.size,
       strokeStyle: colour,
       shadowBlur: 0,
-      shadowColor: stringifyRgb(state.color, 0.9)
+      shadowColor: stringifyRgb(state.color, 0.9),
+      toolProperties: state.toolProperties
     };
   }
 }

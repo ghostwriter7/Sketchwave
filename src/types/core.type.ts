@@ -1,7 +1,3 @@
-export type Coordinates = [number, number];
-
-export type Dimensions = [number, number];
-
 export interface Layer {
   id?: string;
   order?: number;
@@ -18,6 +14,7 @@ export type ToolType =
   | 'pastelBrush'
   | 'marker'
   | 'rect'
-  | 'line';
+  | 'line'
+  | 'shape';
 
 export type Constructor = new (...args: any) => any;
