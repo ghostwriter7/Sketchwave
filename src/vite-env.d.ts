@@ -7,6 +7,10 @@ type Type = {
   },
 }
 
+interface Array {
+  chunk<T>(size: number): T[][];
+}
+
 interface Window {
   ctx: CanvasRenderingContext2D;
   showOpenFilePicker(options: {
