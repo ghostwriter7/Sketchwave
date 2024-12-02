@@ -29,4 +29,17 @@ button,
       color: var(--clr-disabled);
     }
   }
+
+  &:has(input[type="checkbox"]:checked) {
+    background: var(--bg-active);
+    outline: 1px solid var(--clr-primary);
+  }
+}
+
+label.interactive:has(input[type="checkbox"]) {
+  align-items: center;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
 }

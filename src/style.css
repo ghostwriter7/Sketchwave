@@ -82,3 +82,7 @@ li {
 .material-symbols-outlined {
   color: var(--clr-primary);
 }
+
+.hidden {
+  display: none;
+}

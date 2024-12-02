@@ -2,18 +2,19 @@ import { ToolHandler } from '../abstract/ToolHandler.ts';
 import type { ToolState } from '../models/ToolState.ts';
 import { type LayerFacade } from '../../LayerFacade.ts';
 import { Point } from '../../primitives/Point.ts';
-import { rect } from './point-factories/rect.ts';
+import { rect } from './get-points-for-shape-fns/rect.ts';
+import { computePointsForRoundedShape } from './compute-points-for-rounded-shape.ts';
 
 export class ShapeTool extends ToolHandler {
   private startPoint: Point | null = null;
   private endPoint: Point | null = null;
   private isWorking = false;
 
-  private readonly pointFactory: (origin: Point, endPoint: Point) => Point[];
+  private readonly getPointsForShapeFn: (origin: Point, endPoint: Point) => Point[];
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
-    this.pointFactory = rect;
+    this.getPointsForShapeFn = rect;
   }
 
   public tryCreateLayer(): void {
@@ -39,13 +40,38 @@ export class ShapeTool extends ToolHandler {
     if (!this.startPoint || !this.endPoint) return;
     super.renderPreview();
 
-    const points = this.pointFactory(this.startPoint, this.endPoint);
+    const points = this.getPointsForShapeFn(this.startPoint, this.endPoint);
 
-    this.ctx.beginPath();
-    this.ctx.moveTo(points[0].x, points[0].y);
-    points.slice(1).forEach(({ x, y }) => this.ctx.lineTo(x, y));
-    this.ctx.closePath();
-    this.ctx.fill();
+    if (this.toolState.toolProperties?.isRounded) {
+      const dx = this.endPoint.x - this.startPoint.x;
+      const dy = this.endPoint.y - this.startPoint.y;
+
+      const { chunks, radius } = computePointsForRoundedShape(points, Math.abs(dx), Math.abs(dy));
+      this.ctx.beginPath();
+
+      for (let i = 0; i < chunks.length; i++) {
+        const [startPoint, testPoint, endPoint] = chunks[i];
+
+        if (i == 0) {
+          this.ctx.moveTo(startPoint.x, startPoint.y);
+        } else {
+          this.ctx.lineTo(startPoint.x, startPoint.y)
+        }
+
+        this.ctx.arcTo(testPoint.x, testPoint.y, endPoint.x, endPoint.y, radius);
+      }
+
+      this.ctx.closePath();
+      this.ctx.fill();
+
+    } else {
+      this.ctx.beginPath();
+      this.ctx.moveTo(points[0].x, points[0].y);
+      points.slice(1).forEach(({ x, y }) => this.ctx.lineTo(x, y));
+      this.ctx.closePath();
+      this.ctx.fill();
+    }
+
   }
 
   private resetState(): void {

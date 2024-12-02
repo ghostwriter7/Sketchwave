@@ -4,7 +4,8 @@ import type { ToolType } from './types/core.type.ts';
 import { type LayerFacade } from './render/LayerFacade.ts';
 
 export interface ToolProperties {
-  shapeType?: 'rect' | 'circle' | 'ellipse';
+  isRounded?: boolean;
+  shapeType?: string;
 }
 
 export interface GlobalContextState {

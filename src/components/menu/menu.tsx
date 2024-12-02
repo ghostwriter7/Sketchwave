@@ -27,11 +27,10 @@ const Menu = () => {
   const handleClick = ({ target }: MouseEvent) => {
     const element = target as HTMLElement;
     const toolId = getAttributeValue(element, 'tool');
-    const toolProperties = getAttributeValue(element, 'tool-properties');
 
     if (state.activeTool !== toolId && toolId) {
       logger.log(`${toolId.toTitleCase()}Tool selected.`);
-      updateState({ activeTool: toolId as ToolType, toolProperties: toolProperties ? JSON.parse(toolProperties) : undefined });
+      updateState({ activeTool: toolId as ToolType });
     }
   };
 
