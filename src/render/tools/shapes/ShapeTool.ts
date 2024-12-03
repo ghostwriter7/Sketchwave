@@ -7,6 +7,7 @@ import { computePointsForRoundedShape } from './compute-points-for-rounded-shape
 import { triangle } from './get-points-for-shape-fns/triangle.ts';
 import type { CreatePointsForShapeFn, ShapeType } from '../../../types/core.type.ts';
 import { star } from './get-points-for-shape-fns/star.ts';
+import { diamond } from './get-points-for-shape-fns/diamond.ts';
 
 export class ShapeTool extends ToolHandler {
   private startPoint: Point | null = null;
@@ -14,6 +15,7 @@ export class ShapeTool extends ToolHandler {
   private isWorking = false;
 
   private static shapeFnsMap: Record<ShapeType, CreatePointsForShapeFn> = {
+    diamond: diamond,
     rect: rect,
     star: star,
     triangle: triangle,

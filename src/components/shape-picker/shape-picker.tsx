@@ -23,6 +23,11 @@ export const ShapePicker = () => {
       icon: 'star',
       shapeType: 'star',
       title: 'Star'
+    },
+    {
+      icon: 'diamond',
+      shapeType: 'diamond',
+      title: 'Diamond'
     }
   ]
 
