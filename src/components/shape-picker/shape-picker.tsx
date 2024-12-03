@@ -6,7 +6,33 @@ import './shape-picker.css';
 export const ShapePicker = () => {
   const { state, updateState } = useGlobalContext();
   const [rounded, setRounded] = createSignal(false);
+  const [stroked, setStroked] = createSignal(false);
+  const [filled, setFilled] = createSignal(true);
   const [shape, setShape] = createSignal<ShapeType | null>(null);
+
+  const modifiers = [
+    {
+      getter: rounded,
+      setter: setRounded,
+      id: 'round',
+      icon: 'rounded_corner',
+      title: 'Round Corners'
+    },
+    {
+      getter: stroked,
+      setter: setStroked,
+      id: 'stroke',
+      icon: 'border_style',
+      title: 'Outline Shape'
+    },
+    {
+      getter: filled,
+      setter: setFilled,
+      id: 'fill',
+      icon: 'format_paint',
+      title: 'Fill Shape'
+    }
+  ]
 
   const shapes: { icon: string, shapeType: ShapeType; title: string }[] = [
     {
@@ -32,10 +58,11 @@ export const ShapePicker = () => {
   ]
 
   createEffect(() => {
-    const isRounded = rounded();
+    const round = rounded();
+    const stroke = stroked();
     const activeShape = shape();
     if (activeShape) {
-      updateState({ activeTool: 'shape', toolProperties: { shapeType: activeShape, isRounded } });
+      updateState({ activeTool: 'shape', toolProperties: { shapeType: activeShape, round, stroke } });
     }
   });
 
@@ -47,15 +74,21 @@ export const ShapePicker = () => {
   });
 
   return <div class="shape-picker" onClick={(e) => e.stopPropagation()}>
-    <label class="interactive" for="rounded-corners" title="Rounded Corners">
-      <span class="material-symbols-outlined">rounded_corner</span>
-      <input
-        class="hidden"
-        type="checkbox"
-        id="rounded-corners"
-        checked={rounded()}
-        onInput={(e) => setRounded(e.target.checked)}/>
-    </label>
+    <div class="modifiers">
+      <For each={modifiers}>
+        {({ id, icon, title, getter, setter }) =>
+          <label class="interactive" for={id} title={title}>
+            <span class="material-symbols-outlined">{icon}</span>
+            <input
+              class="hidden"
+              type="checkbox"
+              id={id}
+              checked={getter()}
+              onInput={(e) => setter(e.target.checked)}/>
+          </label>}
+      </For>
+    </div>
+
     <div class="shapes">
       <For each={shapes}>
         {({ icon, shapeType, title }) =>

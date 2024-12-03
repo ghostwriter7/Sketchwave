@@ -4,7 +4,9 @@ import type { ShapeType, ToolType } from './types/core.type.ts';
 import { type LayerFacade } from './render/LayerFacade.ts';
 
 export interface ToolProperties {
-  isRounded?: boolean;
+  round?: boolean;
+  stroke?: boolean;
+  fill?: boolean;
   shapeType?: ShapeType;
 }
 
