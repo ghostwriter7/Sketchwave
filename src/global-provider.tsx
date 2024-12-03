@@ -1,11 +1,11 @@
 import { createContext, type ParentProps, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import type { ToolType } from './types/core.type.ts';
+import type { ShapeType, ToolType } from './types/core.type.ts';
 import { type LayerFacade } from './render/LayerFacade.ts';
 
 export interface ToolProperties {
   isRounded?: boolean;
-  shapeType?: string;
+  shapeType?: ShapeType;
 }
 
 export interface GlobalContextState {

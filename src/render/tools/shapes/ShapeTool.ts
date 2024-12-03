@@ -4,17 +4,25 @@ import { type LayerFacade } from '../../LayerFacade.ts';
 import { Point } from '../../primitives/Point.ts';
 import { rect } from './get-points-for-shape-fns/rect.ts';
 import { computePointsForRoundedShape } from './compute-points-for-rounded-shape.ts';
+import { triangle } from './get-points-for-shape-fns/triangle.ts';
+import type { CreatePointsForShapeFn, ShapeType } from '../../../types/core.type.ts';
 
 export class ShapeTool extends ToolHandler {
   private startPoint: Point | null = null;
   private endPoint: Point | null = null;
   private isWorking = false;
 
-  private readonly getPointsForShapeFn: (origin: Point, endPoint: Point) => Point[];
+  private static shapeFnsMap: Record<ShapeType, CreatePointsForShapeFn> = {
+    triangle: triangle,
+    rect: rect,
+  }
+
+  private get createPointsForShapeFn(): CreatePointsForShapeFn {
+    return ShapeTool.shapeFnsMap[this.toolState.toolProperties!.shapeType!];
+  }
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
-    this.getPointsForShapeFn = rect;
   }
 
   public tryCreateLayer(): void {
@@ -40,7 +48,7 @@ export class ShapeTool extends ToolHandler {
     if (!this.startPoint || !this.endPoint) return;
     super.renderPreview();
 
-    const points = this.getPointsForShapeFn(this.startPoint, this.endPoint);
+    const points = this.createPointsForShapeFn(this.startPoint, this.endPoint);
 
     if (this.toolState.toolProperties?.isRounded) {
       const dx = this.endPoint.x - this.startPoint.x;

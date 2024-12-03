@@ -1,0 +1,4 @@
+.shapes {
+  display: flex;
+  flex-wrap: wrap;
+}

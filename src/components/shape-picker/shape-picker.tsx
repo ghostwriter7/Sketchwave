@@ -1,16 +1,31 @@
-import { createEffect, createSignal } from 'solid-js';
+import { createEffect, createSignal, For } from 'solid-js';
 import { useGlobalContext } from '../../global-provider.tsx';
+import type { ShapeType } from '../../types/core.type.ts';
+import './shape-picker.css';
 
 export const ShapePicker = () => {
   const { state, updateState } = useGlobalContext();
   const [rounded, setRounded] = createSignal(false);
-  const [shape, setShape] = createSignal<string | null>(null);
+  const [shape, setShape] = createSignal<ShapeType | null>(null);
+
+  const shapes: { icon: string, shapeType: ShapeType; title: string }[] = [
+    {
+      icon: 'crop_square',
+      shapeType: 'rect',
+      title: 'Rectangle'
+    },
+    {
+      icon: 'change_history',
+      shapeType: 'triangle',
+      title: 'Triangle'
+    }
+  ]
 
   createEffect(() => {
     const isRounded = rounded();
     const activeShape = shape();
     if (activeShape) {
-      updateState({ activeTool: 'shape', toolProperties: { shapeType: activeShape, isRounded }});
+      updateState({ activeTool: 'shape', toolProperties: { shapeType: activeShape, isRounded } });
     }
   });
 
@@ -31,8 +46,13 @@ export const ShapePicker = () => {
         checked={rounded()}
         onInput={(e) => setRounded(e.target.checked)}/>
     </label>
-    <button classList={{ active: shape() == 'rect' }} onClick={() => setShape('rect')}>
-      <span class="material-symbols-outlined">crop_square</span>
-    </button>
+    <div class="shapes">
+      <For each={shapes}>
+        {({ icon, shapeType, title }) =>
+          <button classList={{ active: shape() == shapeType }} onClick={() => setShape(shapeType)} title={title}>
+            <span class="material-symbols-outlined">{icon}</span>
+          </button>}
+      </For>
+    </div>
   </div>
 }

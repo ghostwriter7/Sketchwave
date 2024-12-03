@@ -1,3 +1,5 @@
+import { Point } from '../render/primitives/Point.ts';
+
 export interface Layer {
   id?: string;
   order?: number;
@@ -16,5 +18,11 @@ export type ToolType =
   | 'rect'
   | 'line'
   | 'shape';
+
+export type ShapeType =
+  'rect'
+| 'triangle'
+
+export type CreatePointsForShapeFn = (origin: Point, endPoint: Point) => Point[];
 
 export type Constructor = new (...args: any) => any;
