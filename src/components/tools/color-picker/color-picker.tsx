@@ -6,7 +6,7 @@ import { getRGBFromPixel } from '../../../color/get-rgb-from-pixel.ts';
 import { useGlobalContext } from '../../../global-provider.tsx';
 import { rgbToHex } from '../../../color/rgb-to-hex.ts';
 import { Card } from '../../card/card.tsx';
-import { Point } from '../../../render/primitives/Point.ts';
+import { Point } from '../../../types/Point.ts';
 
 const CONFIG = {
   inlineMargin: 25,

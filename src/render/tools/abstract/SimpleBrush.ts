@@ -1,7 +1,7 @@
 import { ToolHandler } from './ToolHandler.ts';
 import type { ToolState } from '../models/ToolState.ts';
 import type { LayerFacade } from '../../LayerFacade.ts';
-import { Point } from '../../primitives/Point.ts';
+import { Point } from '../../../types/Point.ts';
 
 export abstract class SimpleBrush extends ToolHandler {
   protected isWorking = false;

@@ -1,6 +1,6 @@
 import './resizer.css';
 import { createEffect, onMount } from 'solid-js';
-import { Point } from '../../render/primitives/Point.ts';
+import { Point } from '../../types/Point.ts';
 import { calculateDistance } from '../../math/distance.ts';
 import { useGlobalContext } from '../../global-provider.tsx';
 import { ThemeHelper } from '../../helpers/theme.helper.ts';

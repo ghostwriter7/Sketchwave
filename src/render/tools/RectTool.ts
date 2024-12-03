@@ -1,7 +1,7 @@
 import { ToolHandler } from './abstract/ToolHandler.ts';
 import type { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
-import { Point } from '../primitives/Point.ts';
+import { Point } from '../../types/Point.ts';
 import { createRectPathFromPoints } from '../../shapes/rectangle.ts';
 
 export class RectTool extends ToolHandler {

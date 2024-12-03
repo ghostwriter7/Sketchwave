@@ -1,4 +1,4 @@
-import type { Point } from '../render/primitives/Point.ts';
+import type { Point } from '../types/Point.ts';
 
 export const calculateDistance = ({ x: x1, y: y1 }: Point, { x: x2, y: y2 }: Point): number => {
   const dx = x1 - x2;

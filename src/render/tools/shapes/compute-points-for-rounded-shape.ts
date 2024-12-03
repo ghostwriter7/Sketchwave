@@ -1,4 +1,4 @@
-import { Point } from '../../primitives/Point.ts';
+import { Point } from '../../../types/Point.ts';
 import { Vec2 } from '../../../types/Vec2.ts';
 
 /**

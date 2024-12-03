@@ -1,4 +1,4 @@
-import { Point } from '../../../primitives/Point.ts';
+import { Point } from '../../../../types/Point.ts';
 
 export const rect = ({ x: x1, y: y1 }: Point, { x: x2, y: y2 }: Point ): Point[] => {
   return [

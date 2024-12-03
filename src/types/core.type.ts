@@ -1,4 +1,4 @@
-import { Point } from '../render/primitives/Point.ts';
+import { Point } from './Point.ts';
 
 export interface Layer {
   id?: string;

@@ -1,4 +1,4 @@
-import { Point } from '../render/primitives/Point.ts';
+import { Point } from '../types/Point.ts';
 import { FULL_CIRCLE } from '../constants.ts';
 
 export const createRandomPoints = ({ x, y }: Point, radius: number, count: number): Point[] => {

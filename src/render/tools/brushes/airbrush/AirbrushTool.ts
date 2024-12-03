@@ -1,7 +1,7 @@
 import type { ToolState } from '../../models/ToolState.ts';
 import { type LayerFacade } from '../../../LayerFacade.ts';
 import { SimpleBrush } from '../../abstract/SimpleBrush.ts';
-import { Point } from '../../../primitives/Point.ts';
+import { Point } from '../../../../types/Point.ts';
 import { createRandomPoints } from '../../../../math/create-random-points-in-circle.ts';
 
 export class AirbrushTool extends SimpleBrush {

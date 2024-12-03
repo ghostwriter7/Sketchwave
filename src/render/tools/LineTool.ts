@@ -1,6 +1,6 @@
 import { ToolHandler } from './abstract/ToolHandler.ts';
 import type { ToolState } from './models/ToolState.ts';
-import { Point } from '../primitives/Point.ts';
+import { Point } from '../../types/Point.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 
 /**

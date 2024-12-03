@@ -1,7 +1,7 @@
 import { ToolHandler } from '../abstract/ToolHandler.ts';
 import type { ToolState } from '../models/ToolState.ts';
 import { type LayerFacade } from '../../LayerFacade.ts';
-import { Point } from '../../primitives/Point.ts';
+import { Point } from '../../../types/Point.ts';
 import { rect } from './get-points-for-shape-fns/rect.ts';
 import { computePointsForRoundedShape } from './compute-points-for-rounded-shape.ts';
 import { triangle } from './get-points-for-shape-fns/triangle.ts';

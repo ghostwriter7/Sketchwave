@@ -1,4 +1,4 @@
-import type { Point } from '../render/primitives/Point.ts';
+import type { Point } from '../types/Point.ts';
 
 export const createRectPathFromPoints = (pointA: Point, pointB: Point): Path2D => {
   const { x: x1, y: y1 } = pointA;

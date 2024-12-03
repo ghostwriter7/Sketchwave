@@ -1,6 +1,6 @@
 import { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
-import { Point } from '../primitives/Point.ts';
+import { Point } from '../../types/Point.ts';
 import { applyToolState } from './helpers/apply-tool-state.ts';
 import { SimpleBrush } from './abstract/SimpleBrush.ts';
 

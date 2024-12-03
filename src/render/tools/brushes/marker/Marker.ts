@@ -2,7 +2,7 @@ import { SimpleBrush } from '../../abstract/SimpleBrush.ts';
 import type { ToolState } from '../../models/ToolState.ts';
 import { type LayerFacade } from '../../../LayerFacade.ts';
 import { calculateDistance } from '../../../../math/distance.ts';
-import type { Point } from '../../../primitives/Point.ts';
+import type { Point } from '../../../../types/Point.ts';
 import { renderCircles } from '../../../utils/render-circles.ts';
 import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
 import { getMidPoints } from '../../../../math/get-mid-points.ts';

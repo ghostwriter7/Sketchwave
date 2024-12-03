@@ -1,4 +1,4 @@
-import { Point } from '../render/primitives/Point.ts';
+import { Point } from '../types/Point.ts';
 import { calculateDistance } from './distance.ts';
 
 export const getMidPoints = (pointA: Point, pointB: Point): Point[] => {
