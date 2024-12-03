@@ -6,4 +6,10 @@
   flex-wrap: wrap;
   gap: var(--space-md);
   padding: var(--space-sm);
+
+  .divider {
+    background: var(--bg-active);
+    height: 100%;
+    width: 2px;
+  }
 }

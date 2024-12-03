@@ -1,9 +1,21 @@
-.shapes {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.modifiers {
+.shape-picker {
   display: flex;
   gap: var(--space-md);
+
+  .shapes {
+    align-items: center;
+    border-radius: var(--radius);
+    border: 1px solid var(--clr-primary);
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+    max-width: 170px;
+    max-height: 70px;
+  }
+
+  .modifiers {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
 }

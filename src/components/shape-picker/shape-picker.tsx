@@ -46,6 +46,11 @@ export const ShapePicker = () => {
       title: 'Triangle'
     },
     {
+      icon: 'circle',
+      shapeType: 'Circle',
+      title: 'Circle'
+    },
+    {
       icon: 'star',
       shapeType: 'star',
       title: 'Star'
@@ -54,6 +59,26 @@ export const ShapePicker = () => {
       icon: 'diamond',
       shapeType: 'diamond',
       title: 'Diamond'
+    },
+    {
+      icon: 'favorite',
+      shapeType: 'heart',
+      title: 'Heart'
+    },
+    {
+      icon: 'bolt',
+      shapeType: 'bolt',
+      title: 'Bolt'
+    },
+    {
+      icon: 'bedtime',
+      shapeType: 'halfMoon',
+      title: 'Half Moon'
+    },
+    {
+      icon: 'deceased',
+      shapeType: 'flower',
+      title: 'Flower'
     }
   ]
 
@@ -75,6 +100,15 @@ export const ShapePicker = () => {
   });
 
   return <div class="shape-picker" onClick={(e) => e.stopPropagation()}>
+    <div class="shapes scroller">
+      <For each={shapes}>
+        {({ icon, shapeType, title }) =>
+          <button classList={{ active: shape() == shapeType }} onClick={() => setShape(shapeType)} title={title}>
+            <span class="material-symbols-outlined">{icon}</span>
+          </button>}
+      </For>
+    </div>
+
     <div class="modifiers">
       <For each={modifiers}>
         {({ id, icon, title, getter, setter }) =>
@@ -87,15 +121,6 @@ export const ShapePicker = () => {
               checked={getter()}
               onInput={(e) => setter(e.target.checked)}/>
           </label>}
-      </For>
-    </div>
-
-    <div class="shapes">
-      <For each={shapes}>
-        {({ icon, shapeType, title }) =>
-          <button classList={{ active: shape() == shapeType }} onClick={() => setShape(shapeType)} title={title}>
-            <span class="material-symbols-outlined">{icon}</span>
-          </button>}
       </For>
     </div>
   </div>

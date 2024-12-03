@@ -10,6 +10,7 @@ import { FullScreenButton } from '../full-screen-button/full-screen-button.tsx';
 import { BrushPicker } from '../brush-picker/brush-picker.tsx';
 import { UndoRedoButton } from '../undo-redo-button/undo-redo-button.tsx';
 import { ShapePicker } from '../shape-picker/shape-picker.tsx';
+import { MenuGroup } from './menu-group/menu-group.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -38,13 +39,18 @@ const Menu = () => {
     <SaveButton/>
     <OpenFileButton/>
     <UndoRedoButton/>
+    <span class="divider"></span>
     <For each={buttons}>
       {({ id, icon, title }) =>
         <button classList={{ active: state.activeTool === id }} data-tool={id} title={title}>
           <span class="material-symbols-outlined">{icon}</span>
         </button>}
     </For>
-    <ShapePicker />
+    <span class="divider"></span>
+    <MenuGroup label="Shapes">
+      <ShapePicker/>
+    </MenuGroup>
+    <span class="divider"></span>
     <BrushPicker/>
     <ColorPicker/>
     <FullScreenButton/>
