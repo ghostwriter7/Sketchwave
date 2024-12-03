@@ -21,6 +21,7 @@ export type ToolType =
 
 export type ShapeType =
   'rect'
+| 'star'
 | 'triangle'
 
 export type CreatePointsForShapeFn = (origin: Point, endPoint: Point) => Point[];

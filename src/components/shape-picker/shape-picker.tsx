@@ -18,6 +18,11 @@ export const ShapePicker = () => {
       icon: 'change_history',
       shapeType: 'triangle',
       title: 'Triangle'
+    },
+    {
+      icon: 'star',
+      shapeType: 'star',
+      title: 'Star'
     }
   ]
 
