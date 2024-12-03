@@ -60,9 +60,10 @@ export const ShapePicker = () => {
   createEffect(() => {
     const round = rounded();
     const stroke = stroked();
+    const fill = filled()
     const activeShape = shape();
     if (activeShape) {
-      updateState({ activeTool: 'shape', toolProperties: { shapeType: activeShape, round, stroke } });
+      updateState({ activeTool: 'shape', toolProperties: { shapeType: activeShape, fill, round, stroke } });
     }
   });
 

@@ -1,5 +1,5 @@
-import { Point } from '../../../types/Point.ts';
-import { Vec2 } from '../../../types/Vec2.ts';
+import { Point } from '../../../../types/Point.ts';
+import { Vec2 } from '../../../../types/Vec2.ts';
 
 /**
  * Calculates the rounded corners for a given shape defined by a set of points.
