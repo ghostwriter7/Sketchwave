@@ -10,6 +10,8 @@ import { diamond } from './get-points-for-shape-fns/diamond.ts';
 import { createRoundedPath } from './utils/create-rounded-path.ts';
 import { createPathFromPoints } from './utils/create-path-from-points.ts';
 import { bolt } from './get-points-for-shape-fns/bolt.ts';
+import { heart } from './get-points-for-shape-fns/heart.ts';
+import { arrow } from './get-points-for-shape-fns/arrow.ts';
 
 export class ShapeTool extends ToolHandler {
   private startPoint: Point | null = null;
@@ -17,8 +19,10 @@ export class ShapeTool extends ToolHandler {
   private isWorking = false;
 
   private static shapeFnsMap: Record<ShapeType, CreatePointsForShapeFn> = {
+    arrow: arrow,
     bolt: bolt,
     diamond: diamond,
+    heart: heart,
     rect: rect,
     star: star,
     triangle: triangle,
@@ -55,13 +59,12 @@ export class ShapeTool extends ToolHandler {
     if (!this.startPoint || !this.endPoint) return;
     super.renderPreview();
 
-    const points = this.createPointsForShapeFn(this.startPoint, this.endPoint);
-
+    const dx = this.endPoint.x - this.startPoint.x;
+    const dy = this.endPoint.y - this.startPoint.y;
+    const points = this.createPointsForShapeFn(this.startPoint, this.endPoint, dx, dy);
 
     if (this.toolState.toolProperties!.round) {
       if (this.toolState.toolProperties!.fill) {
-        const dx = this.endPoint.x - this.startPoint.x;
-        const dy = this.endPoint.y - this.startPoint.y;
         this.ctx.fill(createRoundedPath(points, dx, dy))
       }
 

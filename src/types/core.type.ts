@@ -20,12 +20,15 @@ export type ToolType =
   | 'shape';
 
 export type ShapeType =
+  | 'arrow'
   | 'bolt'
+  | 'check'
   | 'diamond'
+  | 'heart'
   | 'rect'
   | 'star'
   | 'triangle'
 
-export type CreatePointsForShapeFn = (origin: Point, endPoint: Point) => Point[];
+export type CreatePointsForShapeFn = (origin: Point, endPoint: Point, dx: number, dy: number) => Point[];
 
 export type Constructor = new (...args: any) => any;

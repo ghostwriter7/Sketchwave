@@ -1,21 +1,18 @@
 import type { CreatePointsForShapeFn } from '../../../../types/core.type.ts';
 import { Point } from '../../../../types/Point.ts';
 
-export const bolt: CreatePointsForShapeFn = (pointA: Point, pointB: Point): Point[] => {
-    const width = pointB.x - pointA.x;
-    const height = pointB.y - pointA.y;
-
-    return [
-      new Point(.4 * width + pointA.x, pointA.y),
-      new Point(.6 * width + pointA.x, .26 * height + pointA.y),
-      new Point(.52 * width + pointA.x, .32 * height + pointA.y),
-      new Point(.77 * width + pointA.x, .55 * height + pointA.y),
-      new Point(.67 * width + pointA.x, .59 * height + pointA.y),
+export const bolt: CreatePointsForShapeFn = (pointA: Point, pointB: Point, dx: number, dy: number): Point[] => {
+   return [
+      new Point(.4 * dx + pointA.x, pointA.y),
+      new Point(.6 * dx + pointA.x, .26 * dy + pointA.y),
+      new Point(.52 * dx + pointA.x, .32 * dy + pointA.y),
+      new Point(.77 * dx + pointA.x, .55 * dy + pointA.y),
+      new Point(.67 * dx + pointA.x, .59 * dy + pointA.y),
       pointB,
-      new Point(.47 * width + pointA.x, .68 * height + pointA.y),
-      new Point(.57 * width + pointA.x, .63 * height + pointA.y),
-      new Point(.23 * width + pointA.x, .44 * height + pointA.y),
-      new Point(.36 * width + pointA.x, .38 * height + pointA.y),
-      new Point(pointA.x, .17 * height + pointA.y)
+      new Point(.47 * dx + pointA.x, .68 * dy + pointA.y),
+      new Point(.57 * dx + pointA.x, .63 * dy + pointA.y),
+      new Point(.23 * dx + pointA.x, .44 * dy + pointA.y),
+      new Point(.36 * dx + pointA.x, .38 * dy + pointA.y),
+      new Point(pointA.x, .17 * dy + pointA.y)
     ];
 }
