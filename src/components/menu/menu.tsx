@@ -47,11 +47,14 @@ const Menu = () => {
         </button>}
     </For>
     <span class="divider"></span>
+    <MenuGroup label="Brushes">
+      <BrushPicker/>
+    </MenuGroup>
+    <span class="divider"></span>
     <MenuGroup label="Shapes">
       <ShapePicker/>
     </MenuGroup>
     <span class="divider"></span>
-    <BrushPicker/>
     <ColorPicker/>
     <FullScreenButton/>
   </nav>

@@ -79,6 +79,21 @@ export const ShapePicker = () => {
       icon: 'deceased',
       shapeType: 'flower',
       title: 'Flower'
+    },
+    {
+      icon: 'done_outline',
+      shapeType: 'checkmark',
+      title: 'Checkmark'
+    },
+    {
+      icon: 'arrow_left_alt',
+      shapeType: 'arrow',
+      title: 'Arrow'
+    },
+    {
+      icon: 'pets',
+      shapeType: 'paw',
+      title: 'Paw'
     }
   ]
 

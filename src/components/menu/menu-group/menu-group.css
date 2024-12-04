@@ -2,6 +2,13 @@
   align-items: center;
   display: flex;
   flex-direction: column;
+  height: 100%;
+
+  .body {
+    align-items: center;
+    flex: 1;
+    display: flex;
+  }
 
   .label {
     color: var(--clr-primary);
