@@ -35,15 +35,19 @@ export class ShapeTool extends ToolHandler {
   }
 
   private static readonly createPathForShapeFnMap: Record<ComplexShapeType, CreatePathForShapeFn> = {
+    circle: () => new Path2D(),
+    flower: () => new Path2D(),
+    halfMoon: () => new Path2D(),
     heart: heart,
+    paw: () => new Path2D()
   }
 
   private get createPointsForShapeFn(): CreatePointsForShapeFn | undefined {
-    return ShapeTool.createPointsForShapeFnMap[this.toolState.toolProperties!.shapeType!];
+    return ShapeTool.createPointsForShapeFnMap[this.toolState.toolProperties!.shapeType as SimpleShapeType];
   }
 
   private get createPathForShapeFn(): CreatePathForShapeFn | undefined {
-    return ShapeTool.createPathForShapeFnMap[this.toolState.toolProperties!.shapeType!];
+    return ShapeTool.createPathForShapeFnMap[this.toolState.toolProperties!.shapeType as ComplexShapeType];
   }
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {

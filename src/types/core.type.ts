@@ -19,7 +19,7 @@ export type ToolType =
   | 'line'
   | 'shape';
 
-export type ShapeType = SimpleShapeType & ComplexShapeType;
+export type ShapeType = SimpleShapeType | ComplexShapeType;
 
 export type SimpleShapeType = | 'arrow'
   | 'bolt'
@@ -29,7 +29,12 @@ export type SimpleShapeType = | 'arrow'
   | 'star'
   | 'triangle';
 
-export type ComplexShapeType = | 'heart';
+export type ComplexShapeType =
+  | 'circle'
+  | 'flower'
+  | 'halfMoon'
+  | 'heart'
+  | 'paw';
 
 
 export type CreatePointsForShapeFn = (origin: Point, endPoint: Point, dx: number, dy: number) => Point[];

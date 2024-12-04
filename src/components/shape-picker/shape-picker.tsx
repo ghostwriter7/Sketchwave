@@ -47,7 +47,7 @@ export const ShapePicker = () => {
     },
     {
       icon: 'circle',
-      shapeType: 'Circle',
+      shapeType: 'circle',
       title: 'Circle'
     },
     {
