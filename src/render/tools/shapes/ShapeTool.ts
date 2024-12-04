@@ -2,36 +2,48 @@ import { ToolHandler } from '../abstract/ToolHandler.ts';
 import type { ToolState } from '../models/ToolState.ts';
 import { type LayerFacade } from '../../LayerFacade.ts';
 import { Point } from '../../../types/Point.ts';
-import { rect } from './get-points-for-shape-fns/rect.ts';
-import { triangle } from './get-points-for-shape-fns/triangle.ts';
-import type { CreatePointsForShapeFn, ShapeType } from '../../../types/core.type.ts';
-import { star } from './get-points-for-shape-fns/star.ts';
-import { diamond } from './get-points-for-shape-fns/diamond.ts';
+import { rect } from './create-points-for-shape-fns/rect.ts';
+import { triangle } from './create-points-for-shape-fns/triangle.ts';
+import type {
+  ComplexShapeType,
+  CreatePathForShapeFn,
+  CreatePointsForShapeFn,
+  SimpleShapeType
+} from '../../../types/core.type.ts';
+import { star } from './create-points-for-shape-fns/star.ts';
+import { diamond } from './create-points-for-shape-fns/diamond.ts';
 import { createRoundedPath } from './utils/create-rounded-path.ts';
 import { createPathFromPoints } from './utils/create-path-from-points.ts';
-import { bolt } from './get-points-for-shape-fns/bolt.ts';
-import { heart } from './get-points-for-shape-fns/heart.ts';
-import { arrow } from './get-points-for-shape-fns/arrow.ts';
-import { checkmark } from './get-points-for-shape-fns/checkmark.ts';
+import { bolt } from './create-points-for-shape-fns/bolt.ts';
+import { arrow } from './create-points-for-shape-fns/arrow.ts';
+import { checkmark } from './create-points-for-shape-fns/checkmark.ts';
+import { heart } from './create-path-for-shape-fns/heart.ts';
 
 export class ShapeTool extends ToolHandler {
   private startPoint: Point | null = null;
   private endPoint: Point | null = null;
   private isWorking = false;
 
-  private static shapeFnsMap: Record<ShapeType, CreatePointsForShapeFn> = {
+  private static readonly createPointsForShapeFnMap: Record<SimpleShapeType, CreatePointsForShapeFn> = {
     arrow: arrow,
     bolt: bolt,
     checkmark: checkmark,
     diamond: diamond,
-    heart: heart,
     rect: rect,
     star: star,
     triangle: triangle,
   }
 
-  private get createPointsForShapeFn(): CreatePointsForShapeFn {
-    return ShapeTool.shapeFnsMap[this.toolState.toolProperties!.shapeType!];
+  private static readonly createPathForShapeFnMap: Record<ComplexShapeType, CreatePathForShapeFn> = {
+    heart: heart,
+  }
+
+  private get createPointsForShapeFn(): CreatePointsForShapeFn | undefined {
+    return ShapeTool.createPointsForShapeFnMap[this.toolState.toolProperties!.shapeType!];
+  }
+
+  private get createPathForShapeFn(): CreatePathForShapeFn | undefined {
+    return ShapeTool.createPathForShapeFnMap[this.toolState.toolProperties!.shapeType!];
   }
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
@@ -61,22 +73,32 @@ export class ShapeTool extends ToolHandler {
     if (!this.startPoint || !this.endPoint) return;
     super.renderPreview();
 
+    if (!!this.createPointsForShapeFn) {
+      this.renderSimpleShape();
+    } else {
+      this.renderComplexShape();
+    }
+  }
+
+  private renderSimpleShape(): void {
+    if (!this.startPoint || !this.endPoint) return;
+
     const dx = this.endPoint.x - this.startPoint.x;
     const dy = this.endPoint.y - this.startPoint.y;
-    const points = this.createPointsForShapeFn(this.startPoint, this.endPoint, dx, dy);
+    const result = this.createPointsForShapeFn!(this.startPoint, this.endPoint, dx, dy);
 
     if (this.toolState.toolProperties!.round) {
       if (this.toolState.toolProperties!.fill) {
-        this.ctx.fill(createRoundedPath(points, dx, dy))
+        this.ctx.fill(createRoundedPath(result, dx, dy))
       }
 
       if (this.toolState.toolProperties!.stroke) {
         this.ctx.lineJoin = this.ctx.lineCap = 'round';
-        this.ctx.stroke(createPathFromPoints(points));
+        this.ctx.stroke(createPathFromPoints(result));
       }
 
     } else {
-      const path = createPathFromPoints(points);
+      const path = createPathFromPoints(result);
 
       if (this.toolState.toolProperties!.fill) {
         this.ctx.fill(path);
@@ -87,6 +109,22 @@ export class ShapeTool extends ToolHandler {
         this.ctx.lineCap = 'square';
         this.ctx.stroke(path);
       }
+    }
+  }
+
+  private renderComplexShape(): void {
+    if (!this.startPoint || !this.endPoint) return;
+
+    const dx = this.endPoint.x - this.startPoint.x;
+    const dy = this.endPoint.y - this.startPoint.y;
+    const path = this.createPathForShapeFn!(this.startPoint, this.endPoint, dx, dy);
+    if (this.toolState.toolProperties!.fill) {
+      this.ctx.fill(path)
+    }
+
+    if (this.toolState.toolProperties!.stroke) {
+      this.ctx.lineJoin = this.ctx.lineCap = 'round';
+      this.ctx.stroke(path);
     }
   }
 

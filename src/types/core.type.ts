@@ -19,16 +19,20 @@ export type ToolType =
   | 'line'
   | 'shape';
 
-export type ShapeType =
-  | 'arrow'
+export type ShapeType = SimpleShapeType & ComplexShapeType;
+
+export type SimpleShapeType = | 'arrow'
   | 'bolt'
   | 'checkmark'
   | 'diamond'
-  | 'heart'
   | 'rect'
   | 'star'
-  | 'triangle'
+  | 'triangle';
+
+export type ComplexShapeType = | 'heart';
+
 
 export type CreatePointsForShapeFn = (origin: Point, endPoint: Point, dx: number, dy: number) => Point[];
+export type CreatePathForShapeFn = (origin: Point, endPoint: Point, dx: number, dy: number) => Path2D;
 
 export type Constructor = new (...args: any) => any;
