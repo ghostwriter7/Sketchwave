@@ -19,7 +19,6 @@ import { arrow } from './create-points-for-shape-fns/arrow.ts';
 import { checkmark } from './create-points-for-shape-fns/checkmark.ts';
 import { heart } from './create-path-for-shape-fns/heart.ts';
 import { circle } from './create-path-for-shape-fns/circle.ts';
-import { paw } from './create-path-for-shape-fns/paw.ts';
 import { halfMoon } from './create-path-for-shape-fns/halfMoon.ts';
 import { notifications } from './create-path-for-shape-fns/notifications.ts';
 
@@ -43,7 +42,7 @@ export class ShapeTool extends ToolHandler {
     halfMoon: halfMoon,
     heart: heart,
     notifications: notifications,
-    paw: paw,
+    paw: () => new Path2D()
   }
 
   private get createPointsForShapeFn(): CreatePointsForShapeFn | undefined {
