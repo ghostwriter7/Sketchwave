@@ -12,6 +12,7 @@ import { createPathFromPoints } from './utils/create-path-from-points.ts';
 import { bolt } from './get-points-for-shape-fns/bolt.ts';
 import { heart } from './get-points-for-shape-fns/heart.ts';
 import { arrow } from './get-points-for-shape-fns/arrow.ts';
+import { checkmark } from './get-points-for-shape-fns/checkmark.ts';
 
 export class ShapeTool extends ToolHandler {
   private startPoint: Point | null = null;
@@ -21,6 +22,7 @@ export class ShapeTool extends ToolHandler {
   private static shapeFnsMap: Record<ShapeType, CreatePointsForShapeFn> = {
     arrow: arrow,
     bolt: bolt,
+    checkmark: checkmark,
     diamond: diamond,
     heart: heart,
     rect: rect,

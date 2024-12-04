@@ -22,7 +22,7 @@ export type ToolType =
 export type ShapeType =
   | 'arrow'
   | 'bolt'
-  | 'check'
+  | 'checkmark'
   | 'diamond'
   | 'heart'
   | 'rect'
