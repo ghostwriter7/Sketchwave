@@ -20,6 +20,7 @@ export type ToolType =
   | 'shape';
 
 export type ShapeType =
+  | 'bolt'
   | 'diamond'
   | 'rect'
   | 'star'

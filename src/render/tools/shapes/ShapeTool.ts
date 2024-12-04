@@ -9,6 +9,7 @@ import { star } from './get-points-for-shape-fns/star.ts';
 import { diamond } from './get-points-for-shape-fns/diamond.ts';
 import { createRoundedPath } from './utils/create-rounded-path.ts';
 import { createPathFromPoints } from './utils/create-path-from-points.ts';
+import { bolt } from './get-points-for-shape-fns/bolt.ts';
 
 export class ShapeTool extends ToolHandler {
   private startPoint: Point | null = null;
@@ -16,6 +17,7 @@ export class ShapeTool extends ToolHandler {
   private isWorking = false;
 
   private static shapeFnsMap: Record<ShapeType, CreatePointsForShapeFn> = {
+    bolt: bolt,
     diamond: diamond,
     rect: rect,
     star: star,
