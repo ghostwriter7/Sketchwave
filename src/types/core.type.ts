@@ -31,9 +31,9 @@ export type SimpleShapeType = | 'arrow'
 
 export type ComplexShapeType =
   | 'circle'
-  | 'flower'
   | 'halfMoon'
   | 'heart'
+  | 'notifications'
   | 'paw';
 
 

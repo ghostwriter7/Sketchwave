@@ -76,9 +76,9 @@ export const ShapePicker = () => {
       title: 'Half Moon'
     },
     {
-      icon: 'deceased',
-      shapeType: 'flower',
-      title: 'Flower'
+      icon: 'notifications',
+      shapeType: 'notifications',
+      title: 'Notifications'
     },
     {
       icon: 'done_outline',
