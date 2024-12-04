@@ -18,6 +18,7 @@ import { bolt } from './create-points-for-shape-fns/bolt.ts';
 import { arrow } from './create-points-for-shape-fns/arrow.ts';
 import { checkmark } from './create-points-for-shape-fns/checkmark.ts';
 import { heart } from './create-path-for-shape-fns/heart.ts';
+import { circle } from './create-path-for-shape-fns/circle.ts';
 
 export class ShapeTool extends ToolHandler {
   private startPoint: Point | null = null;
@@ -35,7 +36,7 @@ export class ShapeTool extends ToolHandler {
   }
 
   private static readonly createPathForShapeFnMap: Record<ComplexShapeType, CreatePathForShapeFn> = {
-    circle: () => new Path2D(),
+    circle: circle,
     flower: () => new Path2D(),
     halfMoon: () => new Path2D(),
     heart: heart,
