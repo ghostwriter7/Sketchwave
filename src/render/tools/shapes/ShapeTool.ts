@@ -96,24 +96,12 @@ export class ShapeTool extends ToolHandler {
     const points = this.createPointsForShapeFn!(this.startPoint, this.endPoint, dx, dy);
 
     if (this.toolState.toolProperties!.round) {
-      if (this.toolState.toolProperties!.fill) {
-        this.ctx.fill(createRoundedPath(points, this.lineWidth / 2))
-      }
-
-      if (this.toolState.toolProperties!.stroke) {
-        this.ctx.stroke(createPathFromPoints(points));
-      }
-
+      this.toolState.toolProperties!.fill && this.ctx.fill(createRoundedPath(points, this.lineWidth / 2));
+      this.toolState.toolProperties!.stroke && this.ctx.stroke(createPathFromPoints(points));
     } else {
       const path = createPathFromPoints(points);
-
-      if (this.toolState.toolProperties!.fill) {
-        this.ctx.fill(path);
-      }
-
-      if (this.toolState.toolProperties!.stroke) {
-        this.ctx.stroke(path);
-      }
+      this.toolState.toolProperties!.fill && this.ctx.fill(path);
+      this.toolState.toolProperties!.stroke && this.ctx.stroke(path);
     }
   }
 
@@ -123,14 +111,8 @@ export class ShapeTool extends ToolHandler {
     const dx = this.endPoint.x - this.startPoint.x;
     const dy = this.endPoint.y - this.startPoint.y;
     const path = this.createPathForShapeFn!(this.startPoint, this.endPoint, dx, dy);
-    if (this.toolState.toolProperties!.fill) {
-      this.ctx.fill(path)
-    }
-
-    if (this.toolState.toolProperties!.stroke) {
-      this.ctx.lineJoin = this.ctx.lineCap = 'round';
-      this.ctx.stroke(path);
-    }
+    this.toolState.toolProperties!.fill && this.ctx.fill(path)
+    this.toolState.toolProperties!.stroke && this.ctx.stroke(path);
   }
 
   private resetState(): void {
