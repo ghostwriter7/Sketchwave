@@ -34,7 +34,7 @@ export type ComplexShapeType =
   | 'halfMoon'
   | 'heart'
   | 'notifications'
-  | 'paw';
+  | 'person';
 
 
 export type CreatePointsForShapeFn = (origin: Point, endPoint: Point, dx: number, dy: number) => Point[];

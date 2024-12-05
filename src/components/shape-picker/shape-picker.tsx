@@ -91,9 +91,9 @@ export const ShapePicker = () => {
       title: 'Arrow'
     },
     {
-      icon: 'pets',
-      shapeType: 'paw',
-      title: 'Paw'
+      icon: 'person',
+      shapeType: 'person',
+      title: 'Person'
     }
   ]
 
