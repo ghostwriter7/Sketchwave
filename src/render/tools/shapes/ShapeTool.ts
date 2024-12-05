@@ -97,7 +97,7 @@ export class ShapeTool extends ToolHandler {
 
     if (this.toolState.toolProperties!.round) {
       if (this.toolState.toolProperties!.fill) {
-        this.ctx.fill(createRoundedPath(result, dx, dy))
+        this.ctx.fill(createRoundedPath(result, this.lineWidth / 2))
       }
 
       if (this.toolState.toolProperties!.stroke) {
