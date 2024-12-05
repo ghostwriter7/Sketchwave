@@ -22,6 +22,7 @@ import { circle } from './create-path-for-shape-fns/circle.ts';
 import { halfMoon } from './create-path-for-shape-fns/halfMoon.ts';
 import { notifications } from './create-path-for-shape-fns/notifications.ts';
 import { person } from './create-path-for-shape-fns/person.ts';
+import type { ToolProperties } from '../../../global-provider.tsx';
 
 export class ShapeTool extends ToolHandler {
   private startPoint: Point | null = null;
@@ -59,6 +60,15 @@ export class ShapeTool extends ToolHandler {
   }
 
   public tryCreateLayer(): void {
+    if (!this.startPoint || !this.endPoint) return;
+
+    const pathOrPoints = this.getPathOrPoints();
+    const { fill, stroke, round } = this.toolState.toolProperties!;
+    const radius = this.lineWidth / 2;
+
+    this.createLayer((ctx: CanvasRenderingContext2D) =>
+      ShapeTool.render(ctx, pathOrPoints, { fill, stroke, round, radius })
+    );
   }
 
   protected initializeListeners(): void {
@@ -81,38 +91,9 @@ export class ShapeTool extends ToolHandler {
     if (!this.startPoint || !this.endPoint) return;
     super.renderPreview();
 
-    if (!!this.createPointsForShapeFn) {
-      this.renderSimpleShape();
-    } else {
-      this.renderComplexShape();
-    }
-  }
-
-  private renderSimpleShape(): void {
-    if (!this.startPoint || !this.endPoint) return;
-
-    const dx = this.endPoint.x - this.startPoint.x;
-    const dy = this.endPoint.y - this.startPoint.y;
-    const points = this.createPointsForShapeFn!(this.startPoint, this.endPoint, dx, dy);
-
-    if (this.toolState.toolProperties!.round) {
-      this.toolState.toolProperties!.fill && this.ctx.fill(createRoundedPath(points, this.lineWidth / 2));
-      this.toolState.toolProperties!.stroke && this.ctx.stroke(createPathFromPoints(points));
-    } else {
-      const path = createPathFromPoints(points);
-      this.toolState.toolProperties!.fill && this.ctx.fill(path);
-      this.toolState.toolProperties!.stroke && this.ctx.stroke(path);
-    }
-  }
-
-  private renderComplexShape(): void {
-    if (!this.startPoint || !this.endPoint) return;
-
-    const dx = this.endPoint.x - this.startPoint.x;
-    const dy = this.endPoint.y - this.startPoint.y;
-    const path = this.createPathForShapeFn!(this.startPoint, this.endPoint, dx, dy);
-    this.toolState.toolProperties!.fill && this.ctx.fill(path)
-    this.toolState.toolProperties!.stroke && this.ctx.stroke(path);
+    const pathOrPoints = this.getPathOrPoints();
+    const { fill, stroke, round } = this.toolState.toolProperties!;
+    ShapeTool.render(this.ctx, pathOrPoints, { fill, stroke, round, radius: this.lineWidth / 2 });
   }
 
   private resetState(): void {
@@ -120,5 +101,29 @@ export class ShapeTool extends ToolHandler {
     this.tryCreateLayer();
     this.startPoint = null;
     this.endPoint = null;
+  }
+
+  private getPathOrPoints(): Path2D | Point[] {
+    const dx = this.endPoint!.x - this.startPoint!.x;
+    const dy = this.endPoint!.y - this.startPoint!.y;
+
+    return this.createPointsForShapeFn?.(this.startPoint!, this.endPoint!, dx, dy)
+      || this.createPathForShapeFn?.(this.startPoint!, this.endPoint!, dx, dy) as Point[] | Path2D;
+
+  }
+
+  private static render(ctx: CanvasRenderingContext2D,
+                        pathOrPoints: Point[] | Path2D,
+                        { fill, stroke, radius, round }: Pick<ToolProperties, 'round' | 'fill' | 'stroke'> & {
+                          radius: number
+                        }): void {
+    if (round && Array.isArray(pathOrPoints)) {
+      fill && ctx.fill(createRoundedPath(pathOrPoints, radius));
+      stroke && ctx.stroke(createPathFromPoints(pathOrPoints));
+    } else {
+      const path = pathOrPoints instanceof Path2D ? pathOrPoints : createPathFromPoints(pathOrPoints);
+      fill && ctx.fill(path);
+      stroke && ctx.stroke(path);
+    }
   }
 }
