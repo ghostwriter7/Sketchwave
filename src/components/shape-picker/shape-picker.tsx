@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For } from 'solid-js';
+import { createEffect, createMemo, createSignal, For } from 'solid-js';
 import { useGlobalContext } from '../../global-provider.tsx';
 import type { ShapeType } from '../../types/core.type.ts';
 import './shape-picker.css';
@@ -10,8 +10,12 @@ export const ShapePicker = () => {
   const [filled, setFilled] = createSignal(true);
   const [shape, setShape] = createSignal<ShapeType | null>(null);
 
+  const roundedDisabledForShapes: ShapeType[] = ['person', 'notifications', 'halfMoon', 'circle'];
+  const roundDisabled = createMemo(() => !!shape() && roundedDisabledForShapes.includes(shape()!));
+
   const modifiers = [
     {
+      disabled: roundDisabled,
       getter: rounded,
       setter: setRounded,
       id: 'round',
@@ -95,10 +99,11 @@ export const ShapePicker = () => {
       shapeType: 'person',
       title: 'Person'
     }
-  ]
+  ];
+
 
   createEffect(() => {
-    const round = rounded();
+    const round = rounded() && !roundDisabled();
     const stroke = stroked();
     const fill = filled()
     const activeShape = shape();
@@ -126,12 +131,13 @@ export const ShapePicker = () => {
 
     <div class="modifiers">
       <For each={modifiers}>
-        {({ id, icon, title, getter, setter }) =>
+        {({ disabled, id, icon, title, getter, setter }) =>
           <label class="interactive" for={id} title={title}>
             <span class="material-symbols-outlined">{icon}</span>
             <input
               class="hidden"
               type="checkbox"
+              disabled={disabled?.()}
               id={id}
               checked={getter()}
               onInput={(e) => setter(e.target.checked)}/>

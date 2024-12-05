@@ -36,10 +36,18 @@ button,
   }
 }
 
-label.interactive:has(input[type="checkbox"]) {
-  align-items: center;
-  border-radius: var(--radius);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
+label.interactive {
+  &:has(input[type="checkbox"]) {
+    align-items: center;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+  }
+
+  &:has(input[type="checkbox"]:disabled) {
+    background: var(--bg-disabled);
+    pointer-events: none;
+  }
 }
+
