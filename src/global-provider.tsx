@@ -10,7 +10,7 @@ export interface ToolProperties {
   shapeType?: ShapeType;
 }
 
-export interface GlobalContextState {
+export type GlobalContextState = {
   activeTool?: ToolType;
   color: [number, number, number];
   ctx: CanvasRenderingContext2D | null;
@@ -22,7 +22,7 @@ export interface GlobalContextState {
   size: number;
   width: number;
   toolProperties?: ToolProperties;
-}
+} & Partial<Pick<CanvasRenderingContext2D, 'lineCap' | 'lineJoin'>>
 
 interface GlobalContextActions {
   setCtx(ctx: CanvasRenderingContext2D): void;

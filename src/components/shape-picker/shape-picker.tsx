@@ -123,8 +123,15 @@ export const ShapePicker = () => {
     const stroke = stroked();
     const fill = filled()
     const activeShape = shape();
+    
     if (activeShape) {
-      updateState({ activeTool: 'shape', toolProperties: { shapeType: activeShape, fill, round, stroke } });
+      updateState({
+        activeTool: 'shape',
+        ...(stroke && {
+          lineCap: round ? 'round': 'square',
+          lineJoin: round ? 'round' : 'miter'
+        }),
+        toolProperties: { shapeType: activeShape, fill, round, stroke } });
     }
   });
 

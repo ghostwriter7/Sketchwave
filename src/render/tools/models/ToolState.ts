@@ -19,8 +19,8 @@ export class ToolStateFactory {
     return {
       color: [red, green, blue],
       fillStyle: colour,
-      lineCap: 'round',
-      lineJoin: 'round',
+      lineCap: state.lineCap || 'round',
+      lineJoin: state.lineJoin || 'round',
       size: state.size,
       strokeStyle: colour,
       shadowBlur: 0,
