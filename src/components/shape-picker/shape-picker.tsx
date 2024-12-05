@@ -10,8 +10,24 @@ export const ShapePicker = () => {
   const [filled, setFilled] = createSignal(true);
   const [shape, setShape] = createSignal<ShapeType | null>(null);
 
-  const roundedDisabledForShapes: ShapeType[] = ['person', 'notifications', 'halfMoon', 'circle'];
-  const roundDisabled = createMemo(() => !!shape() && roundedDisabledForShapes.includes(shape()!));
+  createEffect((hasBeenFilled) => {
+    const isFilled = filled();
+
+    if (!isFilled && !stroked()) {
+
+      if (hasBeenFilled) {
+        setStroked(true);
+      } else {
+        setFilled(true);
+        return true;
+      }
+    }
+
+    return isFilled;
+  });
+
+  const roundedDisabledForShapes: ShapeType[] = ['person', 'notifications', 'heart', 'halfMoon', 'circle'];
+  const roundDisabled = createMemo(() => !!shape() && filled() && roundedDisabledForShapes.includes(shape()!));
 
   const modifiers = [
     {
