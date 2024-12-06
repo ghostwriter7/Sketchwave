@@ -5,6 +5,9 @@ import { toRadians } from '../../../math/to-radians.ts';
 type Action = 'move' | 'resize' | 'rotate';
 
 export class Resizer {
+  public onMove?: (x: number, y: number) => void;
+  public onRotate?: (radians: number) => void;
+
   private activeAction?: Action;
   private previousActionPoint?: Point;
   private availableAction?: Action;
@@ -12,6 +15,7 @@ export class Resizer {
   private boxWidth!: number;
   private boxHeight!: number;
   private resizePoints!: Point[];
+  private rotationAngle = 0;
 
   private rotateHandleOrigin!: Point;
   private rotateHandleDimension = 20;
@@ -33,14 +37,6 @@ export class Resizer {
     document.body.appendChild(this.canvas);
 
     this.drawAndAnimateBox = this.drawAndAnimateBox.bind(this);
-  }
-
-  public onMove(callback: (x: number, y: number) => void): void {
-    // @ts-ignore
-    this.canvas.addEventListener('moveshape', ({ detail }: CustomEvent<{
-      x: number,
-      y: number
-    }>) => callback(detail.x, detail.y));
   }
 
   public renderBoxAt(origin: Point, width: number, height: number): void {
@@ -70,8 +66,16 @@ export class Resizer {
         const dx = currentPoint.x - this.previousActionPoint!.x;
         const dy = currentPoint.y - this.previousActionPoint!.y;
         this.previousActionPoint = currentPoint;
-        this.origin = new Point(this.origin.x + dx, this.origin.y + dy);
-        this.canvas.dispatchEvent(new CustomEvent('moveshape', { detail: { x: dx, y: dy } }));
+
+        if (this.activeAction == 'move') {
+          this.origin = new Point(this.origin.x + dx, this.origin.y + dy);
+          this.onMove?.(dx, dy);
+          if (this.rotationAngle) this.onRotate?.(toRadians(this.rotationAngle));
+        } else if (this.availableAction == 'rotate') {
+          this.rotationAngle -= dx;
+          this.rotationAngle %= 360;
+          this.onRotate?.(toRadians(this.rotationAngle));
+        }
       } else {
         if (Point.isWithinBoundingBox(point, this.rotateHandleOrigin, this.rotateHandleDimension, this.rotateHandleDimension)) {
           this.canvas.style.cursor = 'grab';
@@ -117,6 +121,14 @@ export class Resizer {
 
   private drawAndAnimateBox(): void {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (this.rotationAngle) {
+      this.ctx.resetTransform();
+      const [centerX, centerY] = [this.origin.x + this.boxWidth / 2, this.origin.y + this.boxHeight / 2];
+      this.ctx.translate(centerX, centerY);
+      const radians = toRadians(this.rotationAngle);
+      this.ctx.rotate(radians);
+      this.ctx.translate(-centerX, -centerY);
+    }
     this.drawDashedBox();
     this.drawResizeIndicators();
     this.drawRotateHandle();
