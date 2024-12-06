@@ -2,18 +2,27 @@ import { Point } from '../../../types/Point.ts';
 import { ThemeHelper } from '../../../helpers/theme.helper.ts';
 import { toRadians } from '../../../math/to-radians.ts';
 
+type Action = 'move' | 'resize' | 'rotate';
+
 export class Resizer {
-  private readonly canvas: HTMLCanvasElement;
-  private readonly ctx: CanvasRenderingContext2D;
-  private currentPath?: Path2D;
+  private activeAction?: Action;
+  private previousActionPoint?: Point;
+  private availableAction?: Action;
   private origin!: Point;
   private boxWidth!: number;
   private boxHeight!: number;
+  private resizePoints!: Point[];
 
+  private rotateHandleOrigin!: Point;
+  private rotateHandleDimension = 20;
+
+  private readonly canvas: HTMLCanvasElement;
+  private readonly ctx: CanvasRenderingContext2D;
   private readonly indicatorDimension = 10;
-
   private readonly halfIndicatorWidth = this.indicatorDimension / 2;
   private readonly halfIndicatorHeight = this.indicatorDimension / 2;
+  private readonly cursors = ['nw-resize', 'n-resize', 'ne-resize', 'w-resize', 'e-resize', 'sw-resize', 's-resize', 'se-resize'] as const;
+
 
   constructor(width: number, height: number) {
     this.canvas = document.createElement('canvas');
@@ -26,23 +35,84 @@ export class Resizer {
     this.drawAndAnimateBox = this.drawAndAnimateBox.bind(this);
   }
 
+  public onMove(callback: (x: number, y: number) => void): void {
+    // @ts-ignore
+    this.canvas.addEventListener('moveshape', ({ detail }: CustomEvent<{
+      x: number,
+      y: number
+    }>) => callback(detail.x, detail.y));
+  }
+
   public renderBoxAt(origin: Point, width: number, height: number): void {
     this.origin = origin;
     this.boxWidth = width;
     this.boxHeight = height;
 
-
     this.ctx.strokeStyle = ThemeHelper.getColor('clr-primary');
-    this.currentPath = new Path2D();
-    this.currentPath.rect(origin.x, origin.y, width, height);
-    requestAnimationFrame(this.drawAndAnimateBox)
+    requestAnimationFrame(this.drawAndAnimateBox);
+
+    this.canvas.addEventListener('mousedown', (event) => {
+      if (this.availableAction) {
+        this.activeAction = this.availableAction;
+        this.previousActionPoint = Point.fromEvent(event);
+      }
+    })
+
+    this.canvas.addEventListener('mouseup', () => {
+      this.activeAction = undefined;
+    })
+
+    this.canvas.addEventListener('mousemove', (event) => {
+      const point = Point.fromEvent(event);
+
+      if (event.buttons == 1 && this.activeAction) {
+        const currentPoint = Point.fromEvent(event);
+        const dx = currentPoint.x - this.previousActionPoint!.x;
+        const dy = currentPoint.y - this.previousActionPoint!.y;
+        this.previousActionPoint = currentPoint;
+        this.origin = new Point(this.origin.x + dx, this.origin.y + dy);
+        this.canvas.dispatchEvent(new CustomEvent('moveshape', { detail: { x: dx, y: dy } }));
+      } else {
+        if (Point.isWithinBoundingBox(point, this.rotateHandleOrigin, this.rotateHandleDimension, this.rotateHandleDimension)) {
+          this.canvas.style.cursor = 'grab';
+          this.availableAction = 'rotate';
+        } else if (Point.isWithinBoundingBox(point, this.origin, this.boxWidth, this.boxHeight)) {
+          this.canvas.style.cursor = 'move';
+          this.availableAction = 'move';
+        } else {
+          const resizeCursorIndex = this.resizePoints.findIndex((resizePoint) =>
+            Point.isWithinBoundingBox(point, resizePoint, this.indicatorDimension, this.indicatorDimension)
+          );
+
+          if (resizeCursorIndex != -1) {
+            this.canvas.style.cursor = this.cursors[resizeCursorIndex];
+            this.availableAction = 'resize';
+          } else {
+            this.canvas.style.cursor = 'default';
+          }
+        }
+      }
+
+
+      //
+      // if (this.canResize(point)) {
+      //
+      // }
+      // else if (this.canRotate(point)) {
+      //
+      // } else if (this.canDrag(point)) {
+      //
+      // }
+
+    })
+
   }
 
   private drawDashedBox(): void {
     this.ctx.lineWidth = 3;
-    this.ctx.setLineDash([2, 3]);
+    this.ctx.setLineDash([2, 4]);
     this.ctx.lineDashOffset = this.ctx.lineDashOffset == 10 ? 0 : this.ctx.lineDashOffset + 1;
-    this.ctx.stroke(this.currentPath!);
+    this.ctx.strokeRect(this.origin.x, this.origin.y, this.boxWidth, this.boxHeight);
   }
 
   private drawAndAnimateBox(): void {
@@ -57,18 +127,17 @@ export class Resizer {
     this.ctx.beginPath();
     this.ctx.setLineDash([]);
     this.ctx.lineWidth = 3;
-    this.ctx.lineCap = this.ctx.lineJoin =  'round'
-    const startX = this.origin.x + 15;
+    this.ctx.lineCap = this.ctx.lineJoin = 'round'
 
-    const startY = this.origin.y + this.boxHeight - 15;
+    this.rotateHandleOrigin = new Point(this.origin.x + 5, this.origin.y + this.boxHeight - 25);
 
-    this.ctx.moveTo(startX + 10, startY);
-    this.ctx.arc(startX, startY, 10, 0, toRadians(325));
-    this.ctx.lineTo(startX + 1, startY -2);
+    this.ctx.moveTo(this.rotateHandleOrigin.x + 20, this.rotateHandleOrigin.y + 10);
+    this.ctx.arc(this.rotateHandleOrigin.x + 10, this.rotateHandleOrigin.y + 10, 10, 0, toRadians(325));
+    this.ctx.lineTo(this.rotateHandleOrigin.x + 11, this.rotateHandleOrigin.y + 8);
 
-    this.ctx.moveTo(startX + 10, startY);
-    this.ctx.arc(startX, startY, 10, 0, toRadians(325));
-    this.ctx.lineTo(startX + 6, startY - 15);
+    this.ctx.moveTo(this.rotateHandleOrigin.x + 20, this.rotateHandleOrigin.y + 10);
+    this.ctx.arc(this.rotateHandleOrigin.x + 10, this.rotateHandleOrigin.y + 10, 10, 0, toRadians(325));
+    this.ctx.lineTo(this.rotateHandleOrigin.x + 16, this.rotateHandleOrigin.y - 5);
 
     this.ctx.stroke();
   }
@@ -81,7 +150,7 @@ export class Resizer {
     const endX = this.origin.x + this.boxWidth;
     const endY = this.origin.y + this.boxHeight;
 
-    const points = [
+    this.resizePoints = [
       new Point(leftX, topY),
       new Point(centerX, topY),
       new Point(endX, topY),
@@ -94,10 +163,9 @@ export class Resizer {
       new Point(endX, endY)
     ];
 
-    this.ctx.lineDashOffset = 0;
     this.ctx.setLineDash([]);
 
-    points.forEach(({ x, y }: Point) => {
+    this.resizePoints.forEach(({ x, y }: Point) => {
       this.ctx.beginPath();
       this.ctx.fillStyle = '#fff';
       this.ctx.fillRect(x, y, this.indicatorDimension, this.indicatorDimension);
