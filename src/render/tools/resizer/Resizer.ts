@@ -27,7 +27,6 @@ export class Resizer {
   private readonly halfIndicatorHeight = this.indicatorDimension / 2;
   private readonly cursors = ['nw-resize', 'n-resize', 'ne-resize', 'w-resize', 'e-resize', 'sw-resize', 's-resize', 'se-resize'] as const;
 
-
   constructor(width: number, height: number) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = width;
@@ -45,7 +44,7 @@ export class Resizer {
     this.boxHeight = height;
 
     this.ctx.strokeStyle = ThemeHelper.getColor('clr-primary');
-    requestAnimationFrame(this.drawAndAnimateBox);
+    this.drawAndAnimateBox();
 
     this.canvas.addEventListener('mousedown', (event) => {
       if (this.availableAction) {
@@ -59,24 +58,30 @@ export class Resizer {
     })
 
     this.canvas.addEventListener('mousemove', (event) => {
-      const point = Point.fromEvent(event);
+      let point = Point.fromEvent(event);
 
       if (event.buttons == 1 && this.activeAction) {
-        const currentPoint = Point.fromEvent(event);
-        const dx = currentPoint.x - this.previousActionPoint!.x;
-        const dy = currentPoint.y - this.previousActionPoint!.y;
-        this.previousActionPoint = currentPoint;
+        const dx = point.x - this.previousActionPoint!.x;
+        const dy = point.y - this.previousActionPoint!.y;
+        this.previousActionPoint = point;
 
         if (this.activeAction == 'move') {
           this.origin = new Point(this.origin.x + dx, this.origin.y + dy);
           this.onMove?.(dx, dy);
           if (this.rotationAngle) this.onRotate?.(toRadians(this.rotationAngle));
+          this.drawAndAnimateBox();
         } else if (this.availableAction == 'rotate') {
           this.rotationAngle -= dx;
           this.rotationAngle %= 360;
           this.onRotate?.(toRadians(this.rotationAngle));
+          this.drawAndAnimateBox();
         }
       } else {
+        if (this.rotationAngle) {
+          const tempPoint = new DOMPoint(point.x, point.y);
+          point = tempPoint.matrixTransform(this.ctx.getTransform().inverse());
+        }
+
         if (Point.isWithinBoundingBox(point, this.rotateHandleOrigin, this.rotateHandleDimension, this.rotateHandleDimension)) {
           this.canvas.style.cursor = 'grab';
           this.availableAction = 'rotate';
@@ -96,31 +101,19 @@ export class Resizer {
           }
         }
       }
-
-
-      //
-      // if (this.canResize(point)) {
-      //
-      // }
-      // else if (this.canRotate(point)) {
-      //
-      // } else if (this.canDrag(point)) {
-      //
-      // }
-
     })
 
   }
 
   private drawDashedBox(): void {
     this.ctx.lineWidth = 3;
-    this.ctx.setLineDash([2, 4]);
-    this.ctx.lineDashOffset = this.ctx.lineDashOffset == 10 ? 0 : this.ctx.lineDashOffset + 1;
+    this.ctx.setLineDash([4, 4]);
     this.ctx.strokeRect(this.origin.x, this.origin.y, this.boxWidth, this.boxHeight);
   }
 
   private drawAndAnimateBox(): void {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
     if (this.rotationAngle) {
       this.ctx.resetTransform();
       const [centerX, centerY] = [this.origin.x + this.boxWidth / 2, this.origin.y + this.boxHeight / 2];
@@ -129,10 +122,10 @@ export class Resizer {
       this.ctx.rotate(radians);
       this.ctx.translate(-centerX, -centerY);
     }
+
     this.drawDashedBox();
     this.drawResizeIndicators();
     this.drawRotateHandle();
-    requestAnimationFrame(this.drawAndAnimateBox);
   }
 
   private drawRotateHandle(): void {
