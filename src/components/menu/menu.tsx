@@ -47,11 +47,11 @@ const Menu = () => {
         </button>}
     </For>
     <span class="divider"></span>
-    <MenuGroup label="Brushes">
+    <MenuGroup label="Brushes (B)">
       <BrushPicker/>
     </MenuGroup>
     <span class="divider"></span>
-    <MenuGroup label="Shapes">
+    <MenuGroup label="Shapes (S)">
       <ShapePicker/>
     </MenuGroup>
     <span class="divider"></span>
