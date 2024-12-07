@@ -4,6 +4,7 @@ import { Point } from '../../types/Point.ts';
 import { calculateDistance } from '../../math/distance.ts';
 import { useGlobalContext } from '../../global-provider.tsx';
 import { ThemeHelper } from '../../helpers/theme.helper.ts';
+import { RESIZE_CURSORS } from '../../types/cursors.ts';
 
 export const Resizer = () => {
   const { state, setDimensions } = useGlobalContext();
@@ -13,7 +14,7 @@ export const Resizer = () => {
 
   let indicators: Point[];
 
-  const cursors = ['nw-resize', 'n-resize', 'ne-resize', 'w-resize', 'e-resize', 'sw-resize', 's-resize', 'se-resize'] as const;
+  const cursors = RESIZE_CURSORS;
 
   const cursorCapabilities = {
     'nw-resize': { moveXAxis: true, moveYAxis: true, changeOriginX: true, changeOriginY: true },

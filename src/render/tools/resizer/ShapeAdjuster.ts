@@ -1,6 +1,7 @@
 import { Point } from '../../../types/Point.ts';
 import { ThemeHelper } from '../../../helpers/theme.helper.ts';
 import { toRadians } from '../../../math/to-radians.ts';
+import { RESIZE_ACTIONS, RESIZE_CURSORS } from '../../../types/cursors.ts';
 
 type Action = 'move' | 'resize' | 'rotate';
 
@@ -23,51 +24,13 @@ export class ShapeAdjuster {
   private readonly abortController = new AbortController();
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
+
   private readonly indicatorDimension = 10;
   private readonly halfIndicatorWidth = this.indicatorDimension / 2;
   private readonly halfIndicatorHeight = this.indicatorDimension / 2;
-  private readonly cursors = ['nw-resize', 'n-resize', 'ne-resize', 'w-resize', 'e-resize', 'sw-resize', 's-resize', 'se-resize'] as const;
-  private readonly cursorActionMap: Record<string, {
-    originX?: boolean,
-    originY?: boolean,
-    width?: number,
-    height?: number
-  }> = {
-    'nw-resize': {
-      originX: true,
-      originY: true,
-      width: -1,
-      height: -1,
-    },
-    'n-resize': {
-      height: -1,
-      originY: true,
-    },
-    'ne-resize': {
-      originY: true,
-      width: 1,
-      height: -1,
-    },
-    'w-resize': {
-      originX: true,
-      width: -1,
-    },
-    'e-resize': {
-      width: 1
-    },
-    'sw-resize': {
-      originX: true,
-      height: 1,
-      width: -1
-    },
-    's-resize': {
-      height: 1
-    },
-    'se-resize': {
-      width: 1,
-      height: 1
-    }
-  }
+
+  private readonly cursors = RESIZE_CURSORS;
+  private readonly cursorActionMap = RESIZE_ACTIONS;
 
 
   constructor(
