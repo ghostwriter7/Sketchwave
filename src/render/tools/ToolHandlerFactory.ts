@@ -3,7 +3,6 @@ import type { ToolHandler } from './abstract/ToolHandler.ts';
 import type { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { LineTool } from './LineTool.ts';
-import { RectTool } from './RectTool.ts';
 import { EraserTool } from './EraserTool.ts';
 import { BrushTool } from './brushes/BrushTool.ts';
 import { AirbrushTool } from './brushes/airbrush/AirbrushTool.ts';
@@ -21,7 +20,6 @@ export class ToolHandlerFactory {
     line: LineTool,
     marker: Marker,
     pastelBrush: PastelBrush,
-    rect: RectTool,
     shape: ShapeTool,
   }
 

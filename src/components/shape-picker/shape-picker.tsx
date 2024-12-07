@@ -48,7 +48,8 @@ export const ShapePicker = () => {
 
   const roundedDisabledForShapes: ShapeType[] = ['person', 'notifications', 'heart', 'halfMoon', 'circle'];
   const isModifierDisabled = createMemo(() => !shapePickerState.shape)
-  const isRoundDisabled = createMemo(() => isModifierDisabled() || (shapePickerState.fill && roundedDisabledForShapes.includes(shapePickerState.shape!)));
+  const isRoundDisabled = createMemo(() => isModifierDisabled()
+    || (shapePickerState.fill && roundedDisabledForShapes.includes(shapePickerState.shape!)));
 
   const modifiers: Modifiers = [
     {
@@ -111,8 +112,9 @@ export const ShapePicker = () => {
       <For each={SHAPES}>
         {({ icon, shapeType, title }) =>
           <button
+            id={shapeType}
             classList={{ active: shapePickerState.shape == shapeType }}
-            onClick={() => setShapePickerState('shape', shapeType)}
+            onClick={() => setShapePickerState({ shape: shapeType, round: false})}
             title={title}
           >
             <Icon icon={icon} />

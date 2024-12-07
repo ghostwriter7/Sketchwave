@@ -15,7 +15,6 @@ export type ToolType =
   | 'eraser'
   | 'pastelBrush'
   | 'marker'
-  | 'rect'
   | 'line'
   | 'shape';
 

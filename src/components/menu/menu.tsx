@@ -18,7 +18,6 @@ const Menu = () => {
   const { state, updateState } = useGlobalContext();
 
   const buttons: { id: ToolType, icon: string; title: string }[] = [
-    { id: 'rect', icon: 'crop_square', title: 'Rectangle (R)' },
     { id: 'line', icon: 'timeline', title: 'Line (L)' },
     { id: 'eraser', icon: 'ink_eraser', title: 'Eraser (E)' },
   ];
