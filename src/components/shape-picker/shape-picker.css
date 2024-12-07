@@ -8,6 +8,7 @@
     border: 1px solid var(--clr-primary);
     display: flex;
     flex-wrap: wrap;
+    gap: var(--space-sm);
     overflow-y: scroll;
     max-width: 170px;
     max-height: 70px;

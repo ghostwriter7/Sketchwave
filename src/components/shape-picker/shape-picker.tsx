@@ -123,7 +123,7 @@ export const ShapePicker = () => {
     const stroke = stroked();
     const fill = filled()
     const activeShape = shape();
-    
+
     if (activeShape) {
       updateState({
         activeTool: 'shape',
@@ -143,7 +143,7 @@ export const ShapePicker = () => {
   });
 
   return <div class="shape-picker" onClick={(e) => e.stopPropagation()}>
-    <div class="shapes scroller">
+    <div tabindex="0" class="shapes scroller interactive" id="shape">
       <For each={shapes}>
         {({ icon, shapeType, title }) =>
           <button classList={{ active: shape() == shapeType }} onClick={() => setShape(shapeType)} title={title}>
@@ -155,7 +155,17 @@ export const ShapePicker = () => {
     <div class="modifiers">
       <For each={modifiers}>
         {({ disabled, id, icon, title, getter, setter }) =>
-          <label class="interactive" for={id} title={title}>
+          <label
+            class="interactive"
+            for={id}
+            tabindex={!disabled?.() ? '0' : '1'}
+            title={title}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !disabled?.()) {
+                setter(!getter());
+              }
+            }}
+          >
             <span class="material-symbols-outlined">{icon}</span>
             <input
               class="hidden"

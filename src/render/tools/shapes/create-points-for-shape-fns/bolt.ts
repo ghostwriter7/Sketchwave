@@ -2,17 +2,23 @@ import type { CreatePointsForShapeFn } from '../../../../types/core.type.ts';
 import { Point } from '../../../../types/Point.ts';
 
 export const bolt: CreatePointsForShapeFn = (pointA: Point, pointB: Point, dx: number, dy: number): Point[] => {
-   return [
-      new Point(.4 * dx + pointA.x, pointA.y),
-      new Point(.6 * dx + pointA.x, .26 * dy + pointA.y),
-      new Point(.52 * dx + pointA.x, .32 * dy + pointA.y),
-      new Point(.77 * dx + pointA.x, .55 * dy + pointA.y),
-      new Point(.67 * dx + pointA.x, .59 * dy + pointA.y),
+  const xFromOrigin = (percentage: number): number =>
+    percentage * dx + pointA.x;
+
+  const yFromOrigin = (percentage: number): number =>
+    percentage * dy + pointA.y;
+
+  return [
+      new Point(xFromOrigin(.40), pointA.y),
+      new Point(xFromOrigin(.60), yFromOrigin(.26)),
+      new Point(xFromOrigin(.52), yFromOrigin(.32)),
+      new Point(xFromOrigin(.77), yFromOrigin(.55)),
+      new Point(xFromOrigin(.67), yFromOrigin(.59)),
       pointB,
-      new Point(.47 * dx + pointA.x, .68 * dy + pointA.y),
-      new Point(.57 * dx + pointA.x, .63 * dy + pointA.y),
-      new Point(.23 * dx + pointA.x, .44 * dy + pointA.y),
-      new Point(.36 * dx + pointA.x, .38 * dy + pointA.y),
-      new Point(pointA.x, .17 * dy + pointA.y)
+      new Point(xFromOrigin(.47), yFromOrigin(.68)),
+      new Point(xFromOrigin(.57), yFromOrigin(.63)),
+      new Point(xFromOrigin(.23), yFromOrigin(.44)),
+      new Point(xFromOrigin(.36), yFromOrigin(.38)),
+      new Point(pointA.x, yFromOrigin(.17))
     ];
 }
