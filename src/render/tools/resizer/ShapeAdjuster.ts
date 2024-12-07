@@ -91,94 +91,10 @@ export class ShapeAdjuster {
     this.origin = origin;
     this.boxWidth = endPoint.x - origin.x;
     this.boxHeight = endPoint.y - origin.y;
-
     this.ctx.strokeStyle = ThemeHelper.getColor('clr-primary');
+
     this.drawBoxAndControls();
-
-    const options = { signal: this.abortController.signal };
-    this.canvas.addEventListener('mousedown', (event) => {
-      if (this.availableAction) {
-        this.activeAction = this.availableAction;
-        this.previousActionPoint = Point.fromEvent(event);
-      } else {
-        this.onComplete();
-        this.abortController.abort('ShapeAdjuster is completing...');
-        this.canvas.remove();
-      }
-    }, options)
-
-    this.canvas.addEventListener('mouseup', () => this.activeAction = undefined, options)
-
-    this.canvas.addEventListener('mousemove', (event) => {
-      let point = Point.fromEvent(event);
-
-      if (event.buttons == 1 && this.activeAction) {
-        const dx = point.x - this.previousActionPoint!.x;
-        const dy = point.y - this.previousActionPoint!.y;
-        this.previousActionPoint = point;
-
-        if (this.activeAction == 'move') {
-          this.origin = new Point(this.origin.x + dx, this.origin.y + dy);
-        } else if (this.availableAction == 'rotate') {
-          this.rotationAngle -= dx;
-          this.rotationAngle %= 360;
-        } else if (this.availableAction == 'resize') {
-          const activeCursor = this.canvas.style.cursor;
-          const availableActions = this.cursorActionMap[activeCursor];
-
-          const angle = toRadians(this.rotationAngle)
-          const cosAngle = Math.cos(angle);
-          const sinAngle = Math.sin(angle);
-          const localDx = cosAngle * dx + sinAngle * dy;
-          const localDy = -sinAngle * dx + cosAngle * dy;
-
-          if (availableActions.originX) {
-            this.origin = new Point(this.origin.x + localDx, this.origin.y)
-          }
-
-          if (availableActions.originY) {
-            this.origin = new Point(this.origin.x, this.origin.y + localDy)
-          }
-
-          if (availableActions.width) {
-            this.boxWidth += localDx * availableActions.width;
-          }
-
-          if (availableActions.height) {
-            this.boxHeight += localDy * availableActions.height;
-          }
-        }
-
-        this.drawBoxAndControls();
-        this.onChange(this.origin, this.boxWidth, this.boxHeight, toRadians(this.rotationAngle));
-      } else {
-        if (this.rotationAngle) {
-          const tempPoint = new DOMPoint(point.x, point.y);
-          point = tempPoint.matrixTransform(this.ctx.getTransform().inverse());
-        }
-
-        if (Point.isWithinBoundingBox(point, this.rotateHandleOrigin, this.rotateHandleDimension, this.rotateHandleDimension)) {
-          this.canvas.style.cursor = 'grab';
-          this.availableAction = 'rotate';
-        } else if (Point.isWithinBoundingBox(point, this.origin, this.boxWidth, this.boxHeight)) {
-          this.canvas.style.cursor = 'move';
-          this.availableAction = 'move';
-        } else {
-          const resizeCursorIndex = this.resizePoints.findIndex((resizePoint) =>
-            Point.isWithinBoundingBox(point, resizePoint, this.indicatorDimension, this.indicatorDimension)
-          );
-
-          if (resizeCursorIndex != -1) {
-            this.canvas.style.cursor = this.cursors[resizeCursorIndex];
-            this.availableAction = 'resize';
-          } else {
-            this.canvas.style.cursor = 'default';
-            this.availableAction = undefined;
-          }
-        }
-      }
-    }, options)
-
+    this.initializeEventListeners();
   }
 
   private drawDashedBox(): void {
@@ -212,12 +128,13 @@ export class ShapeAdjuster {
 
     this.rotateHandleOrigin = new Point(this.origin.x + 5, this.origin.y + this.boxHeight - 25);
 
+    const angle = toRadians(325);
     this.ctx.moveTo(this.rotateHandleOrigin.x + 20, this.rotateHandleOrigin.y + 10);
-    this.ctx.arc(this.rotateHandleOrigin.x + 10, this.rotateHandleOrigin.y + 10, 10, 0, toRadians(325));
+    this.ctx.arc(this.rotateHandleOrigin.x + 10, this.rotateHandleOrigin.y + 10, 10, 0, angle);
     this.ctx.lineTo(this.rotateHandleOrigin.x + 11, this.rotateHandleOrigin.y + 8);
 
     this.ctx.moveTo(this.rotateHandleOrigin.x + 20, this.rotateHandleOrigin.y + 10);
-    this.ctx.arc(this.rotateHandleOrigin.x + 10, this.rotateHandleOrigin.y + 10, 10, 0, toRadians(325));
+    this.ctx.arc(this.rotateHandleOrigin.x + 10, this.rotateHandleOrigin.y + 10, 10, 0, angle);
     this.ctx.lineTo(this.rotateHandleOrigin.x + 16, this.rotateHandleOrigin.y - 5);
 
     this.ctx.stroke();
@@ -252,5 +169,114 @@ export class ShapeAdjuster {
       this.ctx.fillRect(x, y, this.indicatorDimension, this.indicatorDimension);
       this.ctx.strokeRect(x, y, this.indicatorDimension, this.indicatorDimension);
     });
+  }
+
+  private initializeEventListeners(): void {
+    const options = { signal: this.abortController.signal };
+
+    this.canvas.addEventListener('mousedown', this.handleClick.bind(this), options)
+    this.canvas.addEventListener('mouseup', () => this.activeAction = undefined, options)
+    this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this), options)
+  }
+
+  private handleClick(event: MouseEvent): void {
+    if (this.availableAction) {
+      this.activeAction = this.availableAction;
+      this.previousActionPoint = Point.fromEvent(event);
+    } else {
+      this.onComplete();
+      this.abortController.abort(`${ShapeAdjuster.name} is completing...`);
+      this.canvas.remove();
+    }
+  }
+
+  private handleMouseMove(event: MouseEvent): void {
+    const point = Point.fromEvent(event)
+
+    if (event.buttons == 1 && this.activeAction) {
+      this.performAction(point);
+    } else {
+      this.adjustAvailableAction(point);
+    }
+  }
+
+  private performAction(point: Point): void {
+    const dx = point.x - this.previousActionPoint!.x;
+    const dy = point.y - this.previousActionPoint!.y;
+    this.previousActionPoint = point;
+
+    if (this.activeAction == 'move') {
+      this.handleMoveAction(dx, dy);
+    } else if (this.availableAction == 'rotate') {
+      this.handleRotateAction(dx);
+    } else if (this.availableAction == 'resize') {
+      this.handleResizeAction(dx, dy);
+    }
+
+    this.drawBoxAndControls();
+    this.onChange(this.origin, this.boxWidth, this.boxHeight, toRadians(this.rotationAngle));
+  }
+
+  private handleRotateAction(dx: number): void {
+    this.rotationAngle -= dx;
+    this.rotationAngle %= 360;
+  }
+
+  private adjustAvailableAction(point: Point): void {
+    if (this.rotationAngle) {
+      const tempPoint = new DOMPoint(point.x, point.y);
+      point = tempPoint.matrixTransform(this.ctx.getTransform().inverse());
+    }
+
+    if (Point.isWithinBoundingBox(point, this.rotateHandleOrigin, this.rotateHandleDimension, this.rotateHandleDimension)) {
+      this.canvas.style.cursor = 'grab';
+      this.availableAction = 'rotate';
+    } else if (Point.isWithinBoundingBox(point, this.origin, this.boxWidth, this.boxHeight)) {
+      this.canvas.style.cursor = 'move';
+      this.availableAction = 'move';
+    } else {
+      const resizeCursorIndex = this.resizePoints.findIndex((resizePoint) =>
+        Point.isWithinBoundingBox(point, resizePoint, this.indicatorDimension, this.indicatorDimension)
+      );
+
+      if (resizeCursorIndex != -1) {
+        this.canvas.style.cursor = this.cursors[resizeCursorIndex];
+        this.availableAction = 'resize';
+      } else {
+        this.canvas.style.cursor = 'default';
+        this.availableAction = undefined;
+      }
+    }
+  }
+
+  private handleResizeAction(dx: number, dy: number) {
+    const activeCursor = this.canvas.style.cursor;
+    const availableActions = this.cursorActionMap[activeCursor];
+
+    const angle = toRadians(this.rotationAngle)
+    const cosAngle = Math.cos(angle);
+    const sinAngle = Math.sin(angle);
+    const localDx = cosAngle * dx + sinAngle * dy;
+    const localDy = -sinAngle * dx + cosAngle * dy;
+
+    if (availableActions.originX) {
+      this.origin = new Point(this.origin.x + localDx, this.origin.y)
+    }
+
+    if (availableActions.originY) {
+      this.origin = new Point(this.origin.x, this.origin.y + localDy)
+    }
+
+    if (availableActions.width) {
+      this.boxWidth += localDx * availableActions.width;
+    }
+
+    if (availableActions.height) {
+      this.boxHeight += localDy * availableActions.height;
+    }
+  }
+
+  private handleMoveAction(dx: number, dy: number): void {
+    this.origin = new Point(this.origin.x + dx, this.origin.y + dy);
   }
 }
