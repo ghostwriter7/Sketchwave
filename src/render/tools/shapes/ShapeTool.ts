@@ -26,6 +26,8 @@ import type { ToolProperties } from '../../../global-provider.tsx';
 import { Resizer } from '../resizer/Resizer.ts';
 
 export class ShapeTool extends ToolHandler {
+  protected nativeCursor = 'crosshair';
+
   private startPoint: Point | null = null;
   private endPoint: Point | null = null;
   private isWorking = false;

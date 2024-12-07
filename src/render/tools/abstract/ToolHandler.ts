@@ -14,6 +14,7 @@ export abstract class ToolHandler {
 
   protected cursorSize?: number;
   protected customCursorCreateFn?: (ctx: OffscreenCanvasRenderingContext2D) => void;
+  protected nativeCursor = 'pointer';
 
   protected readonly logger = new Logger(this.constructor as Constructor);
 
@@ -160,6 +161,6 @@ export abstract class ToolHandler {
       return cursor;
     }
 
-    return Promise.resolve('pointer');
+    return Promise.resolve(this.nativeCursor);
   }
 }
