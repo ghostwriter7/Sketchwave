@@ -51,6 +51,11 @@ export class ShapeAdjuster {
     this.onComplete = onComplete;
   }
 
+  public destroy(): void {
+    this.abortController.abort('Destroying ShapeAdjuster...');
+    this.canvas.remove();
+  }
+
   public renderBoxBetweenStartAndEndPoints(origin: Point, endPoint: Point): void {
     this.origin = origin;
     this.boxWidth = endPoint.x - origin.x;
@@ -148,8 +153,7 @@ export class ShapeAdjuster {
       this.previousActionPoint = Point.fromEvent(event);
     } else {
       this.onComplete();
-      this.abortController.abort(`${ShapeAdjuster.name} is completing...`);
-      this.canvas.remove();
+      this.destroy();
     }
   }
 

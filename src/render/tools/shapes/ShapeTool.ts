@@ -32,6 +32,7 @@ export class ShapeTool extends ToolHandler {
   private endPoint: Point | null = null;
   private isWorking = false;
   private rotateAngleInRadians?: number;
+  private shapeAdjuster?: ShapeAdjuster;
 
   private static readonly createPointsForShapeFnMap: Record<SimpleShapeType, CreatePointsForShapeFn> = {
     arrow: arrow,
@@ -63,6 +64,11 @@ export class ShapeTool extends ToolHandler {
     super(toolState, layerFacade);
   }
 
+  public override onDestroy(): void {
+    super.onDestroy();
+    this.shapeAdjuster?.destroy();
+  }
+
   public tryCreateLayer(): void {
     if (!this.startPoint || !this.endPoint) return;
 
@@ -88,14 +94,14 @@ export class ShapeTool extends ToolHandler {
         this.endPoint = Point.fromEvent(event);
         this.renderPreview();
 
-        const shapeAdjuster = new ShapeAdjuster(
+        this.shapeAdjuster = new ShapeAdjuster(
           this.width,
           this.height,
           this.handleShapeAdjustment.bind(this),
           () => this.resetState()
         );
 
-        shapeAdjuster.renderBoxBetweenStartAndEndPoints(this.startPoint, this.endPoint);
+        this.shapeAdjuster.renderBoxBetweenStartAndEndPoints(this.startPoint, this.endPoint);
       }
     });
 
