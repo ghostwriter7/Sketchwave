@@ -4,11 +4,9 @@ import { toRadians } from '../../../math/to-radians.ts';
 
 type Action = 'move' | 'resize' | 'rotate';
 
-export class Resizer {
-  public onMove?: (x: number, y: number) => void;
-  public onRotate?: (radians: number) => void;
-  public onResize?: (origin: Point, width: number, height: number) => void;
-  public onComplete?: () => void;
+export class ShapeAdjuster {
+  public onComplete: () => void;
+  public onChange: (origin: Point, width: number, height: number, rotation: number) => void;
 
   private activeAction?: Action;
   private previousActionPoint?: Point;
@@ -22,13 +20,19 @@ export class Resizer {
   private rotateHandleOrigin!: Point;
   private rotateHandleDimension = 20;
 
+  private readonly abortController = new AbortController();
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
   private readonly indicatorDimension = 10;
   private readonly halfIndicatorWidth = this.indicatorDimension / 2;
   private readonly halfIndicatorHeight = this.indicatorDimension / 2;
   private readonly cursors = ['nw-resize', 'n-resize', 'ne-resize', 'w-resize', 'e-resize', 'sw-resize', 's-resize', 'se-resize'] as const;
-  private readonly cursorActionMap: Record<string, { originX?: boolean, originY?: boolean, width?: number, height?: number }> = {
+  private readonly cursorActionMap: Record<string, {
+    originX?: boolean,
+    originY?: boolean,
+    width?: number,
+    height?: number
+  }> = {
     'nw-resize': {
       originX: true,
       originY: true,
@@ -66,7 +70,12 @@ export class Resizer {
   }
 
 
-  constructor(width: number, height: number) {
+  constructor(
+    width: number,
+    height: number,
+    onChange: (origin: Point, width: number, height: number, angle: number,) => void,
+    onComplete: () => void
+  ) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = width;
     this.canvas.height = height;
@@ -74,30 +83,31 @@ export class Resizer {
     this.canvas.classList.add('shape-resizer');
     document.body.appendChild(this.canvas);
 
-    this.drawAndAnimateBox = this.drawAndAnimateBox.bind(this);
+    this.onChange = onChange;
+    this.onComplete = onComplete;
   }
 
-  public renderBoxAt(origin: Point, width: number, height: number): void {
+  public renderBoxBetweenStartAndEndPoints(origin: Point, endPoint: Point): void {
     this.origin = origin;
-    this.boxWidth = width;
-    this.boxHeight = height;
+    this.boxWidth = endPoint.x - origin.x;
+    this.boxHeight = endPoint.y - origin.y;
 
     this.ctx.strokeStyle = ThemeHelper.getColor('clr-primary');
-    this.drawAndAnimateBox();
+    this.drawBoxAndControls();
 
+    const options = { signal: this.abortController.signal };
     this.canvas.addEventListener('mousedown', (event) => {
       if (this.availableAction) {
         this.activeAction = this.availableAction;
         this.previousActionPoint = Point.fromEvent(event);
       } else {
-        this.onComplete?.();
+        this.onComplete();
+        this.abortController.abort('ShapeAdjuster is completing...');
         this.canvas.remove();
       }
-    })
+    }, options)
 
-    this.canvas.addEventListener('mouseup', () => {
-      this.activeAction = undefined;
-    })
+    this.canvas.addEventListener('mouseup', () => this.activeAction = undefined, options)
 
     this.canvas.addEventListener('mousemove', (event) => {
       let point = Point.fromEvent(event);
@@ -109,20 +119,16 @@ export class Resizer {
 
         if (this.activeAction == 'move') {
           this.origin = new Point(this.origin.x + dx, this.origin.y + dy);
-          this.onMove?.(dx, dy);
-          if (this.rotationAngle) this.onRotate?.(toRadians(this.rotationAngle));
-          this.drawAndAnimateBox();
         } else if (this.availableAction == 'rotate') {
           this.rotationAngle -= dx;
           this.rotationAngle %= 360;
-          this.onRotate?.(toRadians(this.rotationAngle));
-          this.drawAndAnimateBox();
         } else if (this.availableAction == 'resize') {
           const activeCursor = this.canvas.style.cursor;
           const availableActions = this.cursorActionMap[activeCursor];
 
-          const cosAngle = Math.cos(toRadians(this.rotationAngle));
-          const sinAngle = Math.sin(toRadians(this.rotationAngle));
+          const angle = toRadians(this.rotationAngle)
+          const cosAngle = Math.cos(angle);
+          const sinAngle = Math.sin(angle);
           const localDx = cosAngle * dx + sinAngle * dy;
           const localDy = -sinAngle * dx + cosAngle * dy;
 
@@ -141,10 +147,10 @@ export class Resizer {
           if (availableActions.height) {
             this.boxHeight += localDy * availableActions.height;
           }
-          this.onResize?.(this.origin, this.boxWidth, this.boxHeight);
-          if (this.rotationAngle) this.onRotate?.(toRadians(this.rotationAngle));
-          this.drawAndAnimateBox();
         }
+
+        this.drawBoxAndControls();
+        this.onChange(this.origin, this.boxWidth, this.boxHeight, toRadians(this.rotationAngle));
       } else {
         if (this.rotationAngle) {
           const tempPoint = new DOMPoint(point.x, point.y);
@@ -171,7 +177,7 @@ export class Resizer {
           }
         }
       }
-    })
+    }, options)
 
   }
 
@@ -181,7 +187,7 @@ export class Resizer {
     this.ctx.strokeRect(this.origin.x, this.origin.y, this.boxWidth, this.boxHeight);
   }
 
-  private drawAndAnimateBox(): void {
+  private drawBoxAndControls(): void {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.rotationAngle) {

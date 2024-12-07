@@ -23,7 +23,7 @@ import { halfMoon } from './create-path-for-shape-fns/halfMoon.ts';
 import { notifications } from './create-path-for-shape-fns/notifications.ts';
 import { person } from './create-path-for-shape-fns/person.ts';
 import type { ToolProperties } from '../../../global-provider.tsx';
-import { Resizer } from '../resizer/Resizer.ts';
+import { ShapeAdjuster } from '../resizer/ShapeAdjuster.ts';
 
 export class ShapeTool extends ToolHandler {
   protected nativeCursor = 'crosshair';
@@ -87,57 +87,20 @@ export class ShapeTool extends ToolHandler {
       } else {
         this.endPoint = Point.fromEvent(event);
         this.renderPreview();
-        /*
-         1. Render Canvas (Resizer) on top of Main Canvas - DONE
-         2. Render a dashed rectangle around the shape (compute from start & end points)
-         3. Render dots in the corners and mid-points for resizing
-         4. Render rotate handle in the left lower corner
-         5. Render the drag cursor while being inside the shape boundaries
-         6. Handle click & mouse move events for 3 actions (resize, rotate, move)
-         7. Notify the ShapeTool upon any change via a CustomEvent
-         8. Listen for CustomEvent in the ShapeTool and rerender
-         9. Listen for a click on the document's body -> Resizer needs to stop propagation if it is a valid action
-         10. Create a Layer with final shape
-         */
 
-        const resizer = new Resizer(this.width, this.height);
+        const shapeAdjuster = new ShapeAdjuster(
+          this.width,
+          this.height,
+          this.handleShapeAdjustment.bind(this),
+          () => this.resetState()
+        );
 
-        const dx = this.endPoint.x - this.startPoint.x;
-        const dy = this.endPoint.y - this.startPoint.y;
-        resizer.renderBoxAt(this.startPoint, dx, dy);
-
-        resizer.onMove = (x: number, y: number) => {
-          this.startPoint = new Point(this.startPoint!.x + x, this.startPoint!.y + y);
-          this.endPoint = new Point(this.endPoint!.x + x, this.endPoint!.y + y);
-          this.renderPreview();
-        };
-
-        resizer.onRotate = (radians: number) => {
-          const dx = this.endPoint!.x - this.startPoint!.x;
-          const dy = this.endPoint!.y - this.startPoint!.y;
-          this.rotateAngleInRadians = radians;
-          const [centerX, centerY] = [this.startPoint!.x + dx / 2, this.startPoint!.y + dy / 2];
-          this.ctx.resetTransform();
-          this.ctx.translate(centerX, centerY);
-          this.ctx.rotate(radians);
-          this.ctx.translate(-centerX, -centerY);
-          this.renderPreview();
-        };
-
-        resizer.onResize = (origin: Point, width: number, height: number): void => {
-          this.startPoint = origin;
-          this.endPoint = new Point(origin.x + width, origin.y + height);
-          this.renderPreview();
-        }
-
-        resizer.onComplete = () => {
-          this.resetState();
-        }
+        shapeAdjuster.renderBoxBetweenStartAndEndPoints(this.startPoint, this.endPoint);
       }
     });
 
     this.onMove((event) => {
-      this.endPoint = Point.fromEvent (event);
+      this.endPoint = Point.fromEvent(event);
       this.renderPreview();
     });
 
@@ -184,7 +147,16 @@ export class ShapeTool extends ToolHandler {
 
   private static render(ctx: CanvasRenderingContext2D,
                         pathOrPoints: Point[] | Path2D,
-                        { fill, stroke, radius, round, rotate, startPoint, width, height }: Pick<ToolProperties, 'round' | 'fill' | 'stroke'> & {
+                        {
+                          fill,
+                          stroke,
+                          radius,
+                          round,
+                          rotate,
+                          startPoint,
+                          width,
+                          height
+                        }: Pick<ToolProperties, 'round' | 'fill' | 'stroke'> & {
                           radius: number; rotate?: number; startPoint: Point, width: number, height: number
                         }): void {
     if (rotate) {
@@ -202,5 +174,20 @@ export class ShapeTool extends ToolHandler {
       fill && ctx.fill(path);
       stroke && ctx.stroke(path);
     }
+  }
+
+  private handleShapeAdjustment(origin: Point, width: number, height: number, angle: number): void {
+    this.startPoint = origin;
+    this.endPoint = new Point(origin.x + width, origin.y + height);
+
+    const dx = this.endPoint.x - this.startPoint.x;
+    const dy = this.endPoint.y - this.startPoint.y;
+    this.rotateAngleInRadians = angle;
+    const [centerX, centerY] = [this.startPoint!.x + dx / 2, this.startPoint!.y + dy / 2];
+    this.ctx.resetTransform();
+    this.ctx.translate(centerX, centerY);
+    this.ctx.rotate(angle);
+    this.ctx.translate(-centerX, -centerY);
+    this.renderPreview();
   }
 }
