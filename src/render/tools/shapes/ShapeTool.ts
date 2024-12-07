@@ -103,10 +103,6 @@ export class ShapeTool extends ToolHandler {
       this.endPoint = Point.fromEvent(event);
       this.renderPreview();
     });
-
-    const reset = () => this.resetState();
-    // this.onMouseUp(reset);
-    // this.onMouseLeave(reset);
   }
 
   protected renderPreview(): void {

@@ -17,6 +17,7 @@ export class ShapeAdjuster {
   private boxHeight!: number;
   private resizePoints!: Point[];
   private rotationAngle = 0;
+  private rotationAngleInRadians = 0;
 
   private rotateHandleOrigin!: Point;
   private rotateHandleDimension = 20;
@@ -69,12 +70,11 @@ export class ShapeAdjuster {
   private drawBoxAndControls(): void {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    if (this.rotationAngle) {
+    if (this.rotationAngleInRadians) {
       this.ctx.resetTransform();
       const [centerX, centerY] = [this.origin.x + this.boxWidth / 2, this.origin.y + this.boxHeight / 2];
       this.ctx.translate(centerX, centerY);
-      const radians = toRadians(this.rotationAngle);
-      this.ctx.rotate(radians);
+      this.ctx.rotate(this.rotationAngleInRadians);
       this.ctx.translate(-centerX, -centerY);
     }
 
@@ -177,16 +177,17 @@ export class ShapeAdjuster {
     }
 
     this.drawBoxAndControls();
-    this.onChange(this.origin, this.boxWidth, this.boxHeight, toRadians(this.rotationAngle));
+    this.onChange(this.origin, this.boxWidth, this.boxHeight, this.rotationAngleInRadians);
   }
 
   private handleRotateAction(dx: number): void {
     this.rotationAngle -= dx;
     this.rotationAngle %= 360;
+    this.rotationAngleInRadians = toRadians(this.rotationAngle);
   }
 
   private adjustAvailableAction(point: Point): void {
-    if (this.rotationAngle) {
+    if (this.rotationAngleInRadians) {
       const tempPoint = new DOMPoint(point.x, point.y);
       point = tempPoint.matrixTransform(this.ctx.getTransform().inverse());
     }
@@ -216,7 +217,7 @@ export class ShapeAdjuster {
     const activeCursor = this.canvas.style.cursor;
     const availableActions = this.cursorActionMap[activeCursor];
 
-    const angle = toRadians(this.rotationAngle)
+    const angle = this.rotationAngleInRadians;
     const cosAngle = Math.cos(angle);
     const sinAngle = Math.sin(angle);
     const localDx = cosAngle * dx + sinAngle * dy;
