@@ -1,5 +1,6 @@
 import { useGlobalContext } from '../../global-provider.tsx';
 import { Logger } from '../../utils/Logger.ts';
+import { Icon } from '../icon/icon.tsx';
 
 export const OpenFileButton = () => {
   const { state, setDimensions } = useGlobalContext();
@@ -74,6 +75,6 @@ export const OpenFileButton = () => {
   }
 
   return <button id="open-file-button" onClick={handleClick} title="Open Image (CTRL + O)">
-    <span class="material-symbols-outlined">folder_open</span>
+    <Icon icon="folder_open" />
   </button>
 }

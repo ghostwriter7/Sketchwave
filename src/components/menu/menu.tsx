@@ -11,6 +11,7 @@ import { BrushPicker } from '../brush-picker/brush-picker.tsx';
 import { UndoRedoButton } from '../undo-redo-button/undo-redo-button.tsx';
 import { ShapePicker } from '../shape-picker/shape-picker.tsx';
 import { MenuGroup } from './menu-group/menu-group.tsx';
+import { Icon } from '../icon/icon.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -43,7 +44,7 @@ const Menu = () => {
     <For each={buttons}>
       {({ id, icon, title }) =>
         <button classList={{ active: state.activeTool === id }} data-tool={id} title={title}>
-          <span class="material-symbols-outlined">{icon}</span>
+          <Icon icon={icon} />
         </button>}
     </For>
     <span class="divider"></span>

@@ -2,6 +2,7 @@ import './brush-picker.css';
 import { For, onMount } from 'solid-js';
 import { Card } from '../card/card.tsx';
 import { useGlobalContext } from '../../global-provider.tsx';
+import { Icon } from '../icon/icon.tsx';
 
 export const BrushPicker = () => {
   const { state } = useGlobalContext();
@@ -50,7 +51,7 @@ export const BrushPicker = () => {
       id="brushes-picker"
       popovertarget="brushes"
       title="Brushes (B)">
-      <span class="material-symbols-outlined">brush</span>
+      <Icon icon="brush" />
     </button>
     <Card ref={popoverRef!} id="brushes" title="Brushes" popover="auto">
       <ul class="dropdown" onClick={handleClick}>

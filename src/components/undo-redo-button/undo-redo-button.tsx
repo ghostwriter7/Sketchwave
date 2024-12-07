@@ -1,5 +1,6 @@
 import { useGlobalContext } from '../../global-provider.tsx';
 import { Show } from 'solid-js';
+import { Icon } from '../icon/icon.tsx';
 
 export const UndoRedoButton = () => {
   const { state } = useGlobalContext();
@@ -11,14 +12,14 @@ export const UndoRedoButton = () => {
         id="undo"
         title="Undo (CTRL + Z)"
         onClick={() => state.layerFacade!.undoLayer()}>
-        <span class="material-symbols-outlined">undo</span>
+        <Icon icon="undo"/>
       </button>
       <button
         disabled={!state.layerFacade?.canRedo()}
         id="redo"
         title="Redo (CTRL + Y)"
         onClick={() => state.layerFacade!.redoLayer()}>
-        <span class="material-symbols-outlined">redo</span>
+        <Icon icon="redo"/>
       </button>
     </Show>
   </>

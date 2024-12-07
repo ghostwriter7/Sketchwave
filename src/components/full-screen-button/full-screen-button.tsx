@@ -1,4 +1,5 @@
 import { createSignal } from 'solid-js';
+import { Icon } from '../icon/icon.tsx';
 
 export const FullScreenButton = () => {
   const [active, setActive] = createSignal(!!document.fullscreenElement);
@@ -10,8 +11,6 @@ export const FullScreenButton = () => {
   document.addEventListener('fullscreenchange', () => setActive(!!document.fullscreenElement));
 
   return <button classList={{ active: active() }} onClick={handleClick} title="Full Screen (F11)">
-    <span class="material-symbols-outlined">
-      screenshot_monitor
-    </span>
+    <Icon icon="screenshot_monitor" />
   </button>
 }

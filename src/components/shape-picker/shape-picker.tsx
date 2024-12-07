@@ -4,6 +4,7 @@ import type { ShapeType } from '../../types/core.type.ts';
 import './shape-picker.css';
 import { createStore } from 'solid-js/store';
 import { SHAPES } from './shapes.ts';
+import { Icon } from '../icon/icon.tsx';
 
 type ShapePickerState = {
   round: boolean;
@@ -114,7 +115,7 @@ export const ShapePicker = () => {
             onClick={() => setShapePickerState('shape', shapeType)}
             title={title}
           >
-            <span class="material-symbols-outlined">{icon}</span>
+            <Icon icon={icon} />
           </button>}
       </For>
     </div>
@@ -133,7 +134,7 @@ export const ShapePicker = () => {
               }
             }}
           >
-            <span class="material-symbols-outlined">{icon}</span>
+            <Icon icon={icon} />
             <input
               class="hidden"
               type="checkbox"

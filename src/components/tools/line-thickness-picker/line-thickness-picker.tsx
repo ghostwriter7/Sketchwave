@@ -3,6 +3,7 @@ import './line-thickness-picker.css';
 import { createEffect, createSignal, Show } from 'solid-js';
 import { rgbToHex } from '../../../color/rgb-to-hex.ts';
 import { ThemeHelper } from '../../../helpers/theme.helper.ts';
+import { Icon } from '../../icon/icon.tsx';
 
 export const LineThicknessPicker = () => {
   const { state, updateState } = useGlobalContext();
@@ -36,7 +37,7 @@ export const LineThicknessPicker = () => {
 
   return <>
     <div class="line-thickness" title="Line Thickness (T)">
-      <span class="material-symbols-outlined">line_weight</span>
+      <Icon icon="line_weight" />
       <input
         id="line-thickness-picker"
         type="range"

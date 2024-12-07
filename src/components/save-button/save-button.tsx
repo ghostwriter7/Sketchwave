@@ -2,6 +2,7 @@ import { createSignal, Show } from 'solid-js';
 import { useGlobalContext } from '../../global-provider.tsx';
 import './save-button.css';
 import { Logger } from '../../utils/Logger.ts';
+import { Icon } from '../icon/icon.tsx';
 
 export const SaveButton = () => {
   const { state } = useGlobalContext();
@@ -38,6 +39,6 @@ export const SaveButton = () => {
 
   return <button id="save-file-button" class="save-button" onClick={handleClick} title="Save (CTRL + S)">
     <Show when={fileHandle()}>{fileHandle()!.name}</Show>
-    <span class="material-symbols-outlined">save</span>
+    <Icon icon="save" />
   </button>
 }
