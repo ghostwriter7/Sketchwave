@@ -7,6 +7,7 @@ type Action = 'move' | 'resize' | 'rotate';
 export class Resizer {
   public onMove?: (x: number, y: number) => void;
   public onRotate?: (radians: number) => void;
+  public onResize?: (origin: Point, width: number, height: number) => void;
 
   private activeAction?: Action;
   private previousActionPoint?: Point;
@@ -26,6 +27,43 @@ export class Resizer {
   private readonly halfIndicatorWidth = this.indicatorDimension / 2;
   private readonly halfIndicatorHeight = this.indicatorDimension / 2;
   private readonly cursors = ['nw-resize', 'n-resize', 'ne-resize', 'w-resize', 'e-resize', 'sw-resize', 's-resize', 'se-resize'] as const;
+  private readonly cursorActionMap: Record<string, { originX?: boolean, originY?: boolean, width?: number, height?: number }> = {
+    'nw-resize': {
+      originX: true,
+      originY: true,
+      width: -1,
+      height: -1,
+    },
+    'n-resize': {
+      height: -1,
+      originY: true,
+    },
+    'ne-resize': {
+      originY: true,
+      width: 1,
+      height: -1,
+    },
+    'w-resize': {
+      originX: true,
+      width: -1,
+    },
+    'e-resize': {
+      width: 1
+    },
+    'sw-resize': {
+      originX: true,
+      height: 1,
+      width: -1
+    },
+    's-resize': {
+      height: 1
+    },
+    'se-resize': {
+      width: 1,
+      height: 1
+    }
+  }
+
 
   constructor(width: number, height: number) {
     this.canvas = document.createElement('canvas');
@@ -74,6 +112,28 @@ export class Resizer {
           this.rotationAngle -= dx;
           this.rotationAngle %= 360;
           this.onRotate?.(toRadians(this.rotationAngle));
+          this.drawAndAnimateBox();
+        } else if (this.availableAction == 'resize') {
+          const activeCursor = this.canvas.style.cursor;
+          const availableActions = this.cursorActionMap[activeCursor];
+
+          if (availableActions.originX) {
+            this.origin = new Point(this.origin.x + dx, this.origin.y)
+          }
+
+          if (availableActions.originY) {
+            this.origin = new Point(this.origin.x, this.origin.y + dy)
+          }
+
+          if (availableActions.width) {
+            this.boxWidth += dx * availableActions.width;
+          }
+
+          if (availableActions.height) {
+            this.boxHeight += dy * availableActions.height;
+          }
+          this.onResize?.(this.origin, this.boxWidth, this.boxHeight);
+          if (this.rotationAngle) this.onRotate?.(toRadians(this.rotationAngle));
           this.drawAndAnimateBox();
         }
       } else {

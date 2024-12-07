@@ -1,4 +1,13 @@
 .canvas {
+  anchor-name: --mainCanvas;
   position: relative;
   z-index: 1;
+}
+
+.shape-resizer {
+  position-anchor: --mainCanvas;
+  position: fixed;
+  top: anchor(top);
+  left: anchor(left);
+  z-index: 1000;
 }
