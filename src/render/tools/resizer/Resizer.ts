@@ -8,6 +8,7 @@ export class Resizer {
   public onMove?: (x: number, y: number) => void;
   public onRotate?: (radians: number) => void;
   public onResize?: (origin: Point, width: number, height: number) => void;
+  public onComplete?: () => void;
 
   private activeAction?: Action;
   private previousActionPoint?: Point;
@@ -88,6 +89,9 @@ export class Resizer {
       if (this.availableAction) {
         this.activeAction = this.availableAction;
         this.previousActionPoint = Point.fromEvent(event);
+      } else {
+        this.onComplete?.();
+        this.canvas.remove();
       }
     })
 
@@ -117,20 +121,25 @@ export class Resizer {
           const activeCursor = this.canvas.style.cursor;
           const availableActions = this.cursorActionMap[activeCursor];
 
+          const cosAngle = Math.cos(toRadians(this.rotationAngle));
+          const sinAngle = Math.sin(toRadians(this.rotationAngle));
+          const localDx = cosAngle * dx + sinAngle * dy;
+          const localDy = -sinAngle * dx + cosAngle * dy;
+
           if (availableActions.originX) {
-            this.origin = new Point(this.origin.x + dx, this.origin.y)
+            this.origin = new Point(this.origin.x + localDx, this.origin.y)
           }
 
           if (availableActions.originY) {
-            this.origin = new Point(this.origin.x, this.origin.y + dy)
+            this.origin = new Point(this.origin.x, this.origin.y + localDy)
           }
 
           if (availableActions.width) {
-            this.boxWidth += dx * availableActions.width;
+            this.boxWidth += localDx * availableActions.width;
           }
 
           if (availableActions.height) {
-            this.boxHeight += dy * availableActions.height;
+            this.boxHeight += localDy * availableActions.height;
           }
           this.onResize?.(this.origin, this.boxWidth, this.boxHeight);
           if (this.rotationAngle) this.onRotate?.(toRadians(this.rotationAngle));
@@ -158,6 +167,7 @@ export class Resizer {
             this.availableAction = 'resize';
           } else {
             this.canvas.style.cursor = 'default';
+            this.availableAction = undefined;
           }
         }
       }

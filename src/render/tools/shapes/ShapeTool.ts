@@ -29,6 +29,7 @@ export class ShapeTool extends ToolHandler {
   private startPoint: Point | null = null;
   private endPoint: Point | null = null;
   private isWorking = false;
+  private rotateAngleInRadians?: number;
 
   private static readonly createPointsForShapeFnMap: Record<SimpleShapeType, CreatePointsForShapeFn> = {
     arrow: arrow,
@@ -66,9 +67,13 @@ export class ShapeTool extends ToolHandler {
     const pathOrPoints = this.getPathOrPoints();
     const { fill, stroke, round } = this.toolState.toolProperties!;
     const radius = this.lineWidth / 2;
+    const rotate = this.rotateAngleInRadians;
+    const startPoint = this.startPoint;
+    const width = this.endPoint.x - this.startPoint.x;
+    const height = this.endPoint.y - this.startPoint.y;
 
     this.createLayer((ctx: CanvasRenderingContext2D) =>
-      ShapeTool.render(ctx, pathOrPoints, { fill, stroke, round, radius })
+      ShapeTool.render(ctx, pathOrPoints, { fill, stroke, round, radius, rotate, startPoint, width, height })
     );
   }
 
@@ -97,7 +102,6 @@ export class ShapeTool extends ToolHandler {
 
         const dx = this.endPoint.x - this.startPoint.x;
         const dy = this.endPoint.y - this.startPoint.y;
-
         resizer.renderBoxAt(this.startPoint, dx, dy);
 
         resizer.onMove = (x: number, y: number) => {
@@ -107,6 +111,9 @@ export class ShapeTool extends ToolHandler {
         };
 
         resizer.onRotate = (radians: number) => {
+          const dx = this.endPoint!.x - this.startPoint!.x;
+          const dy = this.endPoint!.y - this.startPoint!.y;
+          this.rotateAngleInRadians = radians;
           const [centerX, centerY] = [this.startPoint!.x + dx / 2, this.startPoint!.y + dy / 2];
           this.ctx.resetTransform();
           this.ctx.translate(centerX, centerY);
@@ -121,12 +128,14 @@ export class ShapeTool extends ToolHandler {
           this.renderPreview();
         }
 
+        resizer.onComplete = () => {
+          this.resetState();
+        }
       }
-
     });
 
     this.onMove((event) => {
-      this.endPoint = Point.fromEvent(event);
+      this.endPoint = Point.fromEvent (event);
       this.renderPreview();
     });
 
@@ -141,14 +150,25 @@ export class ShapeTool extends ToolHandler {
 
     const pathOrPoints = this.getPathOrPoints();
     const { fill, stroke, round } = this.toolState.toolProperties!;
-    ShapeTool.render(this.ctx, pathOrPoints, { fill, stroke, round, radius: this.lineWidth / 2 });
+    ShapeTool.render(this.ctx, pathOrPoints, {
+      fill,
+      stroke,
+      round,
+      radius: this.lineWidth / 2,
+      startPoint: this.startPoint,
+      width: this.endPoint.x - this.startPoint.x,
+      height: this.endPoint.y - this.startPoint.y,
+    });
   }
 
   private resetState(): void {
     if (!this.isWorking) return;
     this.tryCreateLayer();
+    this.isWorking = false;
     this.startPoint = null;
     this.endPoint = null;
+    this.rotateAngleInRadians = undefined;
+    this.ctx.resetTransform();
   }
 
   private getPathOrPoints(): Path2D | Point[] {
@@ -162,9 +182,16 @@ export class ShapeTool extends ToolHandler {
 
   private static render(ctx: CanvasRenderingContext2D,
                         pathOrPoints: Point[] | Path2D,
-                        { fill, stroke, radius, round }: Pick<ToolProperties, 'round' | 'fill' | 'stroke'> & {
-                          radius: number
+                        { fill, stroke, radius, round, rotate, startPoint, width, height }: Pick<ToolProperties, 'round' | 'fill' | 'stroke'> & {
+                          radius: number; rotate?: number; startPoint: Point, width: number, height: number
                         }): void {
+    if (rotate) {
+      const [centerX, centerY] = [startPoint.x + width / 2, startPoint.y + height / 2];
+      ctx.resetTransform();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(rotate);
+      ctx.translate(-centerX, -centerY);
+    }
     if (round && Array.isArray(pathOrPoints)) {
       fill && ctx.fill(createRoundedPath(pathOrPoints, radius));
       stroke && ctx.stroke(createPathFromPoints(pathOrPoints));
