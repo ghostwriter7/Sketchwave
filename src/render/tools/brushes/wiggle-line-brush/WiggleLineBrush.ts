@@ -30,6 +30,7 @@ export class WiggleLineBrush extends SimpleBrush {
     }
 
     if (this.points.length < 2) return;
+    super.renderPreview();
 
     const currentPoint = this.points.at(-1)!;
     const previousPoint = this.points[this.lastPointIndex];
