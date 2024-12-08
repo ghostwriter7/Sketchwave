@@ -3,6 +3,10 @@ export class Point {
               public readonly y: number) {
   }
 
+  public static delta(startPoint: Point, endPoint: Point): { dx: number; dy: number; } {
+    return { dx: endPoint.x - startPoint.x, dy: endPoint.y - startPoint.y };
+  }
+
   public static fromEvent(event: MouseEvent): Point {
     return new Point(event.offsetX, event.offsetY);
   }

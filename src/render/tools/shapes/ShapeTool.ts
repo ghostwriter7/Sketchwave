@@ -77,11 +77,10 @@ export class ShapeTool extends ToolHandler {
     const radius = this.lineWidth / 2;
     const rotate = this.rotateAngleInRadians;
     const startPoint = this.startPoint;
-    const width = this.endPoint.x - this.startPoint.x;
-    const height = this.endPoint.y - this.startPoint.y;
+    const { dx, dy } = Point.delta(startPoint, this.endPoint);
 
     this.createLayer((ctx: CanvasRenderingContext2D) =>
-      ShapeTool.render(ctx, pathOrPoints, { fill, stroke, round, radius, rotate, startPoint, width, height })
+      ShapeTool.render(ctx, pathOrPoints, { fill, stroke, round, radius, rotate, startPoint, width: dx, height: dy })
     );
   }
 
@@ -101,11 +100,16 @@ export class ShapeTool extends ToolHandler {
           () => this.resetState()
         );
 
-        this.shapeAdjuster.renderBoxBetweenStartAndEndPoints(this.startPoint, this.endPoint);
+        const [startPoint, endPoint] = this.getAdjustedStartAndEndPoints();
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+
+        this.shapeAdjuster.renderBoxBetweenStartAndEndPoints(startPoint, endPoint);
       }
     });
 
     this.onMove((event) => {
+      if (!this.isWorking) return;
       this.endPoint = Point.fromEvent(event);
       this.renderPreview();
     });
@@ -139,11 +143,13 @@ export class ShapeTool extends ToolHandler {
   }
 
   private getPathOrPoints(): Path2D | Point[] {
-    const dx = this.endPoint!.x - this.startPoint!.x;
-    const dy = this.endPoint!.y - this.startPoint!.y;
+    const [startPoint, endPoint] = this.getAdjustedStartAndEndPoints();
 
-    return this.createPointsForShapeFn?.(this.startPoint!, this.endPoint!, dx, dy)
-      || this.createPathForShapeFn?.(this.startPoint!, this.endPoint!, dx, dy) as Point[] | Path2D;
+    const dx = endPoint!.x - startPoint!.x;
+    const dy = endPoint!.y - startPoint!.y;
+
+    return this.createPointsForShapeFn?.(startPoint!, endPoint!, dx, dy)
+      || this.createPathForShapeFn?.(startPoint!, endPoint!, dx, dy) as Point[] | Path2D;
 
   }
 
@@ -182,8 +188,7 @@ export class ShapeTool extends ToolHandler {
     this.startPoint = origin;
     this.endPoint = new Point(origin.x + width, origin.y + height);
 
-    const dx = this.endPoint.x - this.startPoint.x;
-    const dy = this.endPoint.y - this.startPoint.y;
+    const { dx, dy } = Point.delta(this.startPoint, this.endPoint);
     this.rotateAngleInRadians = angle;
     const [centerX, centerY] = [this.startPoint!.x + dx / 2, this.startPoint!.y + dy / 2];
     this.ctx.resetTransform();
@@ -191,5 +196,11 @@ export class ShapeTool extends ToolHandler {
     this.ctx.rotate(angle);
     this.ctx.translate(-centerX, -centerY);
     this.renderPreview();
+  }
+
+  private getAdjustedStartAndEndPoints(): [Point, Point] {
+    const startPoint = new Point(Math.min(this.startPoint!.x, this.endPoint!.x), Math.min(this.startPoint!.y, this.endPoint!.y));
+    const endPoint = new Point(Math.max(this.startPoint!.x, this.endPoint!.x), Math.max(this.startPoint!.y, this.endPoint!.y));
+    return [startPoint, endPoint];
   }
 }

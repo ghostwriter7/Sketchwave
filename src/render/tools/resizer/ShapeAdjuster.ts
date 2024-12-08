@@ -67,7 +67,7 @@ export class ShapeAdjuster {
   }
 
   private drawDashedBox(): void {
-    this.ctx.lineWidth = 3;
+    this.ctx.lineWidth = 2;
     this.ctx.setLineDash([4, 4]);
     this.ctx.strokeRect(this.origin.x, this.origin.y, this.boxWidth, this.boxHeight);
   }
@@ -91,7 +91,7 @@ export class ShapeAdjuster {
   private drawRotateHandle(): void {
     this.ctx.beginPath();
     this.ctx.setLineDash([]);
-    this.ctx.lineWidth = 3;
+    this.ctx.lineWidth = 2;
     this.ctx.lineCap = this.ctx.lineJoin = 'round'
 
     this.rotateHandleOrigin = new Point(this.origin.x + 5, this.origin.y + this.boxHeight - 25);
