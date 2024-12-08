@@ -7,6 +7,10 @@ type Type = {
   },
 }
 
+interface HTMLElementEventMap {
+  scalechange: CustomEvent<{ scale: number }>;
+}
+
 interface Array {
   chunk<T>(size: number): T[][];
 }

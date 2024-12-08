@@ -2,12 +2,17 @@
   align-items: center;
   background-color: var(--bg-secondary);
   border-top: 1px solid var(--clr-accent);
+  bottom: 0;
   color: var(--clr-secondary);
   display: flex;
   font-size: 1em;
   font-weight: 600;
   gap: var(--space-md);
+  left: 0;
   padding: var(--space-sm) var(--space-md);
+  position: fixed;
+  width: 100vw;
+  z-index: 10000;
 
   .material-symbols-outlined {
     font-size: 1em;

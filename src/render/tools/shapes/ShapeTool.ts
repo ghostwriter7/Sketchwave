@@ -98,6 +98,7 @@ export class ShapeTool extends ToolHandler {
         this.shapeAdjuster = new ShapeAdjuster(
           this.width,
           this.height,
+          this.layerFacade.ctx.canvas,
           this.handleShapeAdjustment.bind(this),
           () => this.resetState(),
           this.MINIMAL_SIZE

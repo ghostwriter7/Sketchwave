@@ -7,6 +7,7 @@ import { ToolHandlerFactory } from '../../render/tools/ToolHandlerFactory.ts';
 import './canvas.css';
 import { Logger } from '../../utils/Logger.ts';
 import { Resizer } from '../resizer/resizer.tsx';
+import { ScaleChangeEvent } from '../../types/events.ts';
 
 const Canvas = () => {
   const { state, setCtx, setLayerFacade, setMousePos } = useGlobalContext();
@@ -70,6 +71,14 @@ const Canvas = () => {
       activeTool.onInit();
     }
   });
+
+  createEffect((previous: number): number => {
+    if (previous == -1) return state.scale;
+
+    const scale = state.scale;
+    canvasRef.dispatchEvent(new ScaleChangeEvent(scale));
+    return scale;
+  }, -1);
 
   return <>
     <Resizer/>

@@ -1,6 +1,8 @@
 main {
+  --footer-height: 28px;
+  --toolbar-height: 111px;
   background-color: var(--bg-primary);
-  height: calc(100vh - 45px - 28px);
+  height: calc(100vh - var(--toolbar-height) - var(--footer-height));
   overflow: hidden;
   position: relative;
   width: 100vw;

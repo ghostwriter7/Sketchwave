@@ -6,13 +6,20 @@ export const ZoomInOut = () => {
   let ref: number;
 
   const handleInput = (event: Event) => {
+    event.stopPropagation();
     const { value } = event.target as HTMLInputElement;
     if (ref) clearTimeout(ref)
     ref = setTimeout(() => setScale(parseFloat(value)), 100);
   }
 
-  const increaseScale = () => setScale(Math.max(state.scale - .1, .1));
-  const decreaseScale = () => setScale(Math.min(state.scale + .1, 4));
+  const increaseScale = (event: Event) => {
+    event.stopPropagation();
+    setScale(Math.max(state.scale - .1, .1));
+  }
+  const decreaseScale = (event: Event) => {
+    event.stopPropagation();
+    setScale(Math.min(state.scale + .1, 4));
+  }
 
   const readableScale = () => `${Math.floor(state.scale * 100)}%`;
 

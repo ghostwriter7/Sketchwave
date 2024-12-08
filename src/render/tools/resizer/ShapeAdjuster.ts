@@ -2,6 +2,7 @@ import { Point } from '../../../types/Point.ts';
 import { ThemeHelper } from '../../../helpers/theme.helper.ts';
 import { toRadians } from '../../../math/to-radians.ts';
 import { RESIZE_ACTIONS, RESIZE_CURSORS } from '../../../types/cursors.ts';
+import { ScaleChangeEvent } from '../../../types/events.ts';
 
 type Action = 'move' | 'resize' | 'rotate';
 
@@ -31,11 +32,12 @@ export class ShapeAdjuster {
   private readonly cursorActionMap = RESIZE_ACTIONS;
 
   constructor(
-    width: number,
-    height: number,
+    readonly width: number,
+    readonly height: number,
+    private readonly rootCanvas: HTMLCanvasElement,
     private readonly onChange: (origin: Point, width: number, height: number, angle: number,) => void,
     private readonly onComplete: () => void,
-    private readonly minimalSize: number
+    private readonly minimalSize: number,
   ) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = width;
@@ -67,10 +69,10 @@ export class ShapeAdjuster {
   }
 
   private drawBoxAndControls(): void {
+    this.ctx.resetTransform();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.rotationAngleInRadians) {
-      this.ctx.resetTransform();
       const [centerX, centerY] = [this.origin.x + this.boxWidth / 2, this.origin.y + this.boxHeight / 2];
       this.ctx.translate(centerX, centerY);
       this.ctx.rotate(this.rotationAngleInRadians);
@@ -138,7 +140,12 @@ export class ShapeAdjuster {
 
     this.canvas.addEventListener('mousedown', this.handleClick.bind(this), options)
     this.canvas.addEventListener('mouseup', () => this.activeAction = undefined, options)
-    this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this), options)
+    this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this), options);
+
+    this.canvas.style.transform = this.rootCanvas.style.transform;
+    this.rootCanvas.addEventListener(ScaleChangeEvent.NAME, (event: ScaleChangeEvent) => {
+      this.canvas.style.transform = `scale(${event.detail.scale})`
+    }, options);
   }
 
   private handleClick(event: MouseEvent): void {
