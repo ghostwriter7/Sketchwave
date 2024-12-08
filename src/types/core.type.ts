@@ -9,7 +9,8 @@ export interface Layer {
 }
 
 export type ToolType =
-  'airbrush'
+  | 'airbrush'
+  | 'beadsBrush'
   | 'brush'
   | 'calligraphyBrush'
   | 'eraser'

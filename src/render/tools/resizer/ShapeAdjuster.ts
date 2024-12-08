@@ -143,9 +143,9 @@ export class ShapeAdjuster {
     this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this), options);
 
     this.canvas.style.transform = this.rootCanvas.style.transform;
-    this.rootCanvas.addEventListener(ScaleChangeEvent.NAME, (event: ScaleChangeEvent) => {
+    this.rootCanvas.addEventListener(ScaleChangeEvent.NAME, (event: ScaleChangeEvent) =>
       this.canvas.style.transform = `scale(${event.detail.scale})`
-    }, options);
+    , options);
   }
 
   private handleClick(event: MouseEvent): void {

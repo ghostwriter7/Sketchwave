@@ -1,19 +1,14 @@
-import type { ToolState } from '../models/ToolState.ts';
-import type { LayerFacade } from '../../LayerFacade.ts';
-import { SimpleBrush } from '../abstract/SimpleBrush.ts';
+import type { ToolState } from '../../models/ToolState.ts';
+import type { LayerFacade } from '../../../LayerFacade.ts';
+import { SimpleBrush } from '../../abstract/SimpleBrush.ts';
+import { createSimpleDotCursor } from '../cursors/simple-dot.ts';
 
 export class BrushTool extends SimpleBrush {
   protected override cursorSize = this.lineWidth;
-  protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
-    ctx.fillStyle = this.colour;
-    let x: number, y: number, radius: number;
-    x = y = radius = this.lineWidth / 2;
-    ctx.arc(x, y, radius, 0, 2 * Math.PI);
-    ctx.fill();
-  }
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super({ ...toolState, lineCap: 'round', lineJoin: 'round' }, layerFacade);
+    this.customCursorCreateFn = createSimpleDotCursor(this.colour, this.lineWidth);
   }
 
   public tryCreateLayer(): void {

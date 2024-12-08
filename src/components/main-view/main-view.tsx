@@ -11,7 +11,7 @@ export const MainView = () => {
 
   createEffect(() => {
     state.scale;
-    const canvas = document.querySelector('.canvas') as HTMLCanvasElement;
+    const canvas = state.ctx?.canvas;
 
     if (canvas) {
       const { width: canvasWidth, height: canvasHeight } = canvas.getBoundingClientRect();
@@ -30,6 +30,10 @@ export const MainView = () => {
         mainRef.scrollTop = 0;
       }
     }
+
+    mainRef.addEventListener('scroll', (event) => {
+      event.stopPropagation();
+    })
   });
 
 

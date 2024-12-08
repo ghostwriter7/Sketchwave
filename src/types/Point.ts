@@ -12,11 +12,15 @@ export class Point {
   }
 
   public static verticalMidPoint(pointA: Point, pointB: Point): Point {
-    return new Point(pointA.x, (pointB.y - pointA.y) / 2 + pointA.y);
+    return new Point(pointA.x, (pointB.y + pointA.y) / 2);
   }
 
   public static horizontalMidPoint(pointA: Point, pointB: Point): Point {
-    return new Point((pointB.x - pointA.x) / 2 + pointA.x, pointA.y);
+    return new Point((pointB.x + pointA.x) / 2, pointA.y);
+  }
+
+  public static midPoint(pointA: Point, pointB: Point): Point {
+    return new Point((pointA.x + pointB.x) / 2, (pointA.y + pointB.y) / 2);
   }
 
   public static isWithinBoundingBox(point: Point, boxOrigin: Point, width: number, height: number): boolean {

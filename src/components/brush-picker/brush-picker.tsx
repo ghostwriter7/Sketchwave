@@ -3,32 +3,10 @@ import { For, onMount } from 'solid-js';
 import { Card } from '../card/card.tsx';
 import { useGlobalContext } from '../../global-provider.tsx';
 import { Icon } from '../icon/icon.tsx';
+import { BRUSHES } from './brushes.ts';
 
 export const BrushPicker = () => {
   const { state } = useGlobalContext();
-  const brushes = [
-    {
-      'label': 'Brush',
-      'id': 'brush'
-    },
-    {
-      'label': 'Airbrush',
-      'id': 'airbrush'
-    },
-    {
-      'label': 'Calligraphy Brush',
-      'id': 'calligraphyBrush'
-    },
-    {
-      'label': 'Pastel Brush',
-      'id': 'pastelBrush'
-    },
-    {
-      'label': 'Marker',
-      'id': 'marker'
-    }
-  ]
-
   let popoverRef: HTMLElement;
 
   const handleClick = (event: MouseEvent) => {
@@ -47,7 +25,7 @@ export const BrushPicker = () => {
 
   return <div class="wrapper">
     <button
-      classList={{ active: brushes.some((brush) => brush.id == state.activeTool) }}
+      classList={{ active: BRUSHES.some((brush) => brush.id == state.activeTool) }}
       id="brushes-picker"
       popovertarget="brushes"
       title="Brushes (B)">
@@ -55,7 +33,7 @@ export const BrushPicker = () => {
     </button>
     <Card ref={popoverRef!} id="brushes" title="Brushes" popover="auto">
       <ul class="dropdown" onClick={handleClick}>
-        <For each={brushes}>
+        <For each={BRUSHES}>
           {({ id, label }) =>
             <li>
               <button
