@@ -11,6 +11,7 @@ import { PastelBrush } from './brushes/oil-brush/PastelBrush.ts';
 import { Marker } from './brushes/marker/Marker.ts';
 import { ShapeTool } from './shapes/ShapeTool.ts';
 import { BeadsBrush } from './brushes/beads-brush/BeadsBrush.ts';
+import { WiggleLineBrush } from './brushes/wiggle-line-brush/WiggleLineBrush.ts';
 
 export class ToolHandlerFactory {
   private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
@@ -23,6 +24,7 @@ export class ToolHandlerFactory {
     marker: Marker,
     pastelBrush: PastelBrush,
     shape: ShapeTool,
+    wiggleLineBrush: WiggleLineBrush
   }
 
   public static fromToolType(toolType: ToolType, toolState: ToolState, layerFacade: LayerFacade): ToolHandler {

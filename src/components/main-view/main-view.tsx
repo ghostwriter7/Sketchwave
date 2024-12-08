@@ -30,10 +30,6 @@ export const MainView = () => {
         mainRef.scrollTop = 0;
       }
     }
-
-    mainRef.addEventListener('scroll', (event) => {
-      event.stopPropagation();
-    })
   });
 
 

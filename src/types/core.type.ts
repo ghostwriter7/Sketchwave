@@ -17,7 +17,8 @@ export type ToolType =
   | 'pastelBrush'
   | 'marker'
   | 'line'
-  | 'shape';
+  | 'shape'
+  | 'wiggleLineBrush';
 
 export type ShapeType = SimpleShapeType | ComplexShapeType;
 

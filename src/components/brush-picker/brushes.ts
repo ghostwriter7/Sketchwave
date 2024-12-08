@@ -22,5 +22,9 @@ export const BRUSHES = [
   {
     label: 'Beads Brush',
     id: 'beadsBrush'
+  },
+  {
+    label: 'Wiggle Line',
+    id: 'wiggleLineBrush'
   }
 ];
