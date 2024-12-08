@@ -34,6 +34,8 @@ export class ShapeTool extends ToolHandler {
   private rotateAngleInRadians?: number;
   private shapeAdjuster?: ShapeAdjuster;
 
+  private readonly MINIMAL_SIZE = 30;
+
   private static readonly createPointsForShapeFnMap: Record<SimpleShapeType, CreatePointsForShapeFn> = {
     arrow: arrow,
     bolt: bolt,
@@ -97,7 +99,8 @@ export class ShapeTool extends ToolHandler {
           this.width,
           this.height,
           this.handleShapeAdjustment.bind(this),
-          () => this.resetState()
+          () => this.resetState(),
+          this.MINIMAL_SIZE
         );
 
         const [startPoint, endPoint] = this.getAdjustedStartAndEndPoints();
@@ -145,8 +148,7 @@ export class ShapeTool extends ToolHandler {
   private getPathOrPoints(): Path2D | Point[] {
     const [startPoint, endPoint] = this.getAdjustedStartAndEndPoints();
 
-    const dx = endPoint!.x - startPoint!.x;
-    const dy = endPoint!.y - startPoint!.y;
+    const { dx, dy } = Point.delta(startPoint, endPoint);
 
     return this.createPointsForShapeFn?.(startPoint!, endPoint!, dx, dy)
       || this.createPathForShapeFn?.(startPoint!, endPoint!, dx, dy) as Point[] | Path2D;
@@ -199,8 +201,23 @@ export class ShapeTool extends ToolHandler {
   }
 
   private getAdjustedStartAndEndPoints(): [Point, Point] {
-    const startPoint = new Point(Math.min(this.startPoint!.x, this.endPoint!.x), Math.min(this.startPoint!.y, this.endPoint!.y));
-    const endPoint = new Point(Math.max(this.startPoint!.x, this.endPoint!.x), Math.max(this.startPoint!.y, this.endPoint!.y));
+    let startPoint = new Point(Math.min(this.startPoint!.x, this.endPoint!.x), Math.min(this.startPoint!.y, this.endPoint!.y));
+    let endPoint = new Point(Math.max(this.startPoint!.x, this.endPoint!.x), Math.max(this.startPoint!.y, this.endPoint!.y));
+
+    const { dx, dy } = Point.delta(startPoint, endPoint);
+
+    if (dx < this.MINIMAL_SIZE) {
+      const remaining = Math.ceil((this.MINIMAL_SIZE - dx) / 2);
+      startPoint = new Point(startPoint.x - remaining, startPoint.y);
+      endPoint = new Point(endPoint.x + remaining, endPoint.y);
+    }
+
+    if (dy < this.MINIMAL_SIZE) {
+      const remaining = Math.ceil((this.MINIMAL_SIZE - dy) / 2);
+      startPoint = new Point(startPoint.x, startPoint.y - remaining);
+      endPoint = new Point(endPoint.x, endPoint.y + remaining);
+    }
+
     return [startPoint, endPoint];
   }
 }

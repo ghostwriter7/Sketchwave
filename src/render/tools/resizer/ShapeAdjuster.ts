@@ -6,9 +6,6 @@ import { RESIZE_ACTIONS, RESIZE_CURSORS } from '../../../types/cursors.ts';
 type Action = 'move' | 'resize' | 'rotate';
 
 export class ShapeAdjuster {
-  public onComplete: () => void;
-  public onChange: (origin: Point, width: number, height: number, rotation: number) => void;
-
   private activeAction?: Action;
   private previousActionPoint?: Point;
   private availableAction?: Action;
@@ -33,12 +30,12 @@ export class ShapeAdjuster {
   private readonly cursors = RESIZE_CURSORS;
   private readonly cursorActionMap = RESIZE_ACTIONS;
 
-
   constructor(
     width: number,
     height: number,
-    onChange: (origin: Point, width: number, height: number, angle: number,) => void,
-    onComplete: () => void
+    private readonly onChange: (origin: Point, width: number, height: number, angle: number,) => void,
+    private readonly onComplete: () => void,
+    private readonly minimalSize: number
   ) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = width;
@@ -46,9 +43,6 @@ export class ShapeAdjuster {
     this.ctx = this.canvas.getContext('2d')!;
     this.canvas.classList.add('shape-resizer');
     document.body.appendChild(this.canvas);
-
-    this.onChange = onChange;
-    this.onComplete = onComplete;
   }
 
   public destroy(): void {
@@ -227,20 +221,22 @@ export class ShapeAdjuster {
     const localDx = cosAngle * dx + sinAngle * dy;
     const localDy = -sinAngle * dx + cosAngle * dy;
 
-    if (availableActions.originX) {
+    if (availableActions.originX && this.boxWidth > this.minimalSize) {
       this.origin = new Point(this.origin.x + localDx, this.origin.y)
     }
 
-    if (availableActions.originY) {
+    if (availableActions.originY && this.boxHeight > this.minimalSize) {
       this.origin = new Point(this.origin.x, this.origin.y + localDy)
     }
 
     if (availableActions.width) {
       this.boxWidth += localDx * availableActions.width;
+      if (this.boxWidth < this.minimalSize) this.boxWidth = this.minimalSize;
     }
 
     if (availableActions.height) {
       this.boxHeight += localDy * availableActions.height;
+      if (this.boxHeight < this.minimalSize) this.boxHeight = this.minimalSize;
     }
   }
 
