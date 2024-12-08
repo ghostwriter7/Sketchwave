@@ -20,6 +20,7 @@ const Menu = () => {
   const buttons: { id: ToolType, icon: string; title: string }[] = [
     { id: 'line', icon: 'timeline', title: 'Line (L)' },
     { id: 'eraser', icon: 'ink_eraser', title: 'Eraser (E)' },
+    { id: 'fillSpace', icon: 'format_color_fill', title: 'Fill Space'}
   ];
 
   const getAttributeValue = (element: HTMLElement, name: string): string | null | undefined =>

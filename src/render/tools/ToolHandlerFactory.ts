@@ -12,6 +12,7 @@ import { Marker } from './brushes/marker/Marker.ts';
 import { ShapeTool } from './shapes/ShapeTool.ts';
 import { BeadsBrush } from './brushes/beads-brush/BeadsBrush.ts';
 import { WiggleLineBrush } from './brushes/wiggle-line-brush/WiggleLineBrush.ts';
+import { FillSpace } from './fill-space/FillSpace.ts';
 
 export class ToolHandlerFactory {
   private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
@@ -20,6 +21,7 @@ export class ToolHandlerFactory {
     brush: BrushTool,
     calligraphyBrush: CalligraphyBrushTool,
     eraser: EraserTool,
+    fillSpace: FillSpace,
     line: LineTool,
     marker: Marker,
     pastelBrush: PastelBrush,

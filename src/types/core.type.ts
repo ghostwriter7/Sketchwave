@@ -14,6 +14,7 @@ export type ToolType =
   | 'brush'
   | 'calligraphyBrush'
   | 'eraser'
+  | 'fillSpace'
   | 'pastelBrush'
   | 'marker'
   | 'line'

@@ -1,4 +1,4 @@
-import type { Point } from '../../types/Point.ts';
+import type { Point } from '../../../types/Point.ts';
 
 export const renderCircles = (ctx: CanvasRenderingContext2D, points: Point[], radius: number, fromIndex = 1) => {
   if (points.length == 1) {

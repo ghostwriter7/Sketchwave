@@ -3,7 +3,7 @@ import type { ToolState } from '../../models/ToolState.ts';
 import { type LayerFacade } from '../../../LayerFacade.ts';
 import { calculateDistance } from '../../../../math/distance.ts';
 import type { Point } from '../../../../types/Point.ts';
-import { renderCircles } from '../../../utils/render-circles.ts';
+import { renderCircles } from '../../helpers/render-circles.ts';
 import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
 import { getMidPoints } from '../../../../math/get-mid-points.ts';
 
