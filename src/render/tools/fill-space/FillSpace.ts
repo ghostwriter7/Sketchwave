@@ -27,15 +27,17 @@ export class FillSpace extends ToolHandler {
   }
 
   private processPointsIteratively(targetColor: ImageData, startPoint: Point): void {
-    const queue = [[startPoint.x, startPoint.y]]
+    const queue = [[startPoint.x, startPoint.y]] as [number, number][];
     const imageData = this.ctx.getImageData(0, 0, this.width, this.height);
     const array = new Uint8ClampedArray(imageData.data.buffer);
     const [red, green, blue] = this.toolState.color;
 
-    const visitedPoints = new Uint8Array(this.width * this.height);
+    const width = this.width;
+    const height = this.height;
 
-    const isVisited = (x: number, y: number) => visitedPoints[y * this.width + x] == 1
-    const markVisited = (x: number, y: number) => visitedPoints[y * this.width + x] = 1
+    const visitedPoints = new Uint8Array(width * height);
+
+    const isVisited = (index: number) => visitedPoints[index] == 1
 
     const targetColorAsDigit =
       (targetColor.data[0] << 24) |
@@ -43,16 +45,16 @@ export class FillSpace extends ToolHandler {
       (targetColor.data[2] << 8) |
       targetColor.data[3];
 
-
     console.time('LOOP')
     while (queue.length > 0) {
       const [x, y] = queue.shift()!;
 
-      const index = (y * this.width + x) * 4;
+      const rawIndex = y * width + x;
+      const index = rawIndex * 4;
 
-      if (isVisited(x, y)) continue;
+      if (isVisited(rawIndex)) continue;
 
-      markVisited(x, y);
+      visitedPoints[rawIndex] = 1
 
       const currentPixelColor =
         (imageData.data[index] << 24) |
@@ -71,11 +73,9 @@ export class FillSpace extends ToolHandler {
 
           if (
             point[0] >= 0 &&
-            point[0] <= this.width &&
+            point[0] <= width &&
             point[1] >= 0 &&
-            point[1] <= this.height &&
-            !isVisited(point[0], point[1])
-          ) {
+            point[1] <= height) {
             queue.push(point);
           }
         }
@@ -85,7 +85,7 @@ export class FillSpace extends ToolHandler {
     }
     console.timeEnd('LOOP')
 
-    this.ctx.putImageData(new ImageData(array, this.width, this.height), 0, 0);
+    this.ctx.putImageData(new ImageData(array, width, height), 0, 0);
   }
 
 }
