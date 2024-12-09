@@ -23,7 +23,7 @@ const Canvas = () => {
     onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY)}>
   </canvas> as HTMLCanvasElement;
 
-  const ctx = canvasRef.getContext('2d')!
+  const ctx = canvasRef.getContext('2d', { willReadFrequently: true })!
 
   window.ctx = ctx;
 
