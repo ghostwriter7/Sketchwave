@@ -31,7 +31,7 @@ export class FillSpace extends ToolHandler {
     const height = this.height;
     const firstPointIndex = startPoint.y * width + startPoint.x;
 
-    const queue = [firstPointIndex] as number[];
+    const stack = [firstPointIndex] as number[];
     const imageData = this.ctx.getImageData(0, 0, this.width, this.height);
     const array = new Uint8ClampedArray(imageData.data.buffer);
     const [red, green, blue] = this.toolState.color;
@@ -46,8 +46,8 @@ export class FillSpace extends ToolHandler {
     const offsets = this.vectorsForSiblingPoints.map(([dx, dy]) => dy * width + dx);
 
     console.time('LOOP')
-    while (queue.length > 0) {
-      const rawIndex = queue.shift()!;
+    while (stack.length > 0) {
+      const rawIndex = stack.pop()!;
 
       if (visitedPoints[rawIndex] == 1) continue;
 
@@ -75,7 +75,7 @@ export class FillSpace extends ToolHandler {
           const neighbourIndex = rawIndex + offset;
 
           if (neighbourIndex >= 0 && neighbourIndex < visitedPoints.length && !visitedPoints[neighbourIndex]) {
-            queue.push(neighbourIndex);
+            stack.push(neighbourIndex);
           }
         }
       }
