@@ -20,7 +20,7 @@ const Menu = () => {
   const buttons: { id: ToolType, icon: string; title: string }[] = [
     { id: 'line', icon: 'timeline', title: 'Line (L)' },
     { id: 'eraser', icon: 'ink_eraser', title: 'Eraser (E)' },
-    { id: 'fillSpace', icon: 'format_color_fill', title: 'Fill Space'}
+    { id: 'fillSpace', icon: 'format_color_fill', title: 'Fill Space (F)' }
   ];
 
   const getAttributeValue = (element: HTMLElement, name: string): string | null | undefined =>
@@ -41,12 +41,14 @@ const Menu = () => {
     <OpenFileButton/>
     <UndoRedoButton/>
     <span class="divider"></span>
-    <For each={buttons}>
-      {({ id, icon, title }) =>
-        <button classList={{ active: state.activeTool === id }} data-tool={id} title={title}>
-          <Icon icon={icon} />
-        </button>}
-    </For>
+    <MenuGroup label="Tools">
+      <For each={buttons}>
+        {({ id, icon, title }) =>
+          <button classList={{ active: state.activeTool === id }} data-tool={id} title={title}>
+            <Icon icon={icon}/>
+          </button>}
+      </For>
+    </MenuGroup>
     <span class="divider"></span>
     <MenuGroup label="Brushes (B)">
       <BrushPicker/>

@@ -7,6 +7,7 @@ const App = () => {
   const KEYBOARD_MAPPING = {
     'brushes-picker': 'KeyB',
     eraser: 'KeyE',
+    fillSpace: 'KeyF',
     rect: 'KeyR',
     line: 'KeyL',
     'color-picker-button': 'KeyC',
