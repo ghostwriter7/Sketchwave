@@ -12,6 +12,7 @@ import { UndoRedoButton } from '../undo-redo-button/undo-redo-button.tsx';
 import { ShapePicker } from '../shape-picker/shape-picker.tsx';
 import { MenuGroup } from './menu-group/menu-group.tsx';
 import { Icon } from '../icon/icon.tsx';
+import { PickColorButton } from '../pick-color-button/pick-color-button.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -48,6 +49,7 @@ const Menu = () => {
             <Icon icon={icon}/>
           </button>}
       </For>
+      <PickColorButton />
     </MenuGroup>
     <span class="divider"></span>
     <MenuGroup label="Brushes (B)">

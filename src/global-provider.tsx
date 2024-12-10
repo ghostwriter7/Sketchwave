@@ -25,6 +25,8 @@ export type GlobalContextState = {
 } & Partial<Pick<CanvasRenderingContext2D, 'lineCap' | 'lineJoin'>>
 
 interface GlobalContextActions {
+  setActiveTool(tool?: ToolType): void;
+  setColor(color: RGBa): void;
   setCtx(ctx: CanvasRenderingContext2D): void;
   setDimensions(width: number, height: number): void;
   setLayerFacade(layerFacade: LayerFacade): void;
@@ -51,6 +53,8 @@ export const GlobalProvider = (props: ParentProps) => {
 
   const facade: GlobalContextActions = {
     state,
+    setActiveTool: (tool?: ToolType) => setState('activeTool', tool),
+    setColor: (color: RGBa) => setState('color', color),
     setCtx: (ctx: CanvasRenderingContext2D) => setState('ctx', ctx),
     setLayerFacade: (layerFacade: LayerFacade) => setState('layerFacade', layerFacade),
     setMousePos: <T extends number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y }),
