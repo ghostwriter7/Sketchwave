@@ -12,13 +12,14 @@ const App = () => {
     line: 'KeyL',
     'color-picker-button': 'KeyC',
     'line-thickness-picker': 'KeyT',
-    'undo': { key: 'KeyZ', ctrl: true },
-    'redo': { key: 'KeyY', ctrl: true },
+    undo: { key: 'KeyZ', ctrl: true },
+    redo: { key: 'KeyY', ctrl: true },
     'save-file-button': { key: 'KeyS', ctrl: true },
     'open-file-button': { key: 'KeyO', ctrl: true },
-    'zoom': 'KeyZ',
-    'shape': 'KeyS',
-    'cancel': 'Escape'
+    pickColor: 'KeyP',
+    zoom: 'KeyZ',
+    shape: 'KeyS',
+    cancel: 'Escape'
   }
 
   document.addEventListener('keydown', (event) => {
