@@ -1,7 +1,6 @@
 import { Point } from './Point.ts';
 
 export interface Layer {
-  id?: string;
   order?: number;
   tool: string;
 
@@ -43,3 +42,5 @@ export type CreatePointsForShapeFn = (origin: Point, endPoint: Point, dx: number
 export type CreatePathForShapeFn = (origin: Point, endPoint: Point, dx: number, dy: number) => Path2D;
 
 export type Constructor = new (...args: any) => any;
+
+export type RGBa = [number, number, number, number];

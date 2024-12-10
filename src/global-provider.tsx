@@ -1,6 +1,6 @@
 import { createContext, type ParentProps, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import type { ShapeType, ToolType } from './types/core.type.ts';
+import type { RGBa, ShapeType, ToolType } from './types/core.type.ts';
 import { type LayerFacade } from './render/LayerFacade.ts';
 
 export interface ToolProperties {
@@ -12,7 +12,7 @@ export interface ToolProperties {
 
 export type GlobalContextState = {
   activeTool?: ToolType;
-  color: [number, number, number];
+  color: RGBa;
   ctx: CanvasRenderingContext2D | null;
   currentMouseX: number | null;
   currentMouseY: number | null;
@@ -38,7 +38,7 @@ const GlobalContext = createContext<GlobalContextActions>();
 
 export const GlobalProvider = (props: ParentProps) => {
   const [state, setState] = createStore<GlobalContextState>({
-    color: [0, 0, 0],
+    color: [0, 0, 0, 255],
     ctx: null,
     currentMouseX: null,
     currentMouseY: null,
