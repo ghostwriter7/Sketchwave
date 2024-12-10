@@ -1,9 +1,9 @@
 import { useGlobalContext } from '../../../global-provider.tsx';
 import './line-thickness-picker.css';
 import { createEffect, createSignal, Show } from 'solid-js';
-import { rgbToHex } from '../../../color/rgb-to-hex.ts';
 import { ThemeHelper } from '../../../helpers/theme.helper.ts';
 import { Icon } from '../../icon/icon.tsx';
+import { stringifyRgb } from '../../../color/stringify-rgb.ts';
 
 export const LineThicknessPicker = () => {
   const { state, updateState } = useGlobalContext();
@@ -30,7 +30,7 @@ export const LineThicknessPicker = () => {
     ctx.beginPath();
     ctx.fillStyle = ThemeHelper.getColor('bg-secondary');
     ctx.fillRect(2, 2, previewCanvas.width - 4, previewCanvas.height - 4);
-    ctx.fillStyle = rgbToHex(...state.color);
+    ctx.fillStyle = stringifyRgb(state.color);
     ctx.arc(60, 60, width / 2, 0, 2 * Math.PI);
     ctx.fill();
   });

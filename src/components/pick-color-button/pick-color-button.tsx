@@ -58,7 +58,7 @@ export const PickColorButton = () => {
       updatePreview(event);
     }, options);
 
-    state.ctx!.canvas.addEventListener('mouseleave', (event: MouseEvent) => {
+    state.ctx!.canvas.addEventListener('mouseleave', () => {
       previewColorRef.remove();
       setLocalState('previewRef', undefined);
     }, options);

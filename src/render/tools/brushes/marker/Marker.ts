@@ -6,11 +6,12 @@ import type { Point } from '../../../../types/Point.ts';
 import { renderCircles } from '../../helpers/render-circles.ts';
 import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
 import { getMidPoints } from '../../../../math/get-mid-points.ts';
+import type { RGBa } from '../../../../types/core.type.ts';
 
 export class Marker extends SimpleBrush {
   protected override cursorSize = this.size + 2;
   protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
-    ctx.fillStyle = stringifyRgb(this.toolState.color, 0.25);
+    ctx.fillStyle = stringifyRgb([...this.toolState.color.slice(0, 3), 0.25] as RGBa);
     const center = this.cursorSize / 2;
     ctx.arc(center, center, this.size / 2, 0, 2 * Math.PI);
     ctx.fill();
@@ -33,7 +34,7 @@ export class Marker extends SimpleBrush {
   }
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
-    super({ ...toolState, fillStyle: stringifyRgb(toolState.color, 0.01) }, layerFacade);
+    super({ ...toolState, fillStyle: stringifyRgb([...toolState.color.slice(0, 3), 0.01] as RGBa) }, layerFacade);
   }
 
   public tryCreateLayer(): void {

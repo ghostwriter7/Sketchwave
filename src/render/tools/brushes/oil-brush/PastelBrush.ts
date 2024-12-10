@@ -6,6 +6,7 @@ import type { Point } from '../../../../types/Point.ts';
 import { getMidPoints } from '../../../../math/get-mid-points.ts';
 import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
 import { applyToolState } from '../../helpers/apply-tool-state.ts';
+import type { RGBa } from '../../../../types/core.type.ts';
 
 export class PastelBrush extends SimpleBrush {
   protected cursorSize = this.size + 2;
@@ -68,6 +69,8 @@ export class PastelBrush extends SimpleBrush {
     if (this.points.length < 1 || this.currentStokeLength >= this.strokeLength) return;
     super.renderPreview();
 
+    const rgb = this.toolState.color.slice(0, 3);
+
     this.points.slice(this.lastPointIndex).forEach(({ x, y }: Point) => {
       const numberOfStreams = this.calculateNumberOfStreams();
 
@@ -75,7 +78,7 @@ export class PastelBrush extends SimpleBrush {
       const primaryAlpha = this.calculateBaseAlpha();
 
       if (Math.random() > 0.25) {
-        this.offscreenCtx.fillStyle = stringifyRgb(this.toolState.color, primaryAlpha);
+        this.offscreenCtx.fillStyle = stringifyRgb([...rgb, primaryAlpha] as RGBa);
         this.offscreenCtx.arc(x, y, this.radius * (Math.random() + 0.5), 0, 2 * Math.PI);
         this.offscreenCtx.fill();
       }
@@ -95,7 +98,7 @@ export class PastelBrush extends SimpleBrush {
 
           this.offscreenCtx.beginPath();
           const offsetY = i * this.radius + Math.sign(i) * halfRadius;
-          this.offscreenCtx.fillStyle = stringifyRgb(this.toolState.color, alpha);
+          this.offscreenCtx.fillStyle = stringifyRgb([...rgb, alpha] as RGBa);
           const radiusVariety = this.radius * (Math.random() + 0.55);
           this.offscreenCtx.arc(x + jitterX, y + jitterY + offsetY, radiusVariety, 0, 2 * Math.PI);
           this.offscreenCtx.fill();

@@ -24,7 +24,7 @@ export class ToolStateFactory {
       size: state.size,
       strokeStyle: colour,
       shadowBlur: 0,
-      shadowColor: stringifyRgb(state.color, 0.9),
+      shadowColor: stringifyRgb([red, green, blue, 0.9]),
       toolProperties: state.toolProperties
     };
   }
