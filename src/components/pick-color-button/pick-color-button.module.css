@@ -2,6 +2,5 @@
   border: 1px solid var(--clr-primary);
   border-radius: var(--radius);
   position: absolute;
-  transition: all 0.2s ease-in-out;
   z-index: 1000;
 }

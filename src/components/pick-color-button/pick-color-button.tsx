@@ -52,27 +52,31 @@ export const PickColorButton = () => {
       !localState.previewRef && setLocalState('previewRef', previewColorRef);
     }
 
-    state.ctx!.canvas.addEventListener('mouseenter', (event: MouseEvent) => {
+    const addEventListener = (event: 'mouseenter' | 'mouseleave' | 'mousemove' | 'click',
+                              handler: (event: MouseEvent) => void) =>
+      state.ctx!.canvas.addEventListener(event, handler, options);
+
+    addEventListener('mouseenter', (event: MouseEvent) => {
       insertPreview();
       positionPreview(event);
       updatePreview(event);
-    }, options);
+    });
 
-    state.ctx!.canvas.addEventListener('mouseleave', () => {
+    addEventListener('mouseleave', () => {
       previewColorRef.remove();
       setLocalState('previewRef', undefined);
-    }, options);
+    });
 
-    state.ctx!.canvas.addEventListener('mousemove', (event: MouseEvent) => {
+    addEventListener('mousemove', (event: MouseEvent) => {
       insertPreview();
       positionPreview(event);
       updatePreview(event);
-    }, options);
+    });
 
-    state.ctx!.canvas.addEventListener('click', (event: MouseEvent) => {
+    addEventListener('click', (event: MouseEvent) => {
       const [red, green, blue, alpha] = state.ctx!.getImageData(event.offsetX, event.offsetY, 1, 1).data;
       setColor([red, green, blue, alpha]);
-    }, options)
+    });
   }
 
   createEffect(() => {
