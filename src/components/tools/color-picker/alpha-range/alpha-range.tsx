@@ -2,7 +2,7 @@ import styles from '../color-picker.module.css';
 import { createEffect } from 'solid-js';
 import { ThemeHelper } from '../../../../helpers/theme.helper.ts';
 import { useGlobalContext } from '../../../../global-provider.tsx';
-import type { RGBA } from '../../../../types/core.type.ts';
+import type { RGB } from '../../../../types/core.type.ts';
 
 export const AlphaRange = () => {
   const { state, setAlpha } = useGlobalContext();
@@ -49,7 +49,7 @@ export const AlphaRange = () => {
     }
   }
 
-  const renderColorAlphaRange = (color: RGBA) => {
+  const renderColorAlphaRange = (color: RGB) => {
     const baseColor = `rgb(${color[0]}, ${color[1]}, ${color[2]}, `;
     const gradient = ctx.createLinearGradient(margin, margin, margin, sliderHeight);
 

@@ -11,7 +11,7 @@ import type { RGBA } from '../../../../types/core.type.ts';
 export class Marker extends SimpleBrush {
   protected override cursorSize = this.size + 2;
   protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
-    ctx.fillStyle = stringifyRgb([...this.toolState.color.slice(0, 3), 0.25] as RGBA);
+    ctx.fillStyle = stringifyRgb([...this.toolState.rgb, 0.25] as RGBA);
     const center = this.cursorSize / 2;
     ctx.arc(center, center, this.size / 2, 0, 2 * Math.PI);
     ctx.fill();

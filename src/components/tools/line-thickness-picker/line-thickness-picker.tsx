@@ -30,7 +30,7 @@ export const LineThicknessPicker = () => {
     ctx.beginPath();
     ctx.fillStyle = ThemeHelper.getColor('bg-secondary');
     ctx.fillRect(2, 2, previewCanvas.width - 4, previewCanvas.height - 4);
-    ctx.fillStyle = stringifyRgb(state.color);
+    ctx.fillStyle = stringifyRgb([...state.color, state.alpha]);
     ctx.arc(60, 60, width / 2, 0, 2 * Math.PI);
     ctx.fill();
   });
