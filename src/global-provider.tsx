@@ -47,7 +47,7 @@ export const GlobalProvider = (props: ParentProps) => {
     height: innerHeight * 0.7,
     layerFacade: null,
     scale: 1,
-    size: 1,
+    size: 3,
     width: innerWidth * 0.8
   });
 

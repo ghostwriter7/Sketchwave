@@ -5,7 +5,7 @@ import { applyToolState } from './helpers/apply-tool-state.ts';
 import { SimpleBrush } from './abstract/SimpleBrush.ts';
 
 export class EraserTool extends SimpleBrush {
-  protected override cursorSize = 12;
+  protected override cursorSize = Math.max(this.toolState.size + 2, 10);
   protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
     ctx.fillStyle = 'white';
     ctx.strokeStyle = 'black';
@@ -20,7 +20,7 @@ export class EraserTool extends SimpleBrush {
       ...toolState,
       fillStyle: 'white',
       strokeStyle: 'white',
-      size: 10,
+      size: Math.max(toolState.size + 2, 10),
       lineJoin: 'bevel',
       lineCap: 'butt'
     }, layerFacade);

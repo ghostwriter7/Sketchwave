@@ -4,6 +4,8 @@ import { createEffect } from 'solid-js';
 import styles from './pick-color-button.module.css';
 import { ThemeHelper } from '../../helpers/theme.helper.ts';
 import { createStore } from 'solid-js/store';
+import { getRGBFromPixel } from '../../color/get-rgb-from-pixel.ts';
+import { Point } from '../../types/Point.ts';
 
 type PickColorState = {
   previewRef?: HTMLCanvasElement;
@@ -73,10 +75,9 @@ export const PickColorButton = () => {
       updatePreview(event);
     });
 
-    addEventListener('click', (event: MouseEvent) => {
-      const [red, green, blue, alpha] = state.ctx!.getImageData(event.offsetX, event.offsetY, 1, 1).data;
-      setColor([red, green, blue, alpha]);
-    });
+    addEventListener('click', (event: MouseEvent) =>
+      setColor(getRGBFromPixel(state.ctx!, Point.fromEvent(event)))
+    );
   }
 
   createEffect(() => {

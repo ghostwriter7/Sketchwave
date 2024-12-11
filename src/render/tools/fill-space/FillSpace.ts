@@ -2,6 +2,8 @@ import { ToolHandler } from '../abstract/ToolHandler.ts';
 import type { ToolState } from '../models/ToolState.ts';
 import { type LayerFacade } from '../../LayerFacade.ts';
 import { Point } from '../../../types/Point.ts';
+import { getRGBFromPixel } from '../../../color/get-rgb-from-pixel.ts';
+import type { RGBa } from '../../../types/core.type.ts';
 
 export class FillSpace extends ToolHandler {
   private updatedImageData?: ImageData;
@@ -23,7 +25,7 @@ export class FillSpace extends ToolHandler {
   protected initializeListeners(): void {
     this.onClick((event: MouseEvent): void => {
       const point = Point.fromEvent(event);
-      const targetColor = this.ctx.getImageData(point.x, point.y, 1, 1);
+      const targetColor = getRGBFromPixel(this.ctx, point);
       this.updatedImageData = this.computeImageData(targetColor, point);
       this.tryCreateLayer();
       this.layerFacade.renderLayers();
@@ -31,7 +33,7 @@ export class FillSpace extends ToolHandler {
     });
   }
 
-  private computeImageData(targetColor: ImageData, startPoint: Point): ImageData {
+  private computeImageData(targetColor: RGBa, startPoint: Point): ImageData {
     const width = this.width;
     const height = this.height;
     const firstPointIndex = startPoint.y * width + startPoint.x;
@@ -43,10 +45,10 @@ export class FillSpace extends ToolHandler {
     const visitedPoints = new Uint8Array(width * height);
 
     const targetColorAsDigit =
-      (targetColor.data[0] << 24) |
-      (targetColor.data[1] << 16) |
-      (targetColor.data[2] << 8) |
-      targetColor.data[3];
+      (targetColor[0] << 24) |
+      (targetColor[1] << 16) |
+      (targetColor[2] << 8) |
+      targetColor[3];
 
     const offsets = this.vectorsForSiblingPoints.map(([dx, dy]) => dy * width + dx);
 
