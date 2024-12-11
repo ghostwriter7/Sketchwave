@@ -1,5 +1,6 @@
 import type { GlobalContextState, ToolProperties } from '../../../global-provider.tsx';
 import { stringifyRgb } from '../../../color/stringify-rgb.ts';
+import type { RGBa } from '../../../types/core.type.ts';
 
 export type ToolState = Pick<CanvasRenderingContext2D, | 'lineCap' | 'lineJoin' | 'shadowBlur' | 'shadowColor'>
   & {
@@ -7,17 +8,17 @@ export type ToolState = Pick<CanvasRenderingContext2D, | 'lineCap' | 'lineJoin' 
   shadowColor: string;
   strokeStyle: string;
   size: number,
-  color: [number, number, number];
+  color: RGBa;
   toolProperties?: ToolProperties
 };
 
 export class ToolStateFactory {
   public static fromState(state: GlobalContextState): ToolState {
-    const [red, green, blue] = state.color;
-    const colour = `rgb(${red},${green},${blue})`;
+    const [red, green, blue, alpha] = state.color;
+    const colour = `rgb(${red},${green},${blue},${alpha})`;
 
     return {
-      color: [red, green, blue],
+      color: [red, green, blue, alpha],
       fillStyle: colour,
       lineCap: state.lineCap || 'round',
       lineJoin: state.lineJoin || 'round',

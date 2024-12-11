@@ -6,6 +6,6 @@ export const CONFIG = {
   handleRadius: 10,
   handleOutline: 12,
   width: 300,
-  pickerHeight: 250,
+  pickerHeight: 275,
   sliderHeight: 30,
 };

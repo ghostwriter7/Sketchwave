@@ -12,6 +12,7 @@ export interface ToolProperties {
 
 export type GlobalContextState = {
   activeTool?: ToolType;
+  alpha: number;
   color: RGBa;
   ctx: CanvasRenderingContext2D | null;
   currentMouseX: number | null;
@@ -40,6 +41,7 @@ const GlobalContext = createContext<GlobalContextActions>();
 
 export const GlobalProvider = (props: ParentProps) => {
   const [state, setState] = createStore<GlobalContextState>({
+    alpha: 1,
     color: [0, 0, 0, 255],
     ctx: null,
     currentMouseX: null,

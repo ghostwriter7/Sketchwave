@@ -9,8 +9,8 @@ export const MainView = () => {
   let wrapperRef!: HTMLDivElement;
   let mainRef!: HTMLElement;
 
-  createEffect(() => {
-    state.scale;
+
+  const handleResize = () => {
     const canvas = state.ctx?.canvas;
 
     if (canvas) {
@@ -30,6 +30,13 @@ export const MainView = () => {
         mainRef.scrollTop = 0;
       }
     }
+  }
+
+  addEventListener('resize', handleResize);
+
+  createEffect(() => {
+    state.scale;
+    handleResize();
   });
 
 

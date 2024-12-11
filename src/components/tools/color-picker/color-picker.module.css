@@ -1,6 +1,6 @@
 .color-picker {
   display: grid;
-  grid-template-columns: 300px 30px;
+  grid-template-columns: 300px 50px;
   grid-template-rows: repeat(3, auto);
   gap: var(--space-md);
   width: fit-content;
@@ -19,14 +19,16 @@
     grid-row: 2;
   }
 
-  .slider {
+  .slider, .alpha {
     cursor: grab;
+  }
+
+  .slider {
     grid-column: 1;
     grid-row: 3;
   }
 
   .alpha {
-    border-radius: var(--radius);
     grid-column: 2;
     grid-row: 2/3;
   }

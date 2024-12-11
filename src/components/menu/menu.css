@@ -5,6 +5,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-md);
+  height: 111px;
   padding: var(--space-sm);
 
   .divider {
