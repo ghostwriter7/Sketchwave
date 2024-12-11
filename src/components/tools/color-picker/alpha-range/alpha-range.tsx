@@ -2,11 +2,10 @@ import styles from '../color-picker.module.css';
 import { createEffect } from 'solid-js';
 import { ThemeHelper } from '../../../../helpers/theme.helper.ts';
 import { useGlobalContext } from '../../../../global-provider.tsx';
-import type { RGBa } from '../../../../types/core.type.ts';
-import { colorState, setColorState } from '../color-store.ts';
+import type { RGBA } from '../../../../types/core.type.ts';
 
 export const AlphaRange = () => {
-  const { state } = useGlobalContext();
+  const { state, setAlpha } = useGlobalContext();
 
   const pickAlpha = ({ offsetY }: MouseEvent) => {
     let alpha = offsetY / 255;
@@ -15,7 +14,7 @@ export const AlphaRange = () => {
     } else if (alpha > 1) {
       alpha = 1;
     }
-    setColorState('alpha', alpha);
+    setAlpha(alpha);
   }
 
   const handleMove = (event: MouseEvent) => event.buttons == 1 && pickAlpha(event);
@@ -50,7 +49,7 @@ export const AlphaRange = () => {
     }
   }
 
-  const renderColorAlphaRange = (color: RGBa) => {
+  const renderColorAlphaRange = (color: RGBA) => {
     const baseColor = `rgb(${color[0]}, ${color[1]}, ${color[2]}, `;
     const gradient = ctx.createLinearGradient(margin, margin, margin, sliderHeight);
 
@@ -63,7 +62,7 @@ export const AlphaRange = () => {
   };
 
   const renderSelector = () => {
-    const alpha = colorState.alpha;
+    const alpha = state.alpha;
     const y = alpha * 255;
 
     ctx.beginPath();

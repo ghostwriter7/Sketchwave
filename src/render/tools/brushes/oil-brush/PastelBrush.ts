@@ -6,7 +6,7 @@ import type { Point } from '../../../../types/Point.ts';
 import { getMidPoints } from '../../../../math/get-mid-points.ts';
 import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
 import { applyToolState } from '../../helpers/apply-tool-state.ts';
-import type { RGBa } from '../../../../types/core.type.ts';
+import { FULL_CIRCLE } from '../../../../constants.ts';
 
 export class PastelBrush extends SimpleBrush {
   protected cursorSize = this.size + 2;
@@ -69,45 +69,47 @@ export class PastelBrush extends SimpleBrush {
     if (this.points.length < 1 || this.currentStokeLength >= this.strokeLength) return;
     super.renderPreview();
 
-    const rgb = this.toolState.color.slice(0, 3);
+    const rgb = this.toolState.rgb;
+    const ctx = this.offscreenCtx;
+    const radius = this.radius;
 
     this.points.slice(this.lastPointIndex).forEach(({ x, y }: Point) => {
       const numberOfStreams = this.calculateNumberOfStreams();
 
-      this.offscreenCtx.beginPath();
+      ctx.beginPath();
       const primaryAlpha = this.calculateBaseAlpha();
 
       if (Math.random() > 0.25) {
-        this.offscreenCtx.fillStyle = stringifyRgb([...rgb, primaryAlpha] as RGBa);
-        this.offscreenCtx.arc(x, y, this.radius * (Math.random() + 0.5), 0, 2 * Math.PI);
-        this.offscreenCtx.fill();
+        ctx.fillStyle = stringifyRgb([...rgb, primaryAlpha]);
+        ctx.arc(x, y, radius * (Math.random() + 0.5), 0, FULL_CIRCLE);
+        ctx.fill();
       }
 
       const remainingStreams = numberOfStreams - 1;
 
       if (remainingStreams > 0) {
-        const halfRadius = this.radius / 2;
+        const halfRadius = radius / 2;
         const halfOfRemainingStreams = remainingStreams / 2;
 
         for (let i = -halfOfRemainingStreams; i < halfOfRemainingStreams; i++) {
           if (i == 0) continue;
-          const jitterX = (Math.random() - 0.5) * this.radius * 0.5;
-          const jitterY = (Math.random() - 0.5) * this.radius * 0.5;
+          const jitterX = (Math.random() - 0.5) * radius * 0.5;
+          const jitterY = (Math.random() - 0.5) * radius * 0.5;
 
           const alpha = Math.random() > 0.85 ? primaryAlpha : primaryAlpha * (Math.random() * (i % 2 == 0 ? 0.5 : 0.05));
 
-          this.offscreenCtx.beginPath();
-          const offsetY = i * this.radius + Math.sign(i) * halfRadius;
-          this.offscreenCtx.fillStyle = stringifyRgb([...rgb, alpha] as RGBa);
-          const radiusVariety = this.radius * (Math.random() + 0.55);
-          this.offscreenCtx.arc(x + jitterX, y + jitterY + offsetY, radiusVariety, 0, 2 * Math.PI);
-          this.offscreenCtx.fill();
+          ctx.beginPath();
+          const offsetY = i * radius + Math.sign(i) * halfRadius;
+          ctx.fillStyle = stringifyRgb([...rgb, alpha]);
+          const radiusVariety = radius * (Math.random() + 0.55);
+          ctx.arc(x + jitterX, y + jitterY + offsetY, radiusVariety, 0, 2 * Math.PI);
+          ctx.fill();
         }
       }
 
     });
 
-    this.ctx.drawImage(this.offscreenCtx.canvas, 0, 0);
+    this.ctx.drawImage(ctx.canvas, 0, 0);
 
     this.lastPointIndex = this.points.length - 1;
   }

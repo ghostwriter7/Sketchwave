@@ -6,21 +6,18 @@ import { Card } from '../../card/card.tsx';
 import { HueRange } from './hue-range/hue-range.tsx';
 import { SaturationBrightnessRange } from './saturation-brightness-range/saturation-brightness-range.tsx';
 import { AlphaRange } from './alpha-range/alpha-range.tsx';
-import { colorState } from './color-store.ts';
 
 export const ColorPicker = () => {
-  const { state, setColor } = useGlobalContext();
+  const { state } = useGlobalContext();
 
   let previewRef: HTMLDivElement;
   let triggerRef: HTMLInputElement;
 
   createEffect(() => {
-    const [red, green, blue, alpha] = state.color;
-    previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue}, ${alpha})`;
+    const [red, green, blue] = state.color;
+    previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue}, ${state.alpha})`;
     triggerRef.value = rgbToHex(red, green, blue);
   });
-
-  createEffect(() => setColor([...colorState.rgb, colorState.alpha]));
 
   let popoverRef: HTMLDivElement;
 

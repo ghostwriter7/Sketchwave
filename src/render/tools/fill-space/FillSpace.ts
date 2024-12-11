@@ -3,7 +3,7 @@ import type { ToolState } from '../models/ToolState.ts';
 import { type LayerFacade } from '../../LayerFacade.ts';
 import { Point } from '../../../types/Point.ts';
 import { getRGBFromPixel } from '../../../color/get-rgb-from-pixel.ts';
-import type { RGBa } from '../../../types/core.type.ts';
+import type { RGBA } from '../../../types/core.type.ts';
 
 export class FillSpace extends ToolHandler {
   private updatedImageData?: ImageData;
@@ -33,7 +33,7 @@ export class FillSpace extends ToolHandler {
     });
   }
 
-  private computeImageData(targetColor: RGBa, startPoint: Point): ImageData {
+  private computeImageData(targetColor: RGBA, startPoint: Point): ImageData {
     const width = this.width;
     const height = this.height;
     const firstPointIndex = startPoint.y * width + startPoint.x;

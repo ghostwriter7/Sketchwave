@@ -43,4 +43,7 @@ export type CreatePathForShapeFn = (origin: Point, endPoint: Point, dx: number, 
 
 export type Constructor = new (...args: any) => any;
 
-export type RGBa = [number, number, number, number];
+export type RGBA = [number, number, number, number];
+export type RGB = [number, number, number];
+
+

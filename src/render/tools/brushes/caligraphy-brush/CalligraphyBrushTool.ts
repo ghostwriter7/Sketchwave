@@ -2,8 +2,6 @@ import { SimpleBrush } from '../../abstract/SimpleBrush.ts';
 import type { ToolState } from '../../models/ToolState.ts';
 import { type LayerFacade } from '../../../LayerFacade.ts';
 import { applyToolState } from '../../helpers/apply-tool-state.ts';
-import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
-import type { RGBa } from '../../../../types/core.type.ts';
 
 export class CalligraphyBrushTool extends SimpleBrush {
   protected override cursorSize = this.size + 2;
@@ -19,7 +17,7 @@ export class CalligraphyBrushTool extends SimpleBrush {
   private offscreenCtx: OffscreenCanvasRenderingContext2D;
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
-    super({ ...toolState, shadowBlur: 2, shadowColor: stringifyRgb([...toolState.color.slice(0, 3), .9] as RGBa)}, layerFacade);
+    super({ ...toolState, shadowBlur: 2 }, layerFacade);
 
     const radius = this.halfSize;
     const angle = -45;

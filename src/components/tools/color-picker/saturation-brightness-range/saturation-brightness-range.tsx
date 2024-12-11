@@ -1,13 +1,15 @@
 import { CONFIG } from '../config.ts';
 import styles from '../color-picker.module.css';
 import { Point } from '../../../../types/Point.ts';
-import { colorState, setColorState } from '../color-store.ts';
+import { colorState } from '../color-store.ts';
 import { createEffect, onMount } from 'solid-js';
 import { hsbToRgb } from '../../../../color/hsb-to-rgb.ts';
 import { FULL_CIRCLE } from '../../../../constants.ts';
 import { getRGBFromPixel } from '../../../../color/get-rgb-from-pixel.ts';
+import { useGlobalContext } from '../../../../global-provider.tsx';
 
 export const SaturationBrightnessRange = () => {
+  const { setColor } = useGlobalContext();
 
   let pickerRef: HTMLCanvasElement;
   let pickerCtx: CanvasRenderingContext2D;
@@ -49,7 +51,7 @@ export const SaturationBrightnessRange = () => {
     drawPicker(pickerCtx, colorState.hue);
     drawSelectorAt(pickerCtx, point);
     const [red, green, blue] = getRGBFromPixel(pickerCtx, point);
-    setColorState('rgb', [red, green, blue]);
+    setColor([red, green, blue]);
   }
 
   const handlePickerMove = (event: MouseEvent) => event.buttons == 1 && handleColorChange(event);

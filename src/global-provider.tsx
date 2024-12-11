@@ -1,6 +1,6 @@
 import { createContext, type ParentProps, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import type { RGBa, ShapeType, ToolType } from './types/core.type.ts';
+import type { RGB, ShapeType, ToolType } from './types/core.type.ts';
 import { type LayerFacade } from './render/LayerFacade.ts';
 
 export interface ToolProperties {
@@ -13,7 +13,7 @@ export interface ToolProperties {
 export type GlobalContextState = {
   activeTool?: ToolType;
   alpha: number;
-  color: RGBa;
+  color: RGB;
   ctx: CanvasRenderingContext2D | null;
   currentMouseX: number | null;
   currentMouseY: number | null;
@@ -26,8 +26,9 @@ export type GlobalContextState = {
 } & Partial<Pick<CanvasRenderingContext2D, 'lineCap' | 'lineJoin'>>
 
 interface GlobalContextActions {
+  setAlpha(alpha: number): void;
   setActiveTool(tool?: ToolType): void;
-  setColor(color: RGBa): void;
+  setColor(color: RGB): void;
   setCtx(ctx: CanvasRenderingContext2D): void;
   setDimensions(width: number, height: number): void;
   setLayerFacade(layerFacade: LayerFacade): void;
@@ -42,7 +43,7 @@ const GlobalContext = createContext<GlobalContextActions>();
 export const GlobalProvider = (props: ParentProps) => {
   const [state, setState] = createStore<GlobalContextState>({
     alpha: 1,
-    color: [0, 0, 0, 255],
+    color: [0, 0, 0],
     ctx: null,
     currentMouseX: null,
     currentMouseY: null,
@@ -55,8 +56,9 @@ export const GlobalProvider = (props: ParentProps) => {
 
   const facade: GlobalContextActions = {
     state,
+    setAlpha: (alpha: number) => setState('alpha', alpha),
     setActiveTool: (tool?: ToolType) => setState('activeTool', tool),
-    setColor: (color: RGBa) => setState('color', color),
+    setColor: (color: RGB) => setState('color', color),
     setCtx: (ctx: CanvasRenderingContext2D) => setState('ctx', ctx),
     setLayerFacade: (layerFacade: LayerFacade) => setState('layerFacade', layerFacade),
     setMousePos: <T extends number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y }),
