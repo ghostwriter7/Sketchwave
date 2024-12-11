@@ -1,4 +1,5 @@
 import { CONFIG } from '../config.ts';
+import styles from '../color-picker.module.css';
 import { Point } from '../../../../types/Point.ts';
 import { getRGBFromPixel } from '../../../../color/get-rgb-from-pixel.ts';
 import { colorState } from '../color-store.ts';
@@ -64,7 +65,7 @@ export const SaturationBrightnessRange = () => {
   });
 
   return <canvas
-    class="color"
+    class={styles.color}
     ref={pickerRef!}
     width={CONFIG.width}
     height={CONFIG.pickerHeight}

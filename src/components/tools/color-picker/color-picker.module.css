@@ -1,27 +1,41 @@
 .color-picker {
+  display: grid;
+  grid-template-columns: 300px 50px;
+  grid-template-rows: repeat(3, auto);
+
   align-items: center;
-  display: flex;
+  /*display: flex;*/
   flex-direction: column;
   gap: var(--space-md);
   width: fit-content;
   height: fit-content;
 
-  & .preview {
+  .preview {
+    grid-column: 1/3;
     border-radius: 5px;
     width: 100%;
     height: 25px;
   }
 
-  & .color {
+  .color {
     cursor: pointer;
+    grid-column: 1;
+    grid-row: 2;
   }
 
-  & .slider {
+  .slider {
     cursor: grab;
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .alpha {
+    grid-column: 2;
+    grid-row: 2/3;
   }
 }
 
-input[type="color"] {
+.input {
   --size: 36px;
   width: var(--size);
   height: var(--size);
@@ -36,3 +50,4 @@ input[type="color"] {
     border-radius: var(--radius);
   }
 }
+

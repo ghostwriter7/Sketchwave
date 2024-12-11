@@ -3,6 +3,7 @@ import { Point } from '../../../../types/Point.ts';
 import { rgbToHue } from '../../../../color/rgb-to-hue.ts';
 import { onMount } from 'solid-js';
 import { CONFIG } from '../config.ts';
+import styles from '../color-picker.module.css';
 import { FULL_CIRCLE } from '../../../../constants.ts';
 import { setColorState } from '../color-store.ts';
 import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
@@ -79,7 +80,7 @@ export const HueRange = () => {
   })
 
   return <canvas
-    class="slider"
+    class={styles.colorPicker}
     ref={sliderRef!}
     width={CONFIG.width}
     height={CONFIG.sliderHeight}

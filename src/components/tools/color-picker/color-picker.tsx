@@ -1,10 +1,11 @@
-import './color-picker.css';
+import styles from './color-picker.module.css';
 import { createEffect } from 'solid-js';
 import { useGlobalContext } from '../../../global-provider.tsx';
 import { rgbToHex } from '../../../color/rgb-to-hex.ts';
 import { Card } from '../../card/card.tsx';
 import { HueRange } from './hue-range/hue-range.tsx';
 import { SaturationBrightnessRange } from './saturation-brightness-range/saturation-brightness-range.tsx';
+import { AlphaRange } from './alpha-range/alpha-range.tsx';
 
 export const ColorPicker = () => {
   const { state } = useGlobalContext();
@@ -26,13 +27,20 @@ export const ColorPicker = () => {
   }
 
   return <>
-    <input tabindex="0" id="color-picker-button" class="button interactive" ref={triggerRef!} type="color"
-           onClick={toggleColorPicker} title="Color (C)"/>
+    <input
+      class={`${styles.input} button interactive`}
+      id="color-picker-button"
+      ref={triggerRef!}
+      tabindex="0"
+      title="Color (C)"
+      type="color"
+      onClick={toggleColorPicker}/>
     <Card ref={popoverRef!} title="Color picker" id="color-picker" popover="auto">
-      <div class="color-picker">
-        <div class="preview" ref={previewRef!}></div>
-        <SaturationBrightnessRange />
-        <HueRange />
+      <div class={styles['color-picker']}>
+        <div class={styles.preview} ref={previewRef!}></div>
+        <SaturationBrightnessRange/>
+        <HueRange/>
+        <AlphaRange/>
       </div>
     </Card>
   </>
