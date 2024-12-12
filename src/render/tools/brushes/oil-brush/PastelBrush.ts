@@ -4,9 +4,9 @@ import { SimpleBrush } from '../../abstract/SimpleBrush.ts';
 import { calculateDistance } from '../../../../math/distance.ts';
 import type { Point } from '../../../../types/Point.ts';
 import { getMidPoints } from '../../../../math/get-mid-points.ts';
-import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
 import { applyToolState } from '../../helpers/apply-tool-state.ts';
 import { FULL_CIRCLE } from '../../../../constants.ts';
+import { Color } from '../../../../types/Color.ts';
 
 export class PastelBrush extends SimpleBrush {
   protected cursorSize = this.size + 2;
@@ -80,7 +80,7 @@ export class PastelBrush extends SimpleBrush {
       const primaryAlpha = this.calculateBaseAlpha();
 
       if (Math.random() > 0.25) {
-        ctx.fillStyle = stringifyRgb([...rgb, primaryAlpha]);
+        ctx.fillStyle = new Color(...rgb, primaryAlpha).toString();
         ctx.arc(x, y, radius * (Math.random() + 0.5), 0, FULL_CIRCLE);
         ctx.fill();
       }
@@ -100,7 +100,7 @@ export class PastelBrush extends SimpleBrush {
 
           ctx.beginPath();
           const offsetY = i * radius + Math.sign(i) * halfRadius;
-          ctx.fillStyle = stringifyRgb([...rgb, alpha]);
+          ctx.fillStyle = new Color(...rgb, alpha).toString();
           const radiusVariety = radius * (Math.random() + 0.55);
           ctx.arc(x + jitterX, y + jitterY + offsetY, radiusVariety, 0, 2 * Math.PI);
           ctx.fill();

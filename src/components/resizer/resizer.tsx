@@ -3,7 +3,7 @@ import { createEffect, onMount } from 'solid-js';
 import { Point } from '../../types/Point.ts';
 import { calculateDistance } from '../../math/distance.ts';
 import { useGlobalContext } from '../../global-provider.tsx';
-import { ThemeHelper } from '../../helpers/theme.helper.ts';
+import { ThemeHelper } from '../../utils/theme.helper.ts';
 import { RESIZE_CURSORS } from '../../types/cursors.ts';
 
 export const Resizer = () => {

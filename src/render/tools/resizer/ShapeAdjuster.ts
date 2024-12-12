@@ -1,5 +1,5 @@
 import { Point } from '../../../types/Point.ts';
-import { ThemeHelper } from '../../../helpers/theme.helper.ts';
+import { ThemeHelper } from '../../../utils/theme.helper.ts';
 import { toRadians } from '../../../math/to-radians.ts';
 import { RESIZE_ACTIONS, RESIZE_CURSORS } from '../../../types/cursors.ts';
 import { ScaleChangeEvent } from '../../../types/events.ts';

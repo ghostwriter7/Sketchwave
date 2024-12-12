@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+import type { Color } from './types/Color.ts';
+
 type Type = {
   description?: string,
   accept: {
@@ -29,4 +31,8 @@ interface Window {
 
 interface String {
   toTitleCase(): string;
+}
+
+interface CanvasRenderingContext2D {
+  getColorFromPixel(x: number, y: number): Color;
 }

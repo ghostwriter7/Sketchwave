@@ -1,6 +1,6 @@
 import styles from '../color-picker.module.css';
 import { createEffect } from 'solid-js';
-import { ThemeHelper } from '../../../../helpers/theme.helper.ts';
+import { ThemeHelper } from '../../../../utils/theme.helper.ts';
 import { useGlobalContext } from '../../../../global-provider.tsx';
 import type { RGB } from '../../../../types/core.type.ts';
 

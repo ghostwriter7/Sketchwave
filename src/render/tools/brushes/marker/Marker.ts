@@ -4,14 +4,13 @@ import { type LayerFacade } from '../../../LayerFacade.ts';
 import { calculateDistance } from '../../../../math/distance.ts';
 import type { Point } from '../../../../types/Point.ts';
 import { renderCircles } from '../../helpers/render-circles.ts';
-import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
 import { getMidPoints } from '../../../../math/get-mid-points.ts';
-import type { RGBA } from '../../../../types/core.type.ts';
+import { Color } from '../../../../types/Color.ts';
 
 export class Marker extends SimpleBrush {
   protected override cursorSize = this.size + 2;
   protected override customCursorCreateFn = (ctx: OffscreenCanvasRenderingContext2D) => {
-    ctx.fillStyle = stringifyRgb([...this.toolState.rgb, 0.25] as RGBA);
+    ctx.fillStyle = new Color(...this.toolState.rgb, 0.25).toString();
     const center = this.cursorSize / 2;
     ctx.arc(center, center, this.size / 2, 0, 2 * Math.PI);
     ctx.fill();
@@ -34,7 +33,7 @@ export class Marker extends SimpleBrush {
   }
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
-    super({ ...toolState, fillStyle: stringifyRgb([...toolState.rgb, 0.01] as RGBA) }, layerFacade);
+    super({ ...toolState, fillStyle: new Color(...toolState.rgb, 0.01).toString() }, layerFacade);
   }
 
   public tryCreateLayer(): void {

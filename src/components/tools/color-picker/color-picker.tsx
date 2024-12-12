@@ -1,11 +1,11 @@
 import styles from './color-picker.module.css';
 import { createEffect } from 'solid-js';
 import { useGlobalContext } from '../../../global-provider.tsx';
-import { rgbToHex } from '../../../color/rgb-to-hex.ts';
 import { Card } from '../../card/card.tsx';
 import { HueRange } from './hue-range/hue-range.tsx';
 import { SaturationBrightnessRange } from './saturation-brightness-range/saturation-brightness-range.tsx';
 import { AlphaRange } from './alpha-range/alpha-range.tsx';
+import { Color } from '../../../types/Color.ts';
 
 export const ColorPicker = () => {
   const { state } = useGlobalContext();
@@ -15,8 +15,9 @@ export const ColorPicker = () => {
 
   createEffect(() => {
     const [red, green, blue] = state.color;
-    previewRef.style.backgroundColor = `rgb(${red}, ${green}, ${blue}, ${state.alpha})`;
-    triggerRef.value = rgbToHex(red, green, blue);
+    const color = new Color(red, green, blue, state.alpha);
+    previewRef.style.backgroundColor = color.toString();
+    triggerRef.value = color.toHex();
   });
 
   let popoverRef: HTMLDivElement;

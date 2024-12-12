@@ -1,12 +1,9 @@
-import { getRGBFromPixel } from '../../../../color/get-rgb-from-pixel.ts';
-import { Point } from '../../../../types/Point.ts';
-import { rgbToHue } from '../../../../color/rgb-to-hue.ts';
 import { onMount } from 'solid-js';
 import { CONFIG } from '../config.ts';
 import styles from '../color-picker.module.css';
 import { FULL_CIRCLE } from '../../../../constants.ts';
 import { setColorState } from '../color-store.ts';
-import { stringifyRgb } from '../../../../color/stringify-rgb.ts';
+import type { Color } from '../../../../types/Color.ts';
 
 const CENTER_Y = CONFIG.sliderHeight / 2;
 
@@ -34,9 +31,9 @@ export const HueRange = () => {
     if (offsetX < CONFIG.inlineMargin || offsetX > CONFIG.width - CONFIG.inlineMargin) return;
     sliderCtx.clearRect(0, 0, sliderRef.width, sliderRef.height);
     drawSlider(sliderCtx);
-    const [red, green, blue] = getRGBFromPixel(sliderCtx, new Point(offsetX, 15));
-    setColorState('hue', rgbToHue(red, green, blue));
-    drawSliderHandle(sliderCtx, offsetX, stringifyRgb([red, green, blue, 255]));
+    const color = sliderCtx.getColorFromPixel(offsetX, 15) as Color;
+    setColorState('hue', color.toHue());
+    drawSliderHandle(sliderCtx, offsetX, color.withAlpha(1).toString());
   }
 
   const handleMouseMove = (event: MouseEvent) => event.buttons === 1 && pickHue(event);

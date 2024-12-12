@@ -3,10 +3,9 @@ import styles from '../color-picker.module.css';
 import { Point } from '../../../../types/Point.ts';
 import { colorState } from '../color-store.ts';
 import { createEffect, onMount } from 'solid-js';
-import { hsbToRgb } from '../../../../color/hsb-to-rgb.ts';
 import { FULL_CIRCLE } from '../../../../constants.ts';
-import { getRGBFromPixel } from '../../../../color/get-rgb-from-pixel.ts';
 import { useGlobalContext } from '../../../../global-provider.tsx';
+import { Color } from '../../../../types/Color.ts';
 
 export const SaturationBrightnessRange = () => {
   const { setColor } = useGlobalContext();
@@ -25,11 +24,11 @@ export const SaturationBrightnessRange = () => {
         const saturation = x / width;
         const brightness = 1 - y / height;
 
-        const [r, g, b] = hsbToRgb(hue, saturation, brightness);
+        const { red, green, blue } = Color.fromHsl(hue, saturation, brightness);
         const index = (y * width + x) * 4;
-        imageData.data[index] = r;
-        imageData.data[index + 1] = g;
-        imageData.data[index + 2] = b;
+        imageData.data[index] = red;
+        imageData.data[index + 1] = green;
+        imageData.data[index + 2] = blue;
         imageData.data[index + 3] = 255;
       }
     }
@@ -50,7 +49,7 @@ export const SaturationBrightnessRange = () => {
     pickerCtx.clearRect(0, 0, pickerCtx.canvas.width, pickerCtx.canvas.height);
     drawPicker(pickerCtx, colorState.hue);
     drawSelectorAt(pickerCtx, point);
-    const [red, green, blue] = getRGBFromPixel(pickerCtx, point);
+    const { red, green, blue } = pickerCtx.getColorFromPixel(point.x, point.y);
     setColor([red, green, blue]);
   }
 
