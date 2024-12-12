@@ -10,8 +10,9 @@ import { Color } from '../../../types/Color.ts';
 export const ColorPicker = () => {
   const { state } = useGlobalContext();
 
-  let previewRef: HTMLDivElement;
-  let triggerRef: HTMLInputElement;
+  let popoverRef!: HTMLElement;
+  let previewRef!: HTMLDivElement;
+  let triggerRef!: HTMLInputElement;
 
   createEffect(() => {
     const [red, green, blue] = state.color;
@@ -19,8 +20,6 @@ export const ColorPicker = () => {
     previewRef.style.backgroundColor = color.toString();
     triggerRef.value = color.toHex();
   });
-
-  let popoverRef: HTMLDivElement;
 
   const toggleColorPicker = (event: MouseEvent) => {
     event.preventDefault();

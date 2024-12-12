@@ -7,7 +7,7 @@ import { BRUSHES } from './brushes.ts';
 
 export const BrushPicker = () => {
   const { state } = useGlobalContext();
-  let popoverRef: HTMLElement;
+  let popoverRef!: HTMLElement;
 
   const handleClick = (event: MouseEvent) => {
     if ((event.target as HTMLElement).getAttribute('data-tool')) {

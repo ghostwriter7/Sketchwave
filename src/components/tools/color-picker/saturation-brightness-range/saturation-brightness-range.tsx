@@ -10,7 +10,7 @@ import { Color } from '../../../../types/Color.ts';
 export const SaturationBrightnessRange = () => {
   const { setColor } = useGlobalContext();
 
-  let pickerRef: HTMLCanvasElement;
+  let pickerRef!: HTMLCanvasElement;
   let pickerCtx: CanvasRenderingContext2D;
 
   const drawPicker = (ctx: CanvasRenderingContext2D, hue = 0) => {

@@ -2,7 +2,6 @@ import { ToolHandler } from '../abstract/ToolHandler.ts';
 import type { ToolState } from '../models/ToolState.ts';
 import { type LayerFacade } from '../../LayerFacade.ts';
 import { Point } from '../../../types/Point.ts';
-import type { RGBA } from '../../../types/core.type.ts';
 import type { Color } from '../../../types/Color.ts';
 
 export class FillSpace extends ToolHandler {
