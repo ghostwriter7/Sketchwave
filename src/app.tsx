@@ -1,5 +1,4 @@
 import Menu from './components/menu/menu.tsx';
-import { GlobalProvider } from './global-provider.tsx';
 import { CanvasSummary } from './components/canvas-summary/canvas-summary.tsx';
 import { MainView } from './components/main-view/main-view.tsx';
 
@@ -45,11 +44,9 @@ const App = () => {
   });
 
   return <>
-    <GlobalProvider>
-      <Menu/>
-      <MainView/>
-      <CanvasSummary/>
-    </GlobalProvider>
+    <Menu/>
+    <MainView/>
+    <CanvasSummary/>
   </>;
 }
 
