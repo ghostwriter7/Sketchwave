@@ -1,8 +1,8 @@
 import { ToolState } from './models/ToolState.ts';
 import type { LayerFacade } from '../LayerFacade.ts';
 import { Point } from '../../types/Point.ts';
-import { applyToolState } from './helpers/apply-tool-state.ts';
 import { SimpleBrush } from './abstract/SimpleBrush.ts';
+import { getMidPoints } from '../../math/get-mid-points.ts';
 
 export class EraserTool extends SimpleBrush {
   protected override cursorSize = Math.max(this.toolState.size + 2, 10);
@@ -13,8 +13,6 @@ export class EraserTool extends SimpleBrush {
     ctx.strokeRect(0, 0, this.cursorSize, this.cursorSize);
   }
 
-  private static readonly WIDTH = 10;
-
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super({
       ...toolState,
@@ -22,7 +20,7 @@ export class EraserTool extends SimpleBrush {
       strokeStyle: 'white',
       size: Math.max(toolState.size + 2, 10),
       lineJoin: 'bevel',
-      lineCap: 'butt'
+      lineCap: 'square'
     }, layerFacade);
   }
 
@@ -30,44 +28,22 @@ export class EraserTool extends SimpleBrush {
     if (this.points.length === 0) return;
 
     const points = this.points;
-    const toolState = this.toolState;
+    const size = this.size;
 
-    const draw = (ctx: CanvasRenderingContext2D): void => {
-      applyToolState(ctx, toolState);
-      EraserTool.drawLines(ctx, points);
-    }
-    this.createLayer(draw);
+    this.createLayer((ctx: CanvasRenderingContext2D): void => EraserTool.drawLines(ctx, points, size));
   }
 
   protected renderPreview(): void {
-    const [{ x, y }] = this.points;
-    if (this.points.length === 1) {
-      this.ctx.fillRect(x - 5, y - 5, EraserTool.WIDTH, EraserTool.WIDTH);
-    } else {
-      if (this.points.length === 2) {
-        this.ctx.beginPath();
-        this.ctx.moveTo(x, y);
-      }
-
-      this.ctx.lineTo(this.points[this.lastPointIndex + 1].x, this.points[this.lastPointIndex + 1].y);
-      this.lastPointIndex++;
-      this.ctx.stroke();
-    }
+    super.renderPreview();
+    EraserTool.drawLines(this.ctx, this.points, this.size);
   }
 
-  private static drawLines(ctx: CanvasRenderingContext2D, points: Point[]): void {
+  private static drawLines(ctx: CanvasRenderingContext2D, points: Point[], size: number): void {
     if (points.length < 1) return;
 
-    const [{ x, y }] = points;
-    if (points.length === 1) {
-      ctx.fillRect(x - 5, y - 5, EraserTool.WIDTH, EraserTool.WIDTH);
-    } else {
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      points.slice(1).forEach(({ x, y }) => {
-        ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-    }
+    const halfSize = size / 2;
+    points.flatMap((point, index, array) =>
+      index == 0 ? [point] : getMidPoints(array[index - 1], point))
+      .forEach(({ x, y }) => ctx.fillRect(x - halfSize, y - halfSize, size, size));
   }
 }
