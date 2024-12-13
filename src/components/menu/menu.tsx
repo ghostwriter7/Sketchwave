@@ -16,12 +16,13 @@ import { PickColorButton } from '../pick-color-button/pick-color-button.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
-  const { state, updateState } = useGlobalContext();
+  const { state, setActiveTool } = useGlobalContext();
 
   const buttons: { id: ToolType, icon: string; title: string }[] = [
     { id: 'line', icon: 'timeline', title: 'Line (L)' },
     { id: 'eraser', icon: 'ink_eraser', title: 'Eraser (E)' },
-    { id: 'fillSpace', icon: 'format_color_fill', title: 'Fill Space (F)' }
+    { id: 'fillSpace', icon: 'format_color_fill', title: 'Fill Space (F)' },
+    { id: 'importImage', icon: 'add_photo_alternate', title: 'Import Image (CTRL + I)' },
   ];
 
   const getAttributeValue = (element: HTMLElement, name: string): string | null | undefined =>
@@ -33,7 +34,7 @@ const Menu = () => {
 
     if (state.activeTool !== toolId && toolId) {
       logger.log(`${toolId.toTitleCase()}Tool selected.`);
-      updateState({ activeTool: toolId as ToolType });
+      setActiveTool(toolId as ToolType);
     }
   };
 

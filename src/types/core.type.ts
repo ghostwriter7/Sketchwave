@@ -16,6 +16,7 @@ export type ToolType =
   | 'fillSpace'
   | 'pastelBrush'
   | 'marker'
+  | 'importImage'
   | 'line'
   | 'shape'
   | 'wiggleLineBrush';

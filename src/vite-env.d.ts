@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 
 import type { Color } from './types/Color.ts';
+import type { Point } from './types/Point.ts';
 
 type Type = {
   description?: string,
@@ -36,5 +37,6 @@ declare global {
 
   interface CanvasRenderingContext2D {
     getColorFromPixel(x: number, y: number): Color;
+    rotateCanvas(origin: Point, radians: number): void;
   }
 }

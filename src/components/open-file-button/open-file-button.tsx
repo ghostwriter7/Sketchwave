@@ -1,6 +1,7 @@
 import { useGlobalContext } from '../../global-provider.tsx';
 import { Logger } from '../../utils/Logger.ts';
 import { Icon } from '../icon/icon.tsx';
+import { FileHelper } from '../../utils/FileHelper.ts';
 
 export const OpenFileButton = () => {
   const { state, setDimensions } = useGlobalContext();
@@ -8,32 +9,9 @@ export const OpenFileButton = () => {
 
   const tryGetImageBitmap = async (): Promise<ImageBitmap | null> => {
     try {
-      const [fileHandle] = await window.showOpenFilePicker({
-        excludeAcceptAllOption: true,
-        multiple: false,
-        startIn: 'pictures',
-        types: [
-          {
-            description: 'Images',
-            accept: {
-              'image/*': ['.png', '.gif', '.jpeg', '.jpg'],
-            },
-          },
-        ],
-      });
-      const file = await fileHandle.getFile();
-      return await createImageBitmap(file);
+      return await FileHelper.tryGetImageBitmap();
     } catch (error: unknown) {
-
-      if (error instanceof DOMException) {
-        const message = error.name === 'AbortError'
-          ? 'User has not selected any image'
-          : `Unknown error: ${error.message}`;
-        logger.warn(message);
-      } else {
-        console.error(error);
-      }
-
+      logger.warn(error as string);
       return null;
     }
   }

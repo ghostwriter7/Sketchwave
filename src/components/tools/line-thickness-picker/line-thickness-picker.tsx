@@ -1,7 +1,7 @@
 import { useGlobalContext } from '../../../global-provider.tsx';
 import './line-thickness-picker.css';
 import { createEffect, createSignal, Show } from 'solid-js';
-import { ThemeHelper } from '../../../utils/theme.helper.ts';
+import { ThemeHelper } from '../../../utils/ThemeHelper.ts';
 import { Icon } from '../../icon/icon.tsx';
 import { Color } from '../../../types/Color.ts';
 

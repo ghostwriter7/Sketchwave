@@ -41,6 +41,8 @@ const Canvas = () => {
     document.body.addEventListener('contextmenu', (event: MouseEvent) => {
       event.preventDefault();
       activeTool?.onDestroy();
+      activeTool = null;
+
       if (state.activeTool) {
         layerFacade.renderLayers();
         const toolState = ToolStateFactory.fromState(state);
@@ -64,6 +66,7 @@ const Canvas = () => {
 
   createEffect(() => {
     activeTool?.onDestroy();
+    activeTool = null;
 
     if (state.activeTool) {
       const toolState = ToolStateFactory.fromState(state);

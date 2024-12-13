@@ -4,6 +4,7 @@ import type { LayerFacade } from '../../LayerFacade.ts';
 import { Logger } from '../../../utils/Logger.ts';
 import { applyToolState } from '../helpers/apply-tool-state.ts';
 import { createCursor } from '../helpers/create-cursor.ts';
+import { useGlobalContext } from '../../../global-provider.tsx';
 
 type EventHandler = (event: MouseEvent) => void;
 
@@ -16,6 +17,7 @@ export abstract class ToolHandler {
   protected customCursorCreateFn?: (ctx: OffscreenCanvasRenderingContext2D) => void;
   protected nativeCursor = 'pointer';
 
+  protected readonly deactivate: () => void;
   protected readonly logger = new Logger(this.constructor as Constructor);
 
   protected get canvas(): HTMLCanvasElement {
@@ -59,6 +61,8 @@ export abstract class ToolHandler {
     this.halfSize = this.toolState.size / 2;
     this.layerFacade.ctx.save();
     applyToolState(this.layerFacade.ctx, toolState);
+    const { setActiveTool } = useGlobalContext();
+    this.deactivate = () => setActiveTool();
   }
 
   /**

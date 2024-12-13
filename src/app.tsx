@@ -19,7 +19,8 @@ const App = () => {
     pickColor: 'KeyP',
     zoom: 'KeyZ',
     shape: 'KeyS',
-    cancel: 'Escape'
+    cancel: 'Escape',
+    importImage: { key: 'KeyI', ctrl: true }
   }
 
   document.addEventListener('keydown', (event) => {

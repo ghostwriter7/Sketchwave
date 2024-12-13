@@ -2,7 +2,7 @@ import { Icon } from '../icon/icon.tsx';
 import { useGlobalContext } from '../../global-provider.tsx';
 import { createEffect } from 'solid-js';
 import styles from './pick-color-button.module.css';
-import { ThemeHelper } from '../../utils/theme.helper.ts';
+import { ThemeHelper } from '../../utils/ThemeHelper.ts';
 import { createStore } from 'solid-js/store';
 
 type PickColorState = {

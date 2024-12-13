@@ -190,14 +190,8 @@ export class ShapeTool extends ToolHandler {
   private handleShapeAdjustment(origin: Point, width: number, height: number, angle: number): void {
     this.startPoint = origin;
     this.endPoint = new Point(origin.x + width, origin.y + height);
-
-    const { dx, dy } = Point.delta(this.startPoint, this.endPoint);
     this.rotateAngleInRadians = angle;
-    const [centerX, centerY] = [this.startPoint!.x + dx / 2, this.startPoint!.y + dy / 2];
-    this.ctx.resetTransform();
-    this.ctx.translate(centerX, centerY);
-    this.ctx.rotate(angle);
-    this.ctx.translate(-centerX, -centerY);
+    this.ctx.rotateCanvas(Point.midPoint(this.startPoint, this.endPoint), angle);
     this.renderPreview();
   }
 
