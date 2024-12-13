@@ -8,7 +8,7 @@ import { useGlobalContext } from '../../../../global-provider.tsx';
 import { Color } from '../../../../types/Color.ts';
 
 export const SaturationBrightnessRange = () => {
-  const { setColor } = useGlobalContext();
+  const { setRGB } = useGlobalContext();
 
   let pickerRef!: HTMLCanvasElement;
   let pickerCtx: CanvasRenderingContext2D;
@@ -50,7 +50,7 @@ export const SaturationBrightnessRange = () => {
     drawPicker(pickerCtx, colorState.hue);
     drawSelectorAt(pickerCtx, point);
     const { red, green, blue } = pickerCtx.getColorFromPixel(point.x, point.y);
-    setColor([red, green, blue]);
+    setRGB([red, green, blue]);
   }
 
   const handlePickerMove = (event: MouseEvent) => event.buttons == 1 && handleColorChange(event);

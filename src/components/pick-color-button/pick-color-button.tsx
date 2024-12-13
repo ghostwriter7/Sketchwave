@@ -11,7 +11,7 @@ type PickColorState = {
 }
 
 export const PickColorButton = () => {
-  const { state, setActiveTool, setColor, setAlpha } = useGlobalContext();
+  const { state, setActiveTool, setRGB, setAlpha } = useGlobalContext();
   const [localState, setLocalState] = createStore<PickColorState>({
     working: false,
   });
@@ -75,7 +75,7 @@ export const PickColorButton = () => {
 
     addEventListener('click', (event: MouseEvent) => {
         const { red, green, blue, alpha } = state.ctx!.getColorFromPixel(event.offsetX, event.offsetY)!;
-        setColor([red, green, blue]);
+        setRGB([red, green, blue]);
         setAlpha(alpha / 255);
       }
     );

@@ -1,0 +1,15 @@
+.color-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+.color {
+  --size: 25px;
+  width: var(--size);
+  height: var(--size);
+}
+
+

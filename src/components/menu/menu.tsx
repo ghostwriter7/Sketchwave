@@ -13,6 +13,7 @@ import { ShapePicker } from '../shape-picker/shape-picker.tsx';
 import { MenuGroup } from './menu-group/menu-group.tsx';
 import { Icon } from '../icon/icon.tsx';
 import { PickColorButton } from '../pick-color-button/pick-color-button.tsx';
+import { ColorShortcuts } from '../color-shortcuts/color-shortcuts.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -50,7 +51,7 @@ const Menu = () => {
             <Icon icon={icon}/>
           </button>}
       </For>
-      <PickColorButton />
+      <PickColorButton/>
     </MenuGroup>
     <span class="divider"></span>
     <MenuGroup label="Brushes (B)">
@@ -61,7 +62,11 @@ const Menu = () => {
       <ShapePicker/>
     </MenuGroup>
     <span class="divider"></span>
-    <ColorPicker/>
+    <MenuGroup label="Colors">
+      <ColorPicker/>
+      <ColorShortcuts/>
+    </MenuGroup>
+    <span class="divider"></span>
     <FullScreenButton/>
   </nav>
 }
