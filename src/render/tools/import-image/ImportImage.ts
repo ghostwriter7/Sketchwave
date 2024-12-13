@@ -1,25 +1,15 @@
-import { ToolHandler } from '../abstract/ToolHandler.ts';
 import type { ToolState } from '../models/ToolState.ts';
 import { type LayerFacade } from '../../LayerFacade.ts';
-import { ShapeAdjuster } from '../resizer/ShapeAdjuster.ts';
 import { Point } from '../../../types/Point.ts';
 import { FileHelper } from '../../../utils/FileHelper.ts';
 import { ImageBitmapHelper } from '../../../utils/ImageBitmapHelper.ts';
+import { AdjustableToolHandler } from '../abstract/AdjustableToolHandler.ts';
 
-export class ImportImage extends ToolHandler {
+export class ImportImage extends AdjustableToolHandler {
   private imageBitmap?: ImageBitmap;
-  private startPoint?: Point;
-  private endPoint?: Point;
-  private rotateAngleInRadians?: number;
-  private shapeAdjuster?: ShapeAdjuster;
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
-  }
-
-  public override onDestroy(): void {
-    super.onDestroy();
-    this.shapeAdjuster?.destroy();
   }
 
   public async onInit(): Promise<void> {
@@ -55,17 +45,6 @@ export class ImportImage extends ToolHandler {
     });
   }
 
-  protected initializeListeners(): void {
-  }
-
-  private handleShapeAdjustment(origin: Point, width: number, height: number, angle: number): void {
-    this.startPoint = origin;
-    this.endPoint = new Point(origin.x + width, origin.y + height);
-    this.rotateAngleInRadians = angle;
-    this.ctx.rotateCanvas( Point.midPoint(this.startPoint, this.endPoint), angle);
-    this.renderPreview();
-  }
-
   private async promptUserForFileAndProcess(): Promise<void> {
     try {
       this.imageBitmap = await FileHelper.tryGetImageBitmap();
@@ -74,17 +53,7 @@ export class ImportImage extends ToolHandler {
         this.imageBitmap = await ImageBitmapHelper.scaleImageBitmapToFitDimensions(this.imageBitmap, this.width * .9, this.height * .9);
       }
 
-      this.shapeAdjuster = new ShapeAdjuster(
-        this.width,
-        this.height,
-        this.layerFacade.ctx.canvas,
-        this.handleShapeAdjustment.bind(this),
-        () => {
-          this.shapeAdjuster?.destroy();
-          this.deactivate();
-        },
-        30
-      );
+      this.shapeAdjuster = this.createShapeAdjuster();
 
       const x = (this.width - this.imageBitmap.width) / 2;
       const y = (this.height - this.imageBitmap.height) / 2;
@@ -97,5 +66,10 @@ export class ImportImage extends ToolHandler {
     } catch (e) {
       this.logger.warn(e as string);
     }
+  }
+
+  protected onComplete(): void {
+    this.shapeAdjuster = undefined;
+    this.deactivate();
   }
 }

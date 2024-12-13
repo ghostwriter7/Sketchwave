@@ -1,4 +1,3 @@
-import { ToolHandler } from '../abstract/ToolHandler.ts';
 import type { ToolState } from '../models/ToolState.ts';
 import { type LayerFacade } from '../../LayerFacade.ts';
 import { Point } from '../../../types/Point.ts';
@@ -23,18 +22,12 @@ import { halfMoon } from './create-path-for-shape-fns/halfMoon.ts';
 import { notifications } from './create-path-for-shape-fns/notifications.ts';
 import { person } from './create-path-for-shape-fns/person.ts';
 import type { ToolProperties } from '../../../global-provider.tsx';
-import { ShapeAdjuster } from '../resizer/ShapeAdjuster.ts';
+import { AdjustableToolHandler } from '../abstract/AdjustableToolHandler.ts';
 
-export class ShapeTool extends ToolHandler {
+export class ShapeTool extends AdjustableToolHandler {
   protected nativeCursor = 'crosshair';
 
-  private startPoint: Point | null = null;
-  private endPoint: Point | null = null;
   private isWorking = false;
-  private rotateAngleInRadians?: number;
-  private shapeAdjuster?: ShapeAdjuster;
-
-  private readonly MINIMAL_SIZE = 30;
 
   private static readonly createPointsForShapeFnMap: Record<SimpleShapeType, CreatePointsForShapeFn> = {
     arrow: arrow,
@@ -66,11 +59,6 @@ export class ShapeTool extends ToolHandler {
     super(toolState, layerFacade);
   }
 
-  public override onDestroy(): void {
-    super.onDestroy();
-    this.shapeAdjuster?.destroy();
-  }
-
   public tryCreateLayer(): void {
     if (!this.startPoint || !this.endPoint) return;
 
@@ -95,14 +83,7 @@ export class ShapeTool extends ToolHandler {
         this.endPoint = Point.fromEvent(event);
         this.renderPreview();
 
-        this.shapeAdjuster = new ShapeAdjuster(
-          this.width,
-          this.height,
-          this.layerFacade.ctx.canvas,
-          this.handleShapeAdjustment.bind(this),
-          () => this.resetState(),
-          this.MINIMAL_SIZE
-        );
+        this.shapeAdjuster = this.createShapeAdjuster();
 
         const [startPoint, endPoint] = this.getAdjustedStartAndEndPoints();
         this.startPoint = startPoint;
@@ -136,12 +117,12 @@ export class ShapeTool extends ToolHandler {
     });
   }
 
-  private resetState(): void {
+  protected onComplete(): void {
     if (!this.isWorking) return;
     this.tryCreateLayer();
     this.isWorking = false;
-    this.startPoint = null;
-    this.endPoint = null;
+    this.startPoint = undefined;
+    this.endPoint = undefined;
     this.rotateAngleInRadians = undefined;
     this.ctx.resetTransform();
   }
@@ -185,14 +166,6 @@ export class ShapeTool extends ToolHandler {
       fill && ctx.fill(path);
       stroke && ctx.stroke(path);
     }
-  }
-
-  private handleShapeAdjustment(origin: Point, width: number, height: number, angle: number): void {
-    this.startPoint = origin;
-    this.endPoint = new Point(origin.x + width, origin.y + height);
-    this.rotateAngleInRadians = angle;
-    this.ctx.rotateCanvas(Point.midPoint(this.startPoint, this.endPoint), angle);
-    this.renderPreview();
   }
 
   private getAdjustedStartAndEndPoints(): [Point, Point] {

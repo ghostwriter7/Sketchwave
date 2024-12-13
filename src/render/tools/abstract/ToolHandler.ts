@@ -84,7 +84,7 @@ export abstract class ToolHandler {
    */
   public async onInit(): Promise<void> {
     this.logger.log('Initializing an instance.');
-    this.initializeListeners();
+    this.initializeListeners?.();
     this.canvas.style.cursor = await this.createCursor();
   }
 
@@ -112,7 +112,7 @@ export abstract class ToolHandler {
    * Called during the onInit hook.
    * @protected
    */
-  protected abstract initializeListeners(): void;
+  protected initializeListeners(): void {};
 
   protected onClick(handler: EventHandler): void {
     this.canvas.addEventListener('click', handler, this.eventListenerOptions);
