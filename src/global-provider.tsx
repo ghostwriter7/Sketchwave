@@ -1,4 +1,3 @@
-import { createContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import type { RGB, ShapeType, ToolType } from './types/core.type.ts';
 import { type LayerFacade } from './render/LayerFacade.ts';
@@ -49,8 +48,6 @@ interface GlobalContextActions {
   state: GlobalContextState;
   updateState: (state: Partial<GlobalContextState>) => void;
 }
-
-const GlobalContext = createContext<GlobalContextActions>();
 
 const [state, setState] = createStore<GlobalContextState>({
   alpha: 1,
