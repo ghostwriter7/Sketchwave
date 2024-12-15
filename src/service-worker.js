@@ -1,6 +1,7 @@
 const randomIdentifier = Math.random().toFixed(3);
 
 const CACHABLE_RESOURCES = [
+  '/',
   './index.html',
   './index.js',
   './styles.css',
@@ -53,6 +54,8 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', async (event) => {
   const cacheKeys = await caches.keys();
   const cachesToBeDeleted = cacheKeys.filter((cacheKey) => cacheKey !== randomIdentifier);
+
+  if (cachesToBeDeleted.length === 0) return;
 
   console.log(`Purging caches: ${cachesToBeDeleted.join(', ')}`);
 
