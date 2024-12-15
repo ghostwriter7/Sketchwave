@@ -1,12 +1,13 @@
 const randomIdentifier = Math.random().toFixed(3);
 
-const externalStyleResource = 'https://fonts.googleapis.com/css2';
+const externalStyleResource = ['https://fonts.googleapis.com/css2', 'https://fonts.gstatic.com'];
 
 const cachableResources = [
-  'https://sketchwave.vercel.app/',
-  'index.html',
+  '/',
+  '/index.html',
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined',
-  'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500'
+  'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500',
+  '/vite.svg'
 ];
 
 const addResourcesToCache = async (resources) => {
@@ -21,8 +22,10 @@ const putInCache = async (request, response) => {
 }
 
 const resolveRequestFromCacheFirst = async (request) => {
-  const cachableResource = cachableResources.some((resource) => request.url === resource)
-    || externalStyleResource.includes(request.url);
+  const path = request.url.replace(location.origin, '');
+
+  const cachableResource = cachableResources.some((resource) => path === resource)
+    || externalStyleResource.some((resource) => path.startsWith(resource));
 
   if (cachableResource) {
     const responseFromCache = await caches.match(request);
@@ -50,8 +53,8 @@ const updateCachableResources = async () => {
   const response = await fetch('./manifest.json');
   const manifest = await response.json();
   const indexEntry = manifest['index.html'];
-  const javascriptFile = indexEntry.file;
-  const [cssFile] = indexEntry.css;
+  const javascriptFile = `/${indexEntry.file}`;
+  const cssFile = `/${indexEntry.css[0]}`;
 
   console.log(`Updating cachable resources with entries: ${javascriptFile}, ${cssFile}`);
 

@@ -22,7 +22,7 @@ export default defineConfig({
       enforce: 'post',
       writeBundle() {
         buildSync({
-          minify: true,
+          minify: false,
           bundle: true,
           entryPoints: [path.join(process.cwd(), 'src/service-worker.js')],
           outfile: path.join(process.cwd(), 'dist', 'service-worker.js')
