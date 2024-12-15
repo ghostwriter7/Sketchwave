@@ -46,7 +46,7 @@ const resolveRequestFromCacheFirst = async (request) => {
   }
 };
 
-self.addEventListener('install', async (event) => {
+const updateCachableResources = async () => {
   const response = await fetch('./manifest.json');
   const manifest = await response.json();
   const indexEntry = manifest['index.html'];
@@ -56,8 +56,13 @@ self.addEventListener('install', async (event) => {
   console.log(`Updating cachable resources with entries: ${javascriptFile}, ${cssFile}`);
 
   cachableResources.push(javascriptFile, cssFile);
+};
 
-  await event.waitUntil(addResourcesToCache(cachableResources));
+self.addEventListener('install',  (event) => {
+  event.waitUntil((async () => {
+    await updateCachableResources();
+    return addResourcesToCache(cachableResources);
+  })());
 });
 
 self.addEventListener('activate', async (event) => {
