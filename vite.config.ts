@@ -5,6 +5,20 @@ import path from 'path';
 import fs from 'fs';
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: 'index.js',
+        chunkFileNames: 'index.js',
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.originalFileNames.some((name) => name.endsWith('.css'))) {
+            return 'styles.css';
+          }
+          return '[name].[ext]';
+        },
+      }
+    }
+  },
   plugins: [
     solidPlugin(),
     {

@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "@types/serviceworker": "^0.0.107",
     "typescript": "~5.7.2",
     "vite": "^5.4.11"
   },
