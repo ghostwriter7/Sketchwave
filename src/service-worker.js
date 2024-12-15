@@ -4,7 +4,7 @@ const externalStyleResource = 'https://fonts.googleapis.com/css2';
 
 const cachableResources = [
   '/',
-  './index.html',
+  'index.html',
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined',
   'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500'
 ];
@@ -57,7 +57,7 @@ self.addEventListener('install', async (event) => {
 
   cachableResources.push(javascriptFile, cssFile);
 
-  event.waitUntil(addResourcesToCache(cachableResources));
+  await event.waitUntil(addResourcesToCache(cachableResources));
 });
 
 self.addEventListener('activate', async (event) => {
