@@ -1,5 +1,7 @@
 const randomIdentifier = Math.random().toFixed(3);
 
+const externalStyleResource = 'https://fonts.googleapis.com/css2';
+
 const cachableResources = [
   '/',
   './index.html',
@@ -19,7 +21,8 @@ const putInCache = async (request, response) => {
 }
 
 const resolveRequestFromCacheFirst = async (request) => {
-  const cachableResource = cachableResources.some((resource) => request.url.includes(resource));
+  const cachableResource = cachableResources.some((resource) => request.url === resource)
+    || externalStyleResource.includes(request.url);
 
   if (cachableResource) {
     const responseFromCache = await caches.match(request);
