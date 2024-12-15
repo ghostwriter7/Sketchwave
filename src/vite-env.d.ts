@@ -11,6 +11,11 @@ type Type = {
 }
 
 declare global {
+
+  interface WindowEventMap {
+    beforeinstallprompt: BeforeInstallPromptEvent;
+  }
+
   interface HTMLElementEventMap {
     scalechange: CustomEvent<{ scale: number }>;
   }
@@ -38,5 +43,10 @@ declare global {
   interface CanvasRenderingContext2D {
     getColorFromPixel(x: number, y: number): Color;
     rotateCanvas(origin: Point, radians: number): void;
+  }
+
+  interface BeforeInstallPromptEvent extends Event {
+    prompt: () => Promise<void>;
+    userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
   }
 }

@@ -7,11 +7,12 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "preview-build": "npm run build && npm run preview"
+    "build-and-preview": "npm run build && npm run preview"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "@types/serviceworker": "^0.0.107",
+    "nodemon": "^3.1.9",
     "typescript": "~5.7.2",
     "vite": "^5.4.11"
   },

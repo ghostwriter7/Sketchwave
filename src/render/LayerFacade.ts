@@ -2,6 +2,7 @@ import type { Layer } from '../types/core.type.ts';
 import { Logger } from '../utils/Logger.ts';
 import type { GlobalContextState } from '../global-provider.tsx';
 import { type Accessor, createSignal, type Setter } from 'solid-js';
+import { ThemeHelper } from '../utils/ThemeHelper.ts';
 
 export class LayerFacade {
   public readonly canUndo: Accessor<boolean>;
@@ -34,7 +35,7 @@ export class LayerFacade {
       order: this.nextLayerIndex,
       tool: LayerFacade.name,
       draw: (ctx: CanvasRenderingContext2D) => {
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = ThemeHelper.getColor('gray');
         ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
       }
     });

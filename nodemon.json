@@ -1,0 +1,7 @@
+{
+  "watch": ["src", "public"],
+  "ext": "js,ts,tsx,json,css,html",
+  "ignore": ["node_modules"],
+  "exec": "npm run build-and-preview",
+  "cwd": "."
+}

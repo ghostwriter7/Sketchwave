@@ -7,7 +7,8 @@ const cachableResources = [
   '/index.html',
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined',
   'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500',
-  '/vite.svg'
+  '/icons/icon.png',
+  '/manifest.json'
 ];
 
 const addResourcesToCache = async (resources) => {

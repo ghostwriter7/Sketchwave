@@ -14,6 +14,7 @@ import { MenuGroup } from './menu-group/menu-group.tsx';
 import { Icon } from '../icon/icon.tsx';
 import { PickColorButton } from '../pick-color-button/pick-color-button.tsx';
 import { ColorShortcuts } from '../color-shortcuts/color-shortcuts.tsx';
+import { InstallButton } from '../install-button/install-button.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -68,6 +69,7 @@ const Menu = () => {
     </MenuGroup>
     <span class="divider"></span>
     <FullScreenButton/>
+    <InstallButton />
   </nav>
 }
 
