@@ -3,7 +3,7 @@ import { useGlobalContext } from '../../global-provider.tsx';
 
 export const ZoomInOut = () => {
   const { state, setScale } = useGlobalContext();
-  let ref: number;
+  let ref: NodeJS.Timeout;
 
   const handleInput = (event: Event) => {
     event.stopPropagation();
