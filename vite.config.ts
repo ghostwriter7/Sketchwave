@@ -5,7 +5,7 @@ import path from 'path';
 import fs from 'fs';
 
 export default defineConfig({
-  build: { manifest: 'manifest.json' },
+  build: { manifest: 'vite-manifest.json' },
   plugins: [
     solidPlugin(),
     {

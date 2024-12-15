@@ -50,7 +50,7 @@ const resolveRequestFromCacheFirst = async (request) => {
 };
 
 const updateCachableResources = async () => {
-  const response = await fetch('./manifest.json');
+  const response = await fetch('./vite-manifest.json');
   const manifest = await response.json();
   const indexEntry = manifest['index.html'];
   const javascriptFile = `/${indexEntry.file}`;

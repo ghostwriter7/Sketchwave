@@ -1,0 +1,38 @@
+{
+  "background_color": "#83FCFC",
+  "description": "Use your creativity to create art through tech.",
+  "display": "standalone",
+  "file_handlers": [
+    {
+      "action": "/open-image",
+      "accept": {
+        "image/png": [
+          ".png"
+        ],
+        "image/jpeg": [
+          ".jpeg"
+        ]
+      }
+    }
+  ],
+  "icons": [
+    {
+      "src": "icons/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "name": "Sketchwave",
+  "orientation": "landscape",
+  "screenshots": [
+    {
+      "src": "screenshots/desktop.png",
+      "sizes": "1080x510",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "short_name": "SketchW",
+  "start_url": "/",
+  "theme_color": "#83FCFC"
+}
