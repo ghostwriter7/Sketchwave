@@ -11,7 +11,8 @@ export default defineConfig({
         entryFileNames: 'index.js',
         chunkFileNames: 'index.js',
         assetFileNames: (assetInfo) => {
-          if (assetInfo.originalFileNames.some((name) => name.endsWith('.css'))) {
+          const name = assetInfo.names?.[0];
+          if (name?.endsWith('.css')) {
             return 'styles.css';
           }
           return '[name].[ext]';
