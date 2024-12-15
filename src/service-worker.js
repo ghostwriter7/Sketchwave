@@ -3,7 +3,7 @@ const randomIdentifier = Math.random().toFixed(3);
 const externalStyleResource = 'https://fonts.googleapis.com/css2';
 
 const cachableResources = [
-  '/',
+  'https://sketchwave.vercel.app/',
   'index.html',
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined',
   'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500'
