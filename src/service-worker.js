@@ -1,10 +1,8 @@
 const randomIdentifier = Math.random().toFixed(3);
 
-const CACHABLE_RESOURCES = [
+const cachableResources = [
   '/',
   './index.html',
-  './index.js',
-  './styles.css',
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined',
   'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500'
 ];
@@ -21,7 +19,7 @@ const putInCache = async (request, response) => {
 }
 
 const resolveRequestFromCacheFirst = async (request) => {
-  const cachableResource = CACHABLE_RESOURCES.some((resource) => request.url.includes(resource));
+  const cachableResource = cachableResources.some((resource) => request.url.includes(resource));
 
   if (cachableResource) {
     const responseFromCache = await caches.match(request);
@@ -45,10 +43,18 @@ const resolveRequestFromCacheFirst = async (request) => {
   }
 };
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    addResourcesToCache(CACHABLE_RESOURCES)
-  );
+self.addEventListener('install', async (event) => {
+  const response = await fetch('./manifest.json');
+  const manifest = await response.json();
+  const indexEntry = manifest['index.html'];
+  const javascriptFile = indexEntry.file;
+  const [cssFile] = indexEntry.css;
+
+  console.log(`Updating cachable resources with entries: ${javascriptFile}, ${cssFile}`);
+
+  cachableResources.push(javascriptFile, cssFile);
+
+  event.waitUntil(addResourcesToCache(cachableResources));
 });
 
 self.addEventListener('activate', async (event) => {

@@ -5,21 +5,7 @@ import path from 'path';
 import fs from 'fs';
 
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      output: {
-        entryFileNames: 'index.js',
-        chunkFileNames: 'index.js',
-        assetFileNames: (assetInfo) => {
-          const name = assetInfo.names?.[0];
-          if (name?.endsWith('.css')) {
-            return 'styles.css';
-          }
-          return '[name].[ext]';
-        },
-      }
-    }
-  },
+  build: { manifest: 'manifest.json' },
   plugins: [
     solidPlugin(),
     {
