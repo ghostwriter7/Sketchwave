@@ -1,5 +1,13 @@
 const randomIdentifier = Math.random().toFixed(3);
 
+const CACHABLE_RESOURCES = [
+  './index.html',
+  './index.js',
+  './styles.css',
+  'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined',
+  'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500'
+];
+
 const addResourcesToCache = async (resources) => {
   const cache = await caches.open(randomIdentifier);
   await cache.addAll(resources);
@@ -7,19 +15,26 @@ const addResourcesToCache = async (resources) => {
 
 const putInCache = async (request, response) => {
   const cache = await caches.open(randomIdentifier);
+  console.log(`Caching ${request.url}`);
   await cache.put(request, response);
 }
 
 const resolveRequestFromCacheFirst = async (request) => {
-  const responseFromCache = await caches.match(request);
+  const cachableResource = CACHABLE_RESOURCES.some((resource) => request.url.includes(resource));
 
-  if (responseFromCache) {
-    return responseFromCache;
+  if (cachableResource) {
+    const responseFromCache = await caches.match(request);
+
+    if (responseFromCache) {
+      console.log(`Serving ${request.url} from cache`);
+      return responseFromCache;
+    }
   }
 
   try {
+    console.log(`Fetching ${request.url} from network`);
     const responseFromNetwork = await fetch(request.clone());
-    putInCache(request, responseFromNetwork.clone());
+    cachableResource && putInCache(request, responseFromNetwork.clone());
     return responseFromNetwork;
   } catch (error) {
     return new Response('Network error happened', {
@@ -31,21 +46,17 @@ const resolveRequestFromCacheFirst = async (request) => {
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    addResourcesToCache([
-      './index.html',
-      './index.js',
-      './styles.css',
-      'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined',
-      'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500'
-    ])
+    addResourcesToCache(CACHABLE_RESOURCES)
   );
 });
 
 self.addEventListener('activate', async (event) => {
   const cacheKeys = await caches.keys();
-  Promise.all(
-    cacheKeys.filter((cacheKey) => cacheKey !== randomIdentifier)
-      .map((cacheKey) => caches.delete(cacheKey)));
+  const cachesToBeDeleted = cacheKeys.filter((cacheKey) => cacheKey !== randomIdentifier);
+
+  console.log(`Purging caches: ${cachesToBeDeleted.join(', ')}`);
+
+  Promise.all(cachesToBeDeleted.map((cacheKey) => caches.delete(cacheKey)));
 });
 
 self.addEventListener('fetch', (event) => {
