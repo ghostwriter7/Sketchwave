@@ -6,7 +6,6 @@ import type { ToolHandler } from '../../render/tools/abstract/ToolHandler.ts';
 import { ToolHandlerFactory } from '../../render/tools/ToolHandlerFactory.ts';
 import './canvas.css';
 import { Logger } from '../../utils/Logger.ts';
-import { Resizer } from '../resizer/resizer.tsx';
 import { ScaleChangeEvent } from '../../types/events.ts';
 
 const Canvas = () => {
@@ -15,9 +14,7 @@ const Canvas = () => {
   const canvasRef = <canvas
     class="canvas"
     height={state.height}
-    style={{
-      transform: `scale(${state.scale})`,
-    }}
+    style={{ transform: `scale(${state.scale})`}}
     width={state.width}
     onMouseLeave={() => setMousePos(null, null)}
     onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY)}>
@@ -84,7 +81,6 @@ const Canvas = () => {
   }, -1);
 
   return <>
-    <Resizer/>
     {canvasRef}
   </>
 }

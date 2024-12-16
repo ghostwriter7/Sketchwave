@@ -1,6 +1,7 @@
 .shape-picker {
   display: flex;
   gap: var(--space-md);
+  min-width: 220px;
 
   .shapes {
     align-items: center;

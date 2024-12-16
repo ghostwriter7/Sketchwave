@@ -40,10 +40,16 @@ const Menu = () => {
     }
   };
 
-  return <nav class="menu" onClick={handleClick}>
-    <SaveButton/>
-    <OpenFileButton/>
-    <UndoRedoButton/>
+  return <nav class="menu scroller" onClick={handleClick}>
+    <MenuGroup label="File">
+      <SaveButton/>
+      <OpenFileButton/>
+      <UndoRedoButton/>
+    </MenuGroup>
+    <span class="divider"></span>
+    <MenuGroup label="View">
+      <FullScreenButton/>
+    </MenuGroup>
     <span class="divider"></span>
     <MenuGroup label="Tools">
       <For each={buttons}>
@@ -68,8 +74,7 @@ const Menu = () => {
       <ColorShortcuts/>
     </MenuGroup>
     <span class="divider"></span>
-    <FullScreenButton/>
-    <InstallButton />
+    <InstallButton/>
   </nav>
 }
 

@@ -1,49 +1,64 @@
 import { LineThicknessPicker } from '../tools/line-thickness-picker/line-thickness-picker.tsx';
 import Canvas from '../canvas/canvas.tsx';
-import './main-view.css';
+import styles from './main-view.module.css';
 import { useGlobalContext } from '../../global-provider.tsx';
-import { createEffect } from 'solid-js';
+import { createEffect, onMount } from 'solid-js';
+import { Resizer } from '../resizer/resizer.tsx';
 
 export const MainView = () => {
-  const { state } = useGlobalContext();
+  const { state, setResizableDimensions } = useGlobalContext();
   let wrapperRef!: HTMLDivElement;
-  let mainRef!: HTMLElement;
+  let scrollerRef!: HTMLDivElement;
 
-
-  const handleResize = () => {
+  const updateCanvasWrapperDimensions = () => {
     const canvas = state.ctx?.canvas;
 
     if (canvas) {
       const { width: canvasWidth, height: canvasHeight } = canvas.getBoundingClientRect();
-      const { width: mainWidth, height: mainHeight } = wrapperRef.getBoundingClientRect();
 
-      const showHorizontalScrollbar = canvasWidth > mainWidth;
-      const showVerticalScrollbar = canvasHeight > mainHeight;
+      wrapperRef.style.width = `${canvasWidth}px`;
+      wrapperRef.style.height = `${canvasHeight}px`;
 
-      wrapperRef.style.width = showHorizontalScrollbar ? `${canvasWidth}px` : '100%';
-      wrapperRef.style.height = showVerticalScrollbar ? `${canvasHeight}px` : '100%';
+      const { width, height } = scrollerRef.getBoundingClientRect();
+      const disableVerticalScroll = canvasWidth < width;
+      const disableHorizontalScroll = canvasHeight < height;
 
-      mainRef.style.overflowX = showHorizontalScrollbar ? 'scroll' : 'hidden';
-      mainRef.style.overflowY = showVerticalScrollbar ? 'scroll' : 'hidden';
+      scrollerRef.style.overflowX = disableHorizontalScroll ? 'hidden' : 'auto';
+      scrollerRef.style.overflowY = disableVerticalScroll ? 'hidden' : 'auto';
 
-      if (!showVerticalScrollbar && !showVerticalScrollbar) {
-        mainRef.scrollTop = 0;
-      }
+      if (disableHorizontalScroll) scrollerRef.scrollLeft = 0;
+      if (disableVerticalScroll) scrollerRef.scrollTop = 0;
     }
   }
 
-  addEventListener('resize', handleResize);
-
   createEffect(() => {
     state.scale;
-    handleResize();
+    state.width;
+    state.height;
+    updateCanvasWrapperDimensions();
   });
 
+  const updateResizableDimensions = () => {
+    const { width, height } = scrollerRef.getBoundingClientRect();
+    const padding = 16;
+    setResizableDimensions(width - padding, height - padding);
+  }
 
-  return <main class="scroller" ref={mainRef!}>
+  onMount(() => {
+    new ResizeObserver(updateResizableDimensions).observe(scrollerRef);
+    addEventListener('resize', () => {
+      updateResizableDimensions();
+      updateCanvasWrapperDimensions();
+    });
+  });
+
+  return <main class={styles['main-view']}>
     <LineThicknessPicker/>
-    <div class="canvas-wrapper" ref={wrapperRef!}>
-      <Canvas/>
+    <div class={`${styles['scroller']} scroller`} ref={scrollerRef!}>
+      <Resizer/>
+      <div class={styles['canvas-wrapper']} ref={wrapperRef!}>
+        <Canvas/>
+      </div>
     </div>
   </main>
 }

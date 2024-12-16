@@ -7,14 +7,7 @@
   flex-direction: column;
   gap: var(--space-sm);
   height: 50vh;
-  left: var(--space-md);
   padding: var(--space-sm);
-  padding-bottom: calc(28px + var(--space-sm)) ;
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  transform-origin: center;
-  z-index: 5;
   width: 30px;
 
   input {
@@ -29,21 +22,19 @@
   .current-width {
     background: var(--bg-active);
     border-radius: var(--radius);
-    bottom: var(--space-sm);
     color: var(--clr-primary);
     font-size: 0.75em;
     outline: 1px solid var(--clr-primary);
     padding: var(--space-sm);
-    position: fixed;
     width: 40px;
     text-align: center;
   }
 
   .preview-canvas {
     border-radius: var(--radius);
-    left: 40px;
+    left: 50px;
     position: fixed;
     top: 50%;
-    transform: translateY(-50%);
+    z-index: 1000;
   }
 }

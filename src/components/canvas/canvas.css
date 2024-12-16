@@ -2,6 +2,7 @@
   anchor-name: --mainCanvas;
   position: relative;
   z-index: 1;
+  transform-origin: left top;
 }
 
 .shape-resizer {

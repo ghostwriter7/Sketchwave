@@ -1,0 +1,26 @@
+.main-view {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr;
+  background-color: var(--bg-primary);
+  flex: 1;
+  gap: var(--space-md);
+  overflow: hidden;
+  padding: var(--space-md);
+  place-items: center;
+  position: relative;
+  width: 100vw;
+}
+
+.scroller {
+  place-content: center;
+  height: 100%;
+  overflow: auto;
+  padding: var(--space-md);
+  position: relative;
+  width: 100%;
+}
+
+.canvas-wrapper {
+  margin-inline: auto;
+}

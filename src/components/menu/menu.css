@@ -1,11 +1,11 @@
 .menu {
-  align-items: center;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--clr-accent);
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: var(--space-md);
-  height: 111px;
+  max-height: 150px;
+  overflow: auto hidden;
   padding: var(--space-sm);
 
   .divider {

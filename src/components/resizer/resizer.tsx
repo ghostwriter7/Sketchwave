@@ -9,7 +9,12 @@ import { RESIZE_CURSORS } from '../../types/cursors.ts';
 export const Resizer = () => {
   const { state, setDimensions } = useGlobalContext();
 
-  const canvasRef = <canvas class="resizer" width={innerWidth} height={innerHeight}/> as HTMLCanvasElement;
+  const canvasRef = <canvas
+    class="resizer"
+    width={state.resizableDimensions.width}
+    height={state.resizableDimensions.height}
+  /> as HTMLCanvasElement;
+
   const ctx = canvasRef.getContext('2d')!;
 
   let indicators: Point[];
@@ -65,17 +70,20 @@ export const Resizer = () => {
   const getOriginXAndY = () => {
     const { width, height } = getActualCanvasDimensions();
     return {
-      originX: canvasRef.width / 2 - width / 2,
-      originY: canvasRef.height / 2 - height / 2
+      originX: state.resizableDimensions.width / 2 - width / 2,
+      originY: state.resizableDimensions.height / 2 - height / 2
     };
   }
 
   createEffect(() => {
-    state.scale; state.width; state.height;
+    state.scale;
+    state.width;
+    state.height;
+
     const { width, height } = getActualCanvasDimensions();
     const { originX, originY } = getOriginXAndY();
 
-    ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+    ctx.clearRect(0, 0, state.resizableDimensions.width, state.resizableDimensions.height);
     renderIndicators(originX, originY, width, height);
   });
 

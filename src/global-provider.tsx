@@ -22,6 +22,10 @@ export type GlobalContextState = {
   layerFacade: LayerFacade | null;
   scale: number;
   size: number;
+  resizableDimensions: {
+    width: number;
+    height: number;
+  };
   width: number;
   toolProperties?: ToolProperties;
 } & Partial<Pick<CanvasRenderingContext2D, 'lineCap' | 'lineJoin'>>
@@ -44,6 +48,7 @@ interface GlobalContextActions {
   setMousePos<T extends number | null>(x: T, y: T): void;
 
   setScale(scale: number): void;
+  setResizableDimensions(width: number, height: number): void;
 
   state: GlobalContextState;
   updateState: (state: Partial<GlobalContextState>) => void;
@@ -78,7 +83,6 @@ const [state, setState] = createStore<GlobalContextState>({
     new Color(127, 0, 255),
     new Color(255, 0, 255),
     new Color(255, 0, 127),
-    new Color(128, 128, 128),
     ...new Array(5).fill(0).map(() => new Color(128, 128, 128))
   ],
   ctx: null,
@@ -88,6 +92,10 @@ const [state, setState] = createStore<GlobalContextState>({
   layerFacade: null,
   scale: 1,
   size: 3,
+  resizableDimensions: {
+    height: 0,
+    width: 0,
+  },
   width: innerWidth * 0.8
 });
 
@@ -102,6 +110,7 @@ const facade: GlobalContextActions = {
   setMousePos: <T extends number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y }),
   setDimensions: (width: number, height: number) => setState({ width, height }),
   setScale: (scale: number) => setState({ scale }),
+  setResizableDimensions: (width: number, height: number)=> setState({ resizableDimensions: { width, height } }),
   updateState: (state: Partial<GlobalContextState>) => setState({ ...state }),
 }
 
