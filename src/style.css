@@ -2,6 +2,7 @@
 @import './styles/interactive.css';
 @import './styles/range-picker.css';
 @import './styles/scrollbar.css';
+@import './styles/button.css';
 
 :root {
   --bright-navy: #1F2233;
@@ -46,20 +47,6 @@ body {
   backdrop-filter: blur(3px);
 }
 
-button, .button {
-  border: none;
-  border-radius: var(--radius);
-  padding: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  user-select: none;
-
-  &:has(.material-symbols-outlined) {
-    display: flex;
-  }
-}
-
 #root {
   display: flex;
   flex: 1;
@@ -85,4 +72,8 @@ li {
 
 .hidden {
   display: none;
+}
+
+.ml-auto {
+  margin-left: auto !important;
 }

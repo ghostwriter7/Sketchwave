@@ -13,13 +13,16 @@ export const InstallButton = () => {
     const event = deferredPromptEvent();
     if (event) {
       event.prompt();
-      // const userChoice = await event.userChoice;
-      // TODO to be continued...
+      const { outcome } = await event.userChoice;
+
+      if (outcome === 'dismissed') return;
+
+      addEventListener('appinstalled', () => setDeferredPromptEvent(null));
     }
   }
 
   return <Show when={deferredPromptEvent()}>
-    <button onClick={triggerEvent}>
+    <button class="ml-auto" onClick={triggerEvent}>
      <Icon icon="install_desktop" /> Install
     </button>
   </Show>

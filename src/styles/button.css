@@ -1,0 +1,15 @@
+button, .button {
+  border: none;
+  border-radius: var(--radius);
+  padding: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+
+  &:has(.material-symbols-outlined) {
+    align-items: center;
+    display: flex;
+    gap: var(--space-sm);
+  }
+}
