@@ -7,8 +7,9 @@
 
 .shape-resizer {
   position-anchor: --mainCanvas;
-  position: fixed;
+  position: absolute;
   top: anchor(top);
   left: anchor(left);
   z-index: 1000;
+  transform-origin: left top;
 }

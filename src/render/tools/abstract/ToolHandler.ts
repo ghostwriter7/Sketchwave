@@ -48,6 +48,10 @@ export abstract class ToolHandler {
     return this.toolState.size;
   }
 
+  protected get scale(): number {
+    return this.toolState.scale;
+  }
+
   protected get width(): number {
     return this.ctx.canvas.width;
   }

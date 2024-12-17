@@ -8,6 +8,7 @@ export type ToolState = Pick<CanvasRenderingContext2D, | 'lineCap' | 'lineJoin' 
   fillStyle: string;
   shadowColor: string;
   strokeStyle: string;
+  scale: number;
   size: number,
   color: RGBA;
   rgb: RGB;
@@ -25,6 +26,7 @@ export class ToolStateFactory {
       fillStyle: rgba,
       lineCap: state.lineCap || 'round',
       lineJoin: state.lineJoin || 'round',
+      scale: state.scale,
       size: state.size,
       strokeStyle: rgba,
       shadowBlur: 0,

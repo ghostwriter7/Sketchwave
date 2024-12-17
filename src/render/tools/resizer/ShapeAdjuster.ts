@@ -32,19 +32,21 @@ export class ShapeAdjuster {
   private readonly cursorActionMap = RESIZE_ACTIONS;
 
   constructor(
-    readonly width: number,
-    readonly height: number,
     private readonly rootCanvas: HTMLCanvasElement,
     private readonly onChange: (origin: Point, width: number, height: number, angle: number,) => void,
     private readonly onComplete: () => void,
     private readonly minimalSize: number,
+    private readonly scale: number,
+    width: number,
+    height: number,
   ) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = width;
     this.canvas.height = height;
+    this.canvas.style.transform = `scale(${this.scale})`;
     this.ctx = this.canvas.getContext('2d')!;
     this.canvas.classList.add('shape-resizer');
-    document.body.appendChild(this.canvas);
+    this.rootCanvas.parentNode!.appendChild(this.canvas);
   }
 
   public destroy(): void {
@@ -142,10 +144,9 @@ export class ShapeAdjuster {
     this.canvas.addEventListener('mouseup', () => this.activeAction = undefined, options)
     this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this), options);
 
-    this.canvas.style.transform = this.rootCanvas.style.transform;
     this.rootCanvas.addEventListener(ScaleChangeEvent.NAME, (event: ScaleChangeEvent) =>
-      this.canvas.style.transform = `scale(${event.detail.scale})`
-    , options);
+        this.canvas.style.transform = `scale(${event.detail.scale})`
+      , options);
   }
 
   private handleClick(event: MouseEvent): void {
@@ -159,7 +160,7 @@ export class ShapeAdjuster {
   }
 
   private handleMouseMove(event: MouseEvent): void {
-    const point = Point.fromEvent(event)
+    const point = Point.fromEvent(event);
 
     if (event.buttons == 1 && this.activeAction) {
       this.performAction(point);

@@ -17,12 +17,13 @@ export abstract class AdjustableToolHandler extends ToolHandler {
 
   protected createShapeAdjuster(): ShapeAdjuster {
     return new ShapeAdjuster(
-      this.width,
-      this.height,
       this.layerFacade.ctx.canvas,
       this.handleShapeAdjustment.bind(this),
       this.onComplete.bind(this),
-      this.MINIMAL_SIZE
+      this.MINIMAL_SIZE,
+      this.scale,
+      this.width,
+      this.height,
     );
   }
 
