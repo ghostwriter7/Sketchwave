@@ -8,7 +8,7 @@ export const ColorShortcuts = () => {
 
   return <div class={styles['color-shortcuts']}>
     <For each={state.colorShortcuts}>
-      {(color) => <button class={styles.color} style={{ background: color.toString() }} onClick={(event: MouseEvent) =>{
+      {(color) => <button class={styles.color} style={{ background: color.toString() }} onClick={() =>{
         setColor(color);
         dispatchEvent(new ColorPickEvent(color));
       }}></button>}
