@@ -20,8 +20,8 @@ export const MainView = () => {
       wrapperRef.style.height = `${canvasHeight}px`;
 
       const { width, height } = scrollerRef.getBoundingClientRect();
-      const disableVerticalScroll = canvasWidth < width;
-      const disableHorizontalScroll = canvasHeight < height;
+      const disableHorizontalScroll = canvasWidth < width;
+      const disableVerticalScroll = canvasHeight < height;
 
       scrollerRef.style.overflowX = disableHorizontalScroll ? 'hidden' : 'auto';
       scrollerRef.style.overflowY = disableVerticalScroll ? 'hidden' : 'auto';
