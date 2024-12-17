@@ -2,7 +2,6 @@ import { Point } from '../../../types/Point.ts';
 import { ThemeHelper } from '../../../utils/ThemeHelper.ts';
 import { toRadians } from '../../../math/to-radians.ts';
 import { RESIZE_ACTIONS, RESIZE_CURSORS } from '../../../types/cursors.ts';
-import { ScaleChangeEvent } from '../../../types/events.ts';
 
 type Action = 'move' | 'resize' | 'rotate';
 
@@ -143,10 +142,6 @@ export class ShapeAdjuster {
     this.canvas.addEventListener('mousedown', this.handleClick.bind(this), options)
     this.canvas.addEventListener('mouseup', () => this.activeAction = undefined, options)
     this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this), options);
-
-    this.rootCanvas.addEventListener(ScaleChangeEvent.NAME, (event: ScaleChangeEvent) =>
-        this.canvas.style.transform = `scale(${event.detail.scale})`
-      , options);
   }
 
   private handleClick(event: MouseEvent): void {

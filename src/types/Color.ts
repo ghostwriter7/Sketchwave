@@ -1,3 +1,4 @@
+
 export class Color {
   constructor(
     public readonly red: number,
@@ -5,6 +6,13 @@ export class Color {
     public readonly blue: number,
     public readonly alpha = 1
   ) {
+  }
+
+  public *[Symbol.iterator]() {
+    yield this.red;
+    yield this.green;
+    yield this.blue;
+    yield this.alpha;
   }
 
   public toString(): string {
