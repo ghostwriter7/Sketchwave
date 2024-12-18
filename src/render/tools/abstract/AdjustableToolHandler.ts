@@ -20,6 +20,7 @@ export abstract class AdjustableToolHandler extends ToolHandler {
       this.layerFacade.ctx.canvas,
       this.handleShapeAdjustment.bind(this),
       this.onComplete.bind(this),
+      this.onCancel.bind(this),
       this.MINIMAL_SIZE,
       this.scale,
       this.width,
@@ -36,4 +37,10 @@ export abstract class AdjustableToolHandler extends ToolHandler {
   }
 
   protected abstract onComplete(): void;
+
+  protected onCancel(): void {
+    this.startPoint = this.endPoint = undefined;
+    this.layerFacade.renderLayers();
+    this.deactivate();
+  }
 }

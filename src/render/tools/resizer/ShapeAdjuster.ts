@@ -34,6 +34,7 @@ export class ShapeAdjuster {
     private readonly rootCanvas: HTMLCanvasElement,
     private readonly onChange: (origin: Point, width: number, height: number, angle: number,) => void,
     private readonly onComplete: () => void,
+    private readonly onCancel: () => void,
     private readonly minimalSize: number,
     private readonly scale: number,
     width: number,
@@ -142,6 +143,19 @@ export class ShapeAdjuster {
     this.canvas.addEventListener('mousedown', this.handleClick.bind(this), options)
     this.canvas.addEventListener('mouseup', () => this.activeAction = undefined, options)
     this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this), options);
+    document.body.addEventListener('keydown', ({ code }: KeyboardEvent) => {
+      if (['Escape', 'Enter'].includes(code)) {
+        this.complete();
+      } else if (code === 'Delete') {
+        this.onCancel();
+        this.destroy();
+      }
+    }, options);
+  }
+
+  private complete(): void {
+    this.onComplete();
+    this.destroy();
   }
 
   private handleClick(event: MouseEvent): void {
@@ -149,8 +163,7 @@ export class ShapeAdjuster {
       this.activeAction = this.availableAction;
       this.previousActionPoint = Point.fromEvent(event);
     } else {
-      this.onComplete();
-      this.destroy();
+      this.complete();
     }
   }
 
