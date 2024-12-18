@@ -21,4 +21,6 @@ function initBuffers(gl: WebGLRenderingContext) {
   return { position: positionBuffer };
 }
 
+export type Buffers = ReturnType<typeof initBuffers>;
+
 export default initBuffers;

@@ -1,4 +1,6 @@
 import createShaderProgram from './shader.ts';
+import initBuffers from './buffer.ts';
+import drawScene from './draw-scene.ts';
 
 export const Playground = () => {
   const canvas = <canvas></canvas> as HTMLCanvasElement;
@@ -37,7 +39,22 @@ export const Playground = () => {
       modelViewMatrix: gl.getUniformLocation(program, 'uModelViewMatrix'),
       projectionMatrix: gl.getUniformLocation(program, 'uProjectionMatrix'),
     }
-  }
+  };
+
+  const buffers = initBuffers(gl);
+
+  drawScene(gl, programInfo, buffers);
 
   return canvas;
 }
+
+export type ProgramInfo = {
+  program: WebGLProgram;
+  attribLocations: {
+    vertexPosition: GLint;
+  };
+  uniformLocations: {
+    modelViewMatrix:  WebGLUniformLocation | null;
+    projectionMatrix:  WebGLUniformLocation | null;
+  };
+};
