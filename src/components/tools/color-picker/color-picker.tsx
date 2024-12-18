@@ -6,6 +6,7 @@ import { HueRange } from './hue-range/hue-range.tsx';
 import { SaturationBrightnessRange } from './saturation-brightness-range/saturation-brightness-range.tsx';
 import { AlphaRange } from './alpha-range/alpha-range.tsx';
 import { Color } from '../../../types/Color.ts';
+import { ColorShortcuts } from '../../color-shortcuts/color-shortcuts.tsx';
 
 export const ColorPicker = () => {
   const { state } = useGlobalContext();
@@ -37,6 +38,7 @@ export const ColorPicker = () => {
       onClick={toggleColorPicker}/>
     <Card ref={popoverRef!} title="Color picker" id="color-picker" popover="auto">
       <div class={styles['color-picker']}>
+        <ColorShortcuts class={styles['color-shortcuts']} />
         <div class={styles.preview} ref={previewRef!}></div>
         <SaturationBrightnessRange/>
         <HueRange/>
