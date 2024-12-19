@@ -15,6 +15,12 @@
   border: 1px solid white;
   border-radius: var(--radius);
   cursor: grab;
+  display: inline-block;
   position: absolute;
   z-index: 100;
+}
+
+.active {
+  outline: 2px solid var(--clr-primary);
+  outline-offset: 1px;
 }
