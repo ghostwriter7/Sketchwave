@@ -1,24 +1,28 @@
 import { createEffect, type VoidProps } from 'solid-js';
-import type { GradientDefinitions, GradientType } from './gradient-generator.tsx';
+import { type GradientType, useGradientContext } from './gradient-generator.tsx';
 
-export const GradientPreview = (props: VoidProps<{
-  gradientDefinitions: GradientDefinitions;
-  gradientType: GradientType;
-}>) => {
-  const canvas = <canvas width="500" height="300"></canvas> as HTMLCanvasElement;
+export const GradientPreview = (props: VoidProps<{ height?: number; width?: number }>) => {
+  const { state } = useGradientContext();
+
+  const canvas = <canvas
+    width={props.width || 500}
+    height={props.height || 300}></canvas> as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
 
   const createGradientFromType = (type: GradientType) => {
     switch (type) {
-      case 'linear': return ctx.createLinearGradient(0, 0, ctx.canvas.width, ctx.canvas.height);
-      case 'radial': return null // todo;
-      case 'conic': return ctx.createConicGradient(0, ctx.canvas.width / 2, ctx.canvas.height / 2);
+      case 'linear':
+        return ctx.createLinearGradient(0, 0, ctx.canvas.width, ctx.canvas.height);
+      case 'radial':
+        return null // todo;
+      case 'conic':
+        return ctx.createConicGradient(0, ctx.canvas.width / 2, ctx.canvas.height / 2);
     }
   }
 
   createEffect(() => {
-    const gradientDefinitions = props.gradientDefinitions;
-    const gradientType = props.gradientType;
+    const gradientDefinitions = state.gradientDefinitions;
+    const gradientType = state.gradientType;
 
     const gradient = createGradientFromType(gradientType)!;
 
