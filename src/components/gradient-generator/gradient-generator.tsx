@@ -1,6 +1,7 @@
 import { GradientPreview } from './gradient-preview.tsx';
 import { Color } from '../../types/Color.ts';
 import { createStore } from 'solid-js/store';
+import styles from './gradient-generator.module.css';
 import { createContext, type ParentProps, useContext } from 'solid-js';
 import { GradientInput } from './gradient-input.tsx';
 
@@ -19,7 +20,7 @@ export const GradientContext = createContext<{ state: GradientStore }>();
 export const useGradientContext = () => useContext(GradientContext)!;
 
 export const GradientGenerator = () => {
-  const [state, setState] = createStore<GradientStore>({
+  const [state, _setState] = createStore<GradientStore>({
     gradientDefinitions: [
       { color: Color.fromHsl(174, 100, 50), stop: 0 },
       { color: Color.fromHsl(280, 100, 50), stop: .5 },
@@ -32,7 +33,7 @@ export const GradientGenerator = () => {
   const Provider = (props: ParentProps) =>
     <GradientContext.Provider value={{ state }}>{props.children}</GradientContext.Provider>;
 
-  return <div>
+  return <div class={styles['gradient-generator']}>
     <Provider>
       <GradientPreview/>
       <GradientInput/>

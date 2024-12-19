@@ -12,7 +12,7 @@ export const GradientPreview = (props: VoidProps<{ height?: number; width?: numb
   const createGradientFromType = (type: GradientType) => {
     switch (type) {
       case 'linear':
-        return ctx.createLinearGradient(0, 0, ctx.canvas.width, ctx.canvas.height);
+        return ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
       case 'radial':
         return null // todo;
       case 'conic':

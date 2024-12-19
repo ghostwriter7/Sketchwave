@@ -1,0 +1,20 @@
+.gradient-generator {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  justify-content: center;
+  width: 500px;
+}
+
+.gradient-input {
+  position: relative;
+}
+
+.stop-indicator {
+  border: 1px solid white;
+  border-radius: var(--radius);
+  cursor: grab;
+  position: absolute;
+  z-index: 100;
+}
