@@ -1,5 +1,5 @@
 import { createStore } from 'solid-js/store';
-import type { RGB, ShapeType, ToolType } from './types/core.type.ts';
+import type { ShapeType, ToolType } from './types/core.type.ts';
 import { type LayerFacade } from './render/LayerFacade.ts';
 import { Color } from './types/Color.ts';
 
@@ -13,7 +13,7 @@ export interface ToolProperties {
 export type GlobalContextState = {
   activeTool?: ToolType;
   alpha: number;
-  color: RGB;
+  color: Color;
   colorShortcuts: Color[];
   ctx: CanvasRenderingContext2D | null;
   currentMouseX: number | null;
@@ -37,8 +37,6 @@ interface GlobalContextActions {
 
   setColor(color: Color): void;
 
-  setRGB(color: RGB): void;
-
   setCtx(ctx: CanvasRenderingContext2D): void;
 
   setDimensions(width: number, height: number): void;
@@ -56,7 +54,7 @@ interface GlobalContextActions {
 
 const [state, setState] = createStore<GlobalContextState>({
   alpha: 1,
-  color: [0, 0, 0],
+  color: new Color(0, 0, 0),
   colorShortcuts: [
     new Color(102, 0, 0),
     new Color(102, 51, 0),
@@ -103,8 +101,7 @@ const facade: GlobalContextActions = {
   state,
   setAlpha: (alpha: number) => setState('alpha', alpha),
   setActiveTool: (tool?: ToolType) => setState('activeTool', tool),
-  setColor: (color: Color) => setState({ color: [color.red, color.green, color.blue], alpha: color.alpha }),
-  setRGB: (color: RGB) => setState('color', color),
+  setColor: (color: Color) => setState({ color: new Color(color.red, color.green, color.blue, color.alpha), alpha: color.alpha }),
   setCtx: (ctx: CanvasRenderingContext2D) => setState('ctx', ctx),
   setLayerFacade: (layerFacade: LayerFacade) => setState('layerFacade', layerFacade),
   setMousePos: <T extends number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y }),

@@ -1,8 +1,7 @@
-import { onMount } from 'solid-js';
+import { onMount, type Setter, type VoidProps } from 'solid-js';
 import { CONFIG } from '../config.ts';
-import styles from '../color-picker.module.css';
+import styles from '../color-picker/color-picker.module.css';
 import { FULL_CIRCLE } from '../../../../constants.ts';
-import { setColorState } from '../color-store.ts';
 import { Color } from '../../../../types/Color.ts';
 import type { RGBA } from '../../../../types/core.type.ts';
 import { ColorPickEvent } from '../../../../types/events.ts';
@@ -10,7 +9,10 @@ import { ColorHelper } from '../../../../utils/ColorHelper.ts';
 
 const CENTER_Y = CONFIG.sliderHeight / 2;
 
-export const HueRange = () => {
+export const HueRange = (props: VoidProps<{
+  color: Color;
+  setHue: Setter<number>
+}>) => {
   let sliderRef!: HTMLCanvasElement;
   let sliderCtx!: CanvasRenderingContext2D;
 
@@ -32,7 +34,7 @@ export const HueRange = () => {
   const redrawPicker = (x: number, color: Color) => {
     sliderCtx.clearRect(0, 0, sliderRef.width, sliderRef.height);
     drawSlider(sliderCtx);
-    setColorState('hue', color.toHue());
+    props.setHue(color.toHue());
     drawSliderHandle(sliderCtx, x, color.withAlpha(1).toString());
   }
 

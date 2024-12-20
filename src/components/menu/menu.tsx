@@ -2,7 +2,7 @@ import { useGlobalContext } from '../../global-provider.tsx';
 import './menu.css';
 import type { ToolType } from '../../types/core.type.ts';
 import { Logger } from '../../utils/Logger.ts';
-import { ColorPicker } from '../tools/color-picker/color-picker.tsx';
+import { ColorPickerInput } from '../tools/color-picker/color-picker-input.tsx';
 import { For } from 'solid-js';
 import { SaveButton } from '../save-button/save-button.tsx';
 import { OpenFileButton } from '../open-file-button/open-file-button.tsx';
@@ -70,7 +70,7 @@ const Menu = () => {
     </MenuGroup>
     <span class="divider"></span>
     <MenuGroup label="Colors">
-      <ColorPicker/>
+      <ColorPickerInput/>
       <ColorShortcuts/>
     </MenuGroup>
     <span class="divider"></span>

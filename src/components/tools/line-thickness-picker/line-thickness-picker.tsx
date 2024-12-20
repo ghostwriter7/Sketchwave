@@ -3,7 +3,6 @@ import './line-thickness-picker.css';
 import { createEffect, createSignal, Show } from 'solid-js';
 import { ThemeHelper } from '../../../utils/ThemeHelper.ts';
 import { Icon } from '../../icon/icon.tsx';
-import { Color } from '../../../types/Color.ts';
 
 export const LineThicknessPicker = () => {
   const { state, updateState } = useGlobalContext();
@@ -30,7 +29,7 @@ export const LineThicknessPicker = () => {
     ctx.beginPath();
     ctx.fillStyle = ThemeHelper.getColor('bg-secondary');
     ctx.fillRect(2, 2, previewCanvas.width - 4, previewCanvas.height - 4);
-    ctx.fillStyle = new Color(...state.color, state.alpha).toString();
+    ctx.fillStyle = state.color.withAlpha(state.alpha).toString();
     ctx.arc(60, 60, width / 2, 0, 2 * Math.PI);
     ctx.fill();
   });

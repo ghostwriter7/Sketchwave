@@ -29,7 +29,7 @@ export class Color {
 
     const delta = max - min;
 
-    let hue = 0;
+    let hue: number;
 
     if (delta === 0) {
       hue = 0;  // Undefined hue (gray color)
@@ -95,5 +95,9 @@ export class Color {
 
   public withAlpha(alpha: number): Color {
     return new Color(this.red, this.green, this.blue, alpha);
+  }
+
+  public equals(color: Color): boolean {
+    return this.red == color.red && this.green == color.green && this.blue == color.blue && this.alpha == color.alpha;
   }
 }

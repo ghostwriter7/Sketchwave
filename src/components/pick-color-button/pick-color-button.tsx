@@ -4,6 +4,7 @@ import { createEffect } from 'solid-js';
 import styles from './pick-color-button.module.css';
 import { ThemeHelper } from '../../utils/ThemeHelper.ts';
 import { createStore } from 'solid-js/store';
+import { Color } from '../../types/Color.ts';
 
 type PickColorState = {
   previewRef?: HTMLCanvasElement;
@@ -11,7 +12,7 @@ type PickColorState = {
 }
 
 export const PickColorButton = () => {
-  const { state, setActiveTool, setRGB, setAlpha } = useGlobalContext();
+  const { state, setActiveTool, setColor, setAlpha } = useGlobalContext();
   const [localState, setLocalState] = createStore<PickColorState>({
     working: false,
   });
@@ -75,8 +76,9 @@ export const PickColorButton = () => {
 
     addEventListener('click', (event: MouseEvent) => {
         const { red, green, blue, alpha } = state.ctx!.getColorFromPixel(event.offsetX, event.offsetY)!;
-        setRGB([red, green, blue]);
-        setAlpha(alpha / 255);
+        const alphaNormalized = alpha / 255;
+        setColor(new Color(red, green, blue, alphaNormalized ));
+        setAlpha(alphaNormalized);
       }
     );
   }

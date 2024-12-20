@@ -1,12 +1,12 @@
-import styles from '../color-picker.module.css';
-import { createEffect } from 'solid-js';
+import styles from '../color-picker/color-picker.module.css';
+import { createEffect, type VoidProps } from 'solid-js';
 import { ThemeHelper } from '../../../../utils/ThemeHelper.ts';
-import { useGlobalContext } from '../../../../global-provider.tsx';
-import type { RGB } from '../../../../types/core.type.ts';
+import type { Color } from '../../../../types/Color.ts';
 
-export const AlphaRange = () => {
-  const { state, setAlpha } = useGlobalContext();
-
+export const AlphaRange = (props: VoidProps<{
+  alpha: number;
+  color: Color;
+  onChange: (alpha: number) => void }>) => {
   const pickAlpha = ({ offsetY }: MouseEvent) => {
     let alpha = offsetY / 255;
     if (alpha < 0.01) {
@@ -14,7 +14,7 @@ export const AlphaRange = () => {
     } else if (alpha > 1) {
       alpha = 1;
     }
-    setAlpha(alpha);
+    props.onChange(alpha);
   }
 
   const handleMove = (event: MouseEvent) => event.buttons == 1 && pickAlpha(event);
@@ -49,8 +49,8 @@ export const AlphaRange = () => {
     }
   }
 
-  const renderColorAlphaRange = (color: RGB) => {
-    const baseColor = `rgb(${color[0]}, ${color[1]}, ${color[2]}, `;
+  const renderColorAlphaRange = ([red, green, blue]: Color) => {
+    const baseColor = `rgb(${red}, ${green}, ${blue}, `;
     const gradient = ctx.createLinearGradient(margin, margin, margin, sliderHeight);
 
     for (let a = 1; a > 0; a -= .01) {
@@ -62,7 +62,7 @@ export const AlphaRange = () => {
   };
 
   const renderSelector = () => {
-    const alpha = state.alpha;
+    const alpha = props.alpha;
     const y = alpha * 255;
 
     ctx.beginPath();
@@ -81,7 +81,7 @@ export const AlphaRange = () => {
   };
 
   createEffect(() => {
-    const color = state.color;
+    const color = props.color;
     ctx.beginPath();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     renderChessboard();

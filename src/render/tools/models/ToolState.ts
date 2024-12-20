@@ -1,5 +1,5 @@
 import type { GlobalContextState, ToolProperties } from '../../../global-provider.tsx';
-import type { RGB, RGBA } from '../../../types/core.type.ts';
+import type { RGB } from '../../../types/core.type.ts';
 import { Color } from '../../../types/Color.ts';
 
 export type ToolState = Pick<CanvasRenderingContext2D, | 'lineCap' | 'lineJoin' | 'shadowBlur' | 'shadowColor'>
@@ -10,19 +10,19 @@ export type ToolState = Pick<CanvasRenderingContext2D, | 'lineCap' | 'lineJoin' 
   strokeStyle: string;
   scale: number;
   size: number,
-  color: RGBA;
+  color: Color;
   rgb: RGB;
   toolProperties?: ToolProperties
 };
 
 export class ToolStateFactory {
   public static fromState(state: GlobalContextState): ToolState {
-    const color = new Color(...state.color, state.alpha);
-    const rgba = color.toString();
+    const [red, green, blue] = state.color;
+    const rgba = state.color.toString();
 
     return {
       alpha: state.alpha,
-      color: [...state.color, state.alpha],
+      color: state.color.withAlpha(state.alpha),
       fillStyle: rgba,
       lineCap: state.lineCap || 'round',
       lineJoin: state.lineJoin || 'round',
@@ -30,8 +30,8 @@ export class ToolStateFactory {
       size: state.size,
       strokeStyle: rgba,
       shadowBlur: 0,
-      shadowColor: color.withAlpha(.9).toString(),
-      rgb: state.color,
+      shadowColor: state.color.withAlpha(.9).toString(),
+      rgb: [red, green, blue],
       toolProperties: state.toolProperties
     };
   }

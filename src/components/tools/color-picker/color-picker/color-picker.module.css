@@ -1,0 +1,34 @@
+.color-picker {
+  display: grid;
+  grid-template-columns: 300px 50px;
+  grid-template-rows: repeat(3, auto);
+  gap: var(--space-md);
+
+  .preview {
+    grid-column: 1/2;
+    border-radius: 5px;
+    width: 100%;
+    height: 25px;
+  }
+
+  .color {
+    cursor: pointer;
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .slider, .alpha {
+    cursor: grab;
+  }
+
+  .slider {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .alpha {
+    grid-column: 2;
+    grid-row: 2/3;
+  }
+
+}

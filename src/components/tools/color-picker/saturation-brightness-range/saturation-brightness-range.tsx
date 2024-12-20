@@ -1,15 +1,14 @@
 import { CONFIG } from '../config.ts';
-import styles from '../color-picker.module.css';
+import styles from '../color-picker/color-picker.module.css';
 import { Point } from '../../../../types/Point.ts';
-import { colorState } from '../color-store.ts';
-import { createEffect, onMount } from 'solid-js';
+import { type Accessor, createEffect, onMount, type VoidProps } from 'solid-js';
 import { FULL_CIRCLE } from '../../../../constants.ts';
-import { useGlobalContext } from '../../../../global-provider.tsx';
 import { Color } from '../../../../types/Color.ts';
+import type { RGB } from '../../../../types/core.type.ts';
 
-export const SaturationBrightnessRange = () => {
-  const { setRGB } = useGlobalContext();
-
+export const SaturationBrightnessRange = (props: VoidProps<{
+  hue: Accessor<number>;
+  onChange: (rgb: RGB) => void}>) => {
   let pickerRef!: HTMLCanvasElement;
   let pickerCtx: CanvasRenderingContext2D;
 
@@ -47,10 +46,10 @@ export const SaturationBrightnessRange = () => {
   const handleColorChange = (event: MouseEvent) => {
     const point = Point.fromEvent(event);
     pickerCtx.clearRect(0, 0, pickerCtx.canvas.width, pickerCtx.canvas.height);
-    drawPicker(pickerCtx, colorState.hue);
+    drawPicker(pickerCtx, props.hue());
     drawSelectorAt(pickerCtx, point);
     const { red, green, blue } = pickerCtx.getColorFromPixel(point.x, point.y);
-    setRGB([red, green, blue]);
+    props.onChange([red, green, blue]);
   }
 
   const handlePickerMove = (event: MouseEvent) => event.buttons == 1 && handleColorChange(event);
@@ -60,9 +59,7 @@ export const SaturationBrightnessRange = () => {
     drawPicker(pickerCtx);
   });
 
-  createEffect(() => {
-    drawPicker(pickerCtx, colorState.hue);
-  });
+  createEffect(() => drawPicker(pickerCtx, props.hue()));
 
   return <canvas
     class={styles.color}

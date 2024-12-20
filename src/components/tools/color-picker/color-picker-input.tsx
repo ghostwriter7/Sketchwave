@@ -1,24 +1,20 @@
-import styles from './color-picker.module.css';
+import styles from './color-picker-input.module.css';
 import { createEffect } from 'solid-js';
 import { useGlobalContext } from '../../../global-provider.tsx';
 import { Card } from '../../card/card.tsx';
-import { HueRange } from './hue-range/hue-range.tsx';
-import { SaturationBrightnessRange } from './saturation-brightness-range/saturation-brightness-range.tsx';
-import { AlphaRange } from './alpha-range/alpha-range.tsx';
 import { Color } from '../../../types/Color.ts';
 import { ColorShortcuts } from '../../color-shortcuts/color-shortcuts.tsx';
+import { ColorPicker } from './color-picker/color-picker.tsx';
 
-export const ColorPicker = () => {
-  const { state } = useGlobalContext();
+export const ColorPickerInput = () => {
+  const { state, setColor, setAlpha } = useGlobalContext();
 
   let popoverRef!: HTMLElement;
-  let previewRef!: HTMLDivElement;
   let triggerRef!: HTMLInputElement;
 
   createEffect(() => {
     const [red, green, blue] = state.color;
     const color = new Color(red, green, blue, state.alpha);
-    previewRef.style.backgroundColor = color.toString();
     triggerRef.value = color.toHex();
   });
 
@@ -39,10 +35,10 @@ export const ColorPicker = () => {
     <Card ref={popoverRef!} title="Color picker" id="color-picker" popover="auto">
       <div class={styles['color-picker']}>
         <ColorShortcuts class={styles['color-shortcuts']} />
-        <div class={styles.preview} ref={previewRef!}></div>
-        <SaturationBrightnessRange/>
-        <HueRange/>
-        <AlphaRange/>
+        <ColorPicker alpha={state.alpha} color={state.color} onChange={(color: Color) => {
+          setColor(color);
+          setAlpha(color.alpha);
+        }} />
       </div>
     </Card>
   </>

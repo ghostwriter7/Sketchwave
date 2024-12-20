@@ -1,37 +1,10 @@
 .color-picker {
   display: grid;
-  grid-template-columns: auto 300px 50px;
+  grid-template-columns: auto 350px;
   grid-template-rows: repeat(3, auto);
   gap: var(--space-md);
   width: fit-content;
   height: fit-content;
-
-  .preview {
-    grid-column: 2/3;
-    border-radius: 5px;
-    width: 100%;
-    height: 25px;
-  }
-
-  .color {
-    cursor: pointer;
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .slider, .alpha {
-    cursor: grab;
-  }
-
-  .slider {
-    grid-column: 2;
-    grid-row: 3;
-  }
-
-  .alpha {
-    grid-column: 3;
-    grid-row: 2/3;
-  }
 
   .color-shortcuts {
     grid-column: 1;
