@@ -97,7 +97,7 @@ export class Color {
     return new Color(this.red, this.green, this.blue, alpha);
   }
 
-  public equals(color: Color): boolean {
-    return this.red == color.red && this.green == color.green && this.blue == color.blue && this.alpha == color.alpha;
+  public equals(color: Color | null): boolean {
+    return !!color && this.red == color.red && this.green == color.green && this.blue == color.blue && this.alpha == color.alpha;
   }
 }

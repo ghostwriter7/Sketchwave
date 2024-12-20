@@ -15,10 +15,10 @@ declare global {
 
   interface WindowEventMap {
     beforeinstallprompt: BeforeInstallPromptEvent;
-    colorpick: ColorPickEvent;
   }
 
   interface HTMLElementEventMap {
+    colorpick: ColorPickEvent;
     scalechange: CustomEvent<{ scale: number }>;
   }
 

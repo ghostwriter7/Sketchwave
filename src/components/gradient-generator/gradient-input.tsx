@@ -28,7 +28,8 @@ export const GradientInput = () => {
     <div
       class={styles['gradient-input']}
       onClick={(event: MouseEvent) => {
-        const id = insertStop((event.clientX - startMargin) / width, new Color(255, 255, 255));
+        const color = new Color(255, 255, 255);
+        const id = insertStop((event.clientX - startMargin) / width, color);
         setActiveIndicatorId(id);
       }}
       onMouseMove={(event: MouseEvent) => {
@@ -66,7 +67,8 @@ export const GradientInput = () => {
       <ColorPicker
         alpha={1}
         color={(activeStop() as GradientDefinition).color}
-        onChange={(color: Color) => setStopColor(activeIndicatorId()!, color)}/>
+        onChange={(color: Color) => setStopColor(activeIndicatorId()!, color)}
+      />
     </Show>
   </>
 }

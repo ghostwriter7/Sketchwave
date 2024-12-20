@@ -4,11 +4,10 @@ import { Point } from '../../../../types/Point.ts';
 import { type Accessor, createEffect, onMount, type VoidProps } from 'solid-js';
 import { FULL_CIRCLE } from '../../../../constants.ts';
 import { Color } from '../../../../types/Color.ts';
-import type { RGB } from '../../../../types/core.type.ts';
 
 export const SaturationBrightnessRange = (props: VoidProps<{
   hue: Accessor<number>;
-  onChange: (rgb: RGB) => void}>) => {
+  onChange: (rgb: Color) => void}>) => {
   let pickerRef!: HTMLCanvasElement;
   let pickerCtx: CanvasRenderingContext2D;
 
@@ -49,7 +48,7 @@ export const SaturationBrightnessRange = (props: VoidProps<{
     drawPicker(pickerCtx, props.hue());
     drawSelectorAt(pickerCtx, point);
     const { red, green, blue } = pickerCtx.getColorFromPixel(point.x, point.y);
-    props.onChange([red, green, blue]);
+    props.onChange(new Color(red, green, blue));
   }
 
   const handlePickerMove = (event: MouseEvent) => event.buttons == 1 && handleColorChange(event);

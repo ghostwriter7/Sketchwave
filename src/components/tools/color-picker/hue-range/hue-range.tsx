@@ -1,4 +1,4 @@
-import { onMount, type Setter, type VoidProps } from 'solid-js';
+import { onCleanup, onMount, type VoidProps } from 'solid-js';
 import { CONFIG } from '../config.ts';
 import styles from '../color-picker/color-picker.module.css';
 import { FULL_CIRCLE } from '../../../../constants.ts';
@@ -11,7 +11,7 @@ const CENTER_Y = CONFIG.sliderHeight / 2;
 
 export const HueRange = (props: VoidProps<{
   color: Color;
-  setHue: Setter<number>
+  onChange: (hue: number) => void;
 }>) => {
   let sliderRef!: HTMLCanvasElement;
   let sliderCtx!: CanvasRenderingContext2D;
@@ -31,19 +31,18 @@ export const HueRange = (props: VoidProps<{
     ctx.closePath();
   }
 
-  const redrawPicker = (x: number, color: Color) => {
+  const redrawPicker = (x: number, color?: Color) => {
     sliderCtx.clearRect(0, 0, sliderRef.width, sliderRef.height);
     drawSlider(sliderCtx);
-    props.setHue(color.toHue());
+    color = color || sliderCtx.getColorFromPixel(x, 15)
     drawSliderHandle(sliderCtx, x, color.withAlpha(1).toString());
+    props.onChange(color.toHue());
   }
 
   const pickHue = (event: MouseEvent) => {
     const { offsetX } = event;
     if (offsetX < CONFIG.inlineMargin || offsetX > CONFIG.width - CONFIG.inlineMargin) return;
-
-    const color = sliderCtx.getColorFromPixel(offsetX, 15);
-    redrawPicker(offsetX, color);
+    redrawPicker(offsetX);
   }
 
   const handleMouseMove = (event: MouseEvent) => event.buttons === 1 && pickHue(event);
@@ -82,19 +81,25 @@ export const HueRange = (props: VoidProps<{
 
   let colors: RGBA[];
 
+  const colorPickEventHandler = ({ detail: { color }}: ColorPickEvent) => {
+    const closestColorIndex = ColorHelper.findClosestColorIndexInRange(color, colors);
+    const offset = CONFIG.inlineMargin + closestColorIndex;
+    redrawPicker(offset, color);
+  };
+
+  const abortController = new AbortController();
+
   onMount(() => {
     sliderCtx = sliderRef.getContext('2d', { willReadFrequently: true })!;
     drawSlider(sliderCtx);
     drawSliderHandle(sliderCtx, CONFIG.inlineMargin, 'red');
     colors = [...sliderCtx.getImageData(CONFIG.inlineMargin, 15, sliderRef.width - CONFIG.inlineMargin, 1)
       .data].chunk(4) as RGBA[];
+
+    sliderRef.parentElement!.addEventListener(ColorPickEvent.NAME, colorPickEventHandler, { signal: abortController.signal});
   });
 
-  addEventListener(ColorPickEvent.NAME, ({ detail: { color } }: ColorPickEvent) => {
-    const closestColorIndex = ColorHelper.findClosestColorIndexInRange(color, colors);
-    const offset = CONFIG.inlineMargin + closestColorIndex;
-    redrawPicker(offset, color);
-  });
+  onCleanup(() => abortController.abort());
 
   return <canvas
     class={styles.slider}
