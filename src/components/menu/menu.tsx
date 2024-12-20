@@ -2,7 +2,7 @@ import { useGlobalContext } from '../../global-provider.tsx';
 import './menu.css';
 import type { ToolType } from '../../types/core.type.ts';
 import { Logger } from '../../utils/Logger.ts';
-import { ColorPickerInput } from '../tools/color-picker/color-picker-input.tsx';
+import { ColorPickerInput } from '../color-picker-input/color-picker-input.tsx';
 import { For } from 'solid-js';
 import { SaveButton } from '../save-button/save-button.tsx';
 import { OpenFileButton } from '../open-file-button/open-file-button.tsx';

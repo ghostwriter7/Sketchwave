@@ -1,10 +1,10 @@
 import styles from './color-picker-input.module.css';
 import { createEffect } from 'solid-js';
-import { useGlobalContext } from '../../../global-provider.tsx';
-import { Card } from '../../card/card.tsx';
-import { Color } from '../../../types/Color.ts';
-import { ColorShortcuts } from '../../color-shortcuts/color-shortcuts.tsx';
-import { ColorPicker } from './color-picker/color-picker.tsx';
+import { useGlobalContext } from '../../global-provider.tsx';
+import { Card } from '../card/card.tsx';
+import { Color } from '../../types/Color.ts';
+import { ColorShortcuts } from '../color-shortcuts/color-shortcuts.tsx';
+import { ColorPicker } from '../tools/color-picker/color-picker/color-picker.tsx';
 
 export const ColorPickerInput = () => {
   const { state, setColor, setAlpha } = useGlobalContext();
