@@ -3,7 +3,6 @@ import { createEffect } from 'solid-js';
 import { useGlobalContext } from '../../global-provider.tsx';
 import { Card } from '../card/card.tsx';
 import { Color } from '../../types/Color.ts';
-import { ColorShortcuts } from '../color-shortcuts/color-shortcuts.tsx';
 import { ColorPicker } from '../tools/color-picker/color-picker/color-picker.tsx';
 
 export const ColorPickerInput = () => {
@@ -33,13 +32,10 @@ export const ColorPickerInput = () => {
       type="color"
       onClick={toggleColorPicker}/>
     <Card ref={popoverRef!} title="Color picker" id="color-picker" popover="auto">
-      <div class={styles['color-picker']}>
-        <ColorShortcuts class={styles['color-shortcuts']} />
         <ColorPicker alpha={state.alpha} color={state.color} onChange={(color: Color) => {
           setColor(color);
           setAlpha(color.alpha);
         }} />
-      </div>
     </Card>
   </>
 }

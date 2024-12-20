@@ -5,8 +5,9 @@ import { AlphaRange } from '../alpha-range/alpha-range.tsx';
 import { createEffect, createSignal, type VoidProps } from 'solid-js';
 import { Color } from '../../../../types/Color.ts';
 import type { RGB } from '../../../../types/core.type.ts';
+import { ColorShortcuts } from '../../../color-shortcuts/color-shortcuts.tsx';
 
-export const ColorPicker = (props: VoidProps<{
+export const  ColorPicker = (props: VoidProps<{
   color: Color,
   alpha: number;
   onChange: (color: Color) => void
@@ -33,6 +34,7 @@ export const ColorPicker = (props: VoidProps<{
   };
 
   return <div class={styles['color-picker']}>
+    <ColorShortcuts class={styles['color-shortcuts']}  />
     <div class={styles.preview} ref={previewRef!}></div>
     <SaturationBrightnessRange hue={hue} onChange={onRGBChange}/>
     <HueRange color={props.color} setHue={setHue}/>
