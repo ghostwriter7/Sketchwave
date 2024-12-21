@@ -1,6 +1,6 @@
 import { GradientPreview } from './gradient-preview.tsx';
 import styles from './gradient-generator.module.css';
-import { createMemo, createSignal, For, Show } from 'solid-js';
+import { createMemo, createSignal, For, onCleanup, Show } from 'solid-js';
 import { type GradientDefinition, useGradientContext } from './gradient-generator.tsx';
 import { clampValue } from '../../math/clamp-value.ts';
 import { Color } from '../../types/Color.ts';
@@ -13,38 +13,53 @@ export const GradientInput = () => {
   const width = 400;
   const indicatorHeight = `70px`;
   const indicatorWidth = 10;
-  const startMargin = 50;
+
+  let gradientInputRef!: HTMLDivElement;
+
+  const abortController = new AbortController();
 
   const stopDragging = () => setDraggedIndicatorId(null);
+
+  const computeOffset = (event: MouseEvent) => {
+    const { left } = gradientInputRef.getBoundingClientRect();
+    return event.clientX - left;
+  }
 
   const activeStop = createMemo((): GradientDefinition | null => {
     const id = activeIndicatorId();
     return id ? state.gradientDefinitions.find((def) => def.id === id)! : null;
   });
 
-  document.addEventListener('mouseup', stopDragging);
+  document.addEventListener('mouseup', stopDragging, { signal: abortController.signal });
+
+  const insertNewStopIndicator = (event: MouseEvent) => {
+    const color = new Color(255, 255, 255);
+    const id = insertStop(computeOffset(event) / width, color);
+    setActiveIndicatorId(id);
+  }
+
+  const tryMoveStopIndicator = (event: MouseEvent) => {
+    const id = draggedIndicatorId();
+    if (id) {
+      const offset = clampValue(computeOffset(event), 0, 400) / width;
+      positionStop(id, offset);
+    }
+  }
+
+  onCleanup(() => abortController.abort());
 
   return <>
     <div
-      class={styles['gradient-input']}
-      onClick={(event: MouseEvent) => {
-        const color = new Color(255, 255, 255);
-        const id = insertStop((event.clientX - startMargin) / width, color);
-        setActiveIndicatorId(id);
-      }}
-      onMouseMove={(event: MouseEvent) => {
-        const id = draggedIndicatorId();
-        if (id) {
-          const offset = clampValue(event.clientX - startMargin, 0, 400) / width;
-          positionStop(id, offset);
-        }
-      }}
+      ref={gradientInputRef}
+      class={styles.gradientInput}
+      onClick={insertNewStopIndicator}
+      onMouseMove={tryMoveStopIndicator}
       onMouseLeave={stopDragging}
     >
       <For each={sortedGradientDefinitions()}>
         {(({ color, id, stop }) =>
           <span
-            class={styles['stop-indicator']}
+            class={styles.stopIndicator}
             classList={{
               [styles.active]: activeIndicatorId() === id
             }}

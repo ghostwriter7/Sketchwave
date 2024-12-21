@@ -5,6 +5,8 @@
   color: var(--clr-primary);
   padding: var(--space-md);
   overflow: visible;
+  min-width: 500px;
+  min-height: 300px;
 }
 
 .closeButton {

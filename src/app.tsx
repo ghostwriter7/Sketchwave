@@ -19,7 +19,8 @@ const App = () => {
     zoom: 'KeyZ',
     shape: 'KeyS',
     cancel: 'Escape',
-    importImage: { key: 'KeyI', ctrl: true }
+    importImage: { key: 'KeyI', ctrl: true },
+    'gradient-generator-button': 'KeyG',
   }
 
   document.addEventListener('keydown', (event) => {

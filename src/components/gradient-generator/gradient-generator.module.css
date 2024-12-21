@@ -1,4 +1,4 @@
-.gradient-generator {
+.gradientGenerator {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -7,11 +7,11 @@
   width: 500px;
 }
 
-.gradient-input {
+.gradientInput {
   position: relative;
 }
 
-.stop-indicator {
+.stopIndicator {
   border: 1px solid white;
   border-radius: var(--radius);
   cursor: grab;

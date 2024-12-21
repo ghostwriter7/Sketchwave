@@ -58,7 +58,7 @@ export const GradientGenerator = () => {
   const Provider = (props: ParentProps) =>
     <GradientContext.Provider value={{ state, insertStop, positionStop, setStopColor, sortedGradientDefinitions }}>{props.children}</GradientContext.Provider>;
 
-  return <div class={styles['gradient-generator']}>
+  return <div class={styles.gradientGenerator}>
     <Provider>
       <GradientPreview/>
       <GradientInput/>
