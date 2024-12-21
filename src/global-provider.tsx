@@ -2,6 +2,7 @@ import { createStore } from 'solid-js/store';
 import type { ShapeType, ToolType } from './types/core.type.ts';
 import { type LayerFacade } from './render/LayerFacade.ts';
 import { Color } from './types/Color.ts';
+import type { Gradient } from './components/gradient-generator/gradient-generator.tsx';
 
 export interface ToolProperties {
   round?: boolean;
@@ -18,6 +19,7 @@ export type GlobalContextState = {
   ctx: CanvasRenderingContext2D | null;
   currentMouseX: number | null;
   currentMouseY: number | null;
+  gradients: Gradient[];
   height: number;
   layerFacade: LayerFacade | null;
   scale: number;
@@ -46,10 +48,14 @@ interface GlobalContextActions {
   setMousePos<T extends number | null>(x: T, y: T): void;
 
   setScale(scale: number): void;
+
   setResizableDimensions(width: number, height: number): void;
 
   state: GlobalContextState;
   updateState: (state: Partial<GlobalContextState>) => void;
+
+  upsertGradient: (gradient: Gradient) => void;
+  deleteGradient: (id: string) => void;
 }
 
 const [state, setState] = createStore<GlobalContextState>({
@@ -86,6 +92,7 @@ const [state, setState] = createStore<GlobalContextState>({
   ctx: null,
   currentMouseX: null,
   currentMouseY: null,
+  gradients: [],
   height: innerHeight * 0.7,
   layerFacade: null,
   scale: 1,
@@ -101,14 +108,27 @@ const facade: GlobalContextActions = {
   state,
   setAlpha: (alpha: number) => setState('alpha', alpha),
   setActiveTool: (tool?: ToolType) => setState('activeTool', tool),
-  setColor: (color: Color) => setState({ color: new Color(color.red, color.green, color.blue, color.alpha), alpha: color.alpha }),
+  setColor: (color: Color) => setState({
+    color: new Color(color.red, color.green, color.blue, color.alpha),
+    alpha: color.alpha
+  }),
   setCtx: (ctx: CanvasRenderingContext2D) => setState('ctx', ctx),
   setLayerFacade: (layerFacade: LayerFacade) => setState('layerFacade', layerFacade),
   setMousePos: <T extends number | null>(x: T, y: T) => setState({ currentMouseX: x, currentMouseY: y }),
   setDimensions: (width: number, height: number) => setState({ width, height }),
   setScale: (scale: number) => setState({ scale }),
-  setResizableDimensions: (width: number, height: number)=> setState({ resizableDimensions: { width, height } }),
+  setResizableDimensions: (width: number, height: number) => setState({ resizableDimensions: { width, height } }),
   updateState: (state: Partial<GlobalContextState>) => setState({ ...state }),
+
+  upsertGradient: (gradient: Gradient) => {
+    const existingGradientIndex = gradient.id
+      ? state.gradients.findIndex(({ id }) => gradient.id === id)!
+      : -1;
+    setState({ gradients: existingGradientIndex !== -1
+        ? state.gradients.with(existingGradientIndex, gradient)
+        : [...state.gradients, gradient] });
+  },
+  deleteGradient: (id: string) => setState({ gradients: state.gradients.filter((gradient) => gradient.id !== id)})
 }
 
 export const useGlobalContext = (): GlobalContextActions => facade;

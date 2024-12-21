@@ -36,7 +36,7 @@ export const Dialog = (props: ParentProps<{
         <h3 class={styles.title}>{props.title}</h3>
       </div>
     </Show>
-    <div>
+    <div class={`${styles.body} scroller`}>
       {props.children}
     </div>
   </dialog>

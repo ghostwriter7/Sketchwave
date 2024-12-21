@@ -2,7 +2,7 @@
   display: grid;
   grid-template-areas:
     "stopList preview colorPicker"
-    "stopList input save";
+    "stopList input storeManager";
   grid-template-columns: repeat(3, auto);
   grid-template-rows: repeat(2, auto);
   gap: var(--space-lg);
@@ -40,7 +40,7 @@
   display: flex;
   flex-direction: column;
   min-width: 230px;
-  max-height: 450px;
+  max-height: 575px;
   overflow-y: auto;
 }
 
@@ -63,6 +63,43 @@
 
   span {
     font-size: 1em;
+  }
+}
+
+.gradientStoreManager {
+  display: flex;
+  gap: var(--space-lg);
+  grid-area: storeManager;
+  width: 460px;
+  min-height: 200px;
+}
+
+.storeManagerButtons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.gradientsList {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  flex: 1;
+  gap: var(--space-md);
+  place-content: baseline;
+  max-height: 200px;
+  max-width: 400px;
+}
+
+.gradientListItem {
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  gap: var(--space-sm);
+
+  &[data-active] {
+    border: 2px solid var(--clr-accent);
+    border-radius: var(--radius);
   }
 }
 

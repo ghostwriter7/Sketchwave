@@ -1,10 +1,12 @@
 import { createEffect, type VoidProps } from 'solid-js';
-import { type GradientType, useGradientContext } from './gradient-generator.tsx';
+import { type Gradient, type GradientType } from './gradient-generator.tsx';
 import styles from './gradient-generator.module.css';
 
-export const GradientPreview = (props: VoidProps<{ height?: number; width?: number }>) => {
-  const { state } = useGradientContext();
-
+export const GradientPreview = (props: VoidProps<{
+  height?: number;
+  gradient: Gradient;
+  width?: number;
+}>) => {
   const canvas = <canvas
     class={styles.gradientPreview}
     width={props.width || 500}
@@ -23,15 +25,15 @@ export const GradientPreview = (props: VoidProps<{ height?: number; width?: numb
   }
 
   createEffect(() => {
-    const gradientDefinitions = state.gradientDefinitions;
-    const gradientType = state.gradientType;
+    const gradient = props.gradient;
 
-    const gradient = createGradientFromType(gradientType)!;
+    const canvasGradient = createGradientFromType(gradient.gradientType)!;
 
-    gradientDefinitions.forEach(({ color, stop }) => gradient.addColorStop(stop, color.toString()));
+    gradient.gradientDefinitions.forEach(({ color, stop }) =>
+      canvasGradient.addColorStop(stop, color.toString()));
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = gradient;
+    ctx.fillStyle = canvasGradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   });
 

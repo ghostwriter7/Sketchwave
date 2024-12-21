@@ -9,6 +9,10 @@
   min-height: 300px;
 }
 
+.body {
+  overflow: auto;
+}
+
 .closeButton {
   padding: 0;
   position: absolute;

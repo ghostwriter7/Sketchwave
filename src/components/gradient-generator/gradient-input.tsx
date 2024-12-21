@@ -70,14 +70,20 @@ export const GradientInput = () => {
             }}
           ></span>)}
       </For>
-      <GradientPreview height={50} width={width}/>
+      <GradientPreview
+        gradient={{
+          gradientDefinitions: state.gradientDefinitions,
+          gradientType: state.gradientType,
+        }}
+        height={50}
+        width={width}/>
     </div>
     <div class={styles.colorPicker}>
       <ColorPicker
-      alpha={1}
-      color={activeStop().color}
-      onChange={(color: Color) => setStopColor(state.activeStopId!, color)}
-    />
+        alpha={1}
+        color={activeStop().color}
+        onChange={(color: Color) => setStopColor(state.activeStopId!, color)}
+      />
     </div>
   </>
 }
