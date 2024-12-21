@@ -29,7 +29,7 @@ export const Dialog = (props: ParentProps<{
 
   return <dialog class={styles.dialog} ref={dialogRef} onClick={handleClick}>
     <button class={styles.closeButton} onClick={() => dialogRef.close()}>
-      <Icon icon="close"></Icon>
+      <Icon icon="close"/>
     </button>
     <Show when={props.title}>
       <div>

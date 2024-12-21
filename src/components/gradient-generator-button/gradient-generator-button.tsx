@@ -7,7 +7,7 @@ export const GradientGeneratorButton = () => {
 
   return <>
     <button id="gradient-generator-button" onClick={() => dialogApi.open()}>
-      <Icon icon="gradient"></Icon>
+      <Icon icon="gradient"/>
     </button>
     <Dialog
       title="Gradient Generator"

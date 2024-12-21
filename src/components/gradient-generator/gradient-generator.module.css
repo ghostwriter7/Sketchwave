@@ -1,5 +1,8 @@
 .gradientGenerator {
   display: grid;
+  grid-template-areas:
+    "stopList preview colorPicker"
+    "stopList input save";
   grid-template-columns: repeat(3, auto);
   grid-template-rows: repeat(2, auto);
   gap: var(--space-lg);
@@ -8,19 +11,17 @@
 }
 
 .gradientInput {
-  grid-column: 2;
-  grid-row: 2;
+  grid-area: input;
   position: relative;
 }
 
 .gradientPreview {
   border-radius: var(--radius);
-  grid-column: 2;
-  grid-row: 1;
+  grid-area: preview;
 }
 
 .colorPicker {
-  grid-column: 3;
+  grid-area: colorPicker;
 }
 
 .stopIndicator {
@@ -30,6 +31,39 @@
   display: inline-block;
   position: absolute;
   z-index: 100;
+}
+
+.stopList {
+  align-self: flex-start;
+  grid-area: stopList;
+  gap: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  min-width: 230px;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.stopListItem {
+  align-items: center;
+  border: 1px solid var(--clr-primary);
+  border-radius: var(--radius);
+  cursor: pointer;
+  padding:var(--space-sm);
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  text-wrap: nowrap;
+
+  &[data-active] {
+    background-color: var(--bg-active);
+    color: var(--clr-accent);
+  }
+
+  span {
+    font-size: 1em;
+  }
 }
 
 .active {

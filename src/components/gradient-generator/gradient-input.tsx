@@ -1,14 +1,13 @@
 import { GradientPreview } from './gradient-preview.tsx';
 import styles from './gradient-generator.module.css';
-import { createMemo, createSignal, For, onCleanup } from 'solid-js';
-import { type GradientDefinition, useGradientContext } from './gradient-generator.tsx';
+import { createSignal, For, onCleanup } from 'solid-js';
+import { useGradientContext } from './gradient-generator.tsx';
 import { clampValue } from '../../math/clamp-value.ts';
 import { Color } from '../../types/Color.ts';
 import { ColorPicker } from '../tools/color-picker/color-picker/color-picker.tsx';
 
 export const GradientInput = () => {
-  const { state, insertStop, setStopColor, positionStop, sortedGradientDefinitions } = useGradientContext();
-  const [activeIndicatorId, setActiveIndicatorId] = createSignal<string>(state.gradientDefinitions.at(0)!.id);
+  const { activeStop, state, insertStop, setStopColor, positionStop, setActiveStopId } = useGradientContext();
   const [draggedIndicatorId, setDraggedIndicatorId] = createSignal<string | null>(null);
   const width = 500;
   const indicatorHeight = `70px`;
@@ -25,17 +24,12 @@ export const GradientInput = () => {
     return event.clientX - left;
   }
 
-  const activeStop = createMemo((): GradientDefinition | null => {
-    const id = activeIndicatorId();
-    return id ? state.gradientDefinitions.find((def) => def.id === id)! : null;
-  });
-
   document.addEventListener('mouseup', stopDragging, { signal: abortController.signal });
 
   const insertNewStopIndicator = (event: MouseEvent) => {
     const color = new Color(255, 255, 255);
     const id = insertStop(computeOffset(event) / width, color);
-    setActiveIndicatorId(id);
+    setActiveStopId(id);
   }
 
   const tryMoveStopIndicator = (event: MouseEvent) => {
@@ -56,12 +50,12 @@ export const GradientInput = () => {
       onMouseMove={tryMoveStopIndicator}
       onMouseLeave={stopDragging}
     >
-      <For each={sortedGradientDefinitions()}>
+      <For each={state.gradientDefinitions}>
         {(({ color, id, stop }) =>
           <span
             class={styles.stopIndicator}
             classList={{
-              [styles.active]: activeIndicatorId() === id
+              [styles.active]: state.activeStopId === id
             }}
             style={{
               background: color.toString(),
@@ -72,7 +66,7 @@ export const GradientInput = () => {
             onMouseDown={() => setDraggedIndicatorId(id)}
             onClick={(event: MouseEvent) => {
               event.stopPropagation();
-              setActiveIndicatorId(id);
+              setActiveStopId(id);
             }}
           ></span>)}
       </For>
@@ -81,8 +75,8 @@ export const GradientInput = () => {
     <div class={styles.colorPicker}>
       <ColorPicker
       alpha={1}
-      color={(activeStop() as GradientDefinition).color}
-      onChange={(color: Color) => setStopColor(activeIndicatorId()!, color)}
+      color={activeStop().color}
+      onChange={(color: Color) => setStopColor(state.activeStopId!, color)}
     />
     </div>
   </>

@@ -12,4 +12,8 @@ button, .button {
     display: flex;
     gap: var(--space-sm);
   }
+
+  &:disabled {
+    pointer-events: none;
+  }
 }
