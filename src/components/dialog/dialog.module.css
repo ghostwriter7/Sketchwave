@@ -1,0 +1,19 @@
+.dialog {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--clr-primary);
+  border-radius: 8px;
+  color: var(--clr-primary);
+  padding: var(--space-md);
+  overflow: visible;
+}
+
+.closeButton {
+  padding: 0;
+  position: absolute;
+  right: -5px;
+  top: -5px;
+
+  span {
+    font-size: 1em;
+  }
+}
