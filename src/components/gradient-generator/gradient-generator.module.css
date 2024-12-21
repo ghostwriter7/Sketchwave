@@ -1,14 +1,26 @@
 .gradientGenerator {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  height: fit-content;
-  justify-content: center;
-  width: 500px;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-template-rows: repeat(2, auto);
+  gap: var(--space-lg);
+  place-items: center;
+  padding: var(--space-lg);
 }
 
 .gradientInput {
+  grid-column: 2;
+  grid-row: 2;
   position: relative;
+}
+
+.gradientPreview {
+  border-radius: var(--radius);
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.colorPicker {
+  grid-column: 3;
 }
 
 .stopIndicator {

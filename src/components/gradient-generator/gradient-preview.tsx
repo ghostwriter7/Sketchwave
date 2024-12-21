@@ -1,10 +1,12 @@
 import { createEffect, type VoidProps } from 'solid-js';
 import { type GradientType, useGradientContext } from './gradient-generator.tsx';
+import styles from './gradient-generator.module.css';
 
 export const GradientPreview = (props: VoidProps<{ height?: number; width?: number }>) => {
   const { state } = useGradientContext();
 
   const canvas = <canvas
+    class={styles.gradientPreview}
     width={props.width || 500}
     height={props.height || 300}></canvas> as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;

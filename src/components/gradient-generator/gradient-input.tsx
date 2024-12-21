@@ -1,6 +1,6 @@
 import { GradientPreview } from './gradient-preview.tsx';
 import styles from './gradient-generator.module.css';
-import { createMemo, createSignal, For, onCleanup, Show } from 'solid-js';
+import { createMemo, createSignal, For, onCleanup } from 'solid-js';
 import { type GradientDefinition, useGradientContext } from './gradient-generator.tsx';
 import { clampValue } from '../../math/clamp-value.ts';
 import { Color } from '../../types/Color.ts';
@@ -8,9 +8,9 @@ import { ColorPicker } from '../tools/color-picker/color-picker/color-picker.tsx
 
 export const GradientInput = () => {
   const { state, insertStop, setStopColor, positionStop, sortedGradientDefinitions } = useGradientContext();
-  const [activeIndicatorId, setActiveIndicatorId] = createSignal<string | null>(null);
+  const [activeIndicatorId, setActiveIndicatorId] = createSignal<string>(state.gradientDefinitions.at(0)!.id);
   const [draggedIndicatorId, setDraggedIndicatorId] = createSignal<string | null>(null);
-  const width = 400;
+  const width = 500;
   const indicatorHeight = `70px`;
   const indicatorWidth = 10;
 
@@ -41,7 +41,7 @@ export const GradientInput = () => {
   const tryMoveStopIndicator = (event: MouseEvent) => {
     const id = draggedIndicatorId();
     if (id) {
-      const offset = clampValue(computeOffset(event), 0, 400) / width;
+      const offset = clampValue(computeOffset(event), 0, width) / width;
       positionStop(id, offset);
     }
   }
@@ -78,12 +78,12 @@ export const GradientInput = () => {
       </For>
       <GradientPreview height={50} width={width}/>
     </div>
-    <Show when={activeIndicatorId()}>
+    <div class={styles.colorPicker}>
       <ColorPicker
-        alpha={1}
-        color={(activeStop() as GradientDefinition).color}
-        onChange={(color: Color) => setStopColor(activeIndicatorId()!, color)}
-      />
-    </Show>
+      alpha={1}
+      color={(activeStop() as GradientDefinition).color}
+      onChange={(color: Color) => setStopColor(activeIndicatorId()!, color)}
+    />
+    </div>
   </>
 }
