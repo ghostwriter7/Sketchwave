@@ -6,6 +6,7 @@ import { type Accessor, createContext, createMemo, createUniqueId, type ParentPr
 import { GradientInput } from './gradient-input.tsx';
 import { StopList } from './stop-list.tsx';
 import { GradientStoreManager } from './gradient-store-manager.tsx';
+import { GradientModifiers } from './gradient-modifiers.tsx';
 
 export type GradientDefinition = { color: Color, id: string; stop: number };
 export type GradientDefinitions = GradientDefinition[];
@@ -31,6 +32,7 @@ export const GradientContext = createContext<{
   setActiveStopId: (stopId: string) => void;
   setStopColor: (id: string, color: Color) => void;
   setGradientId: (id: string) => void;
+  setGradientType: (type: GradientType) => void;
   positionStop: (id: string, stop: number) => void;
   insertStop: (stop: number, color: Color) => string;
   removeStop: (id: string) => void;
@@ -95,6 +97,8 @@ export const GradientGenerator = () => {
 
   const setGradientId = (id: string) => setState({ id });
 
+  const setGradientType = (type: GradientType) => setState({ gradientType: type });
+
   const Provider = (props: ParentProps) =>
     <GradientContext.Provider
       value={{
@@ -103,6 +107,7 @@ export const GradientGenerator = () => {
         editGradient,
         setActiveStopId,
         setGradientId,
+        setGradientType,
         insertStop,
         positionStop,
         setStopColor,
@@ -115,6 +120,7 @@ export const GradientGenerator = () => {
       <GradientPreview gradient={{ gradientDefinitions: state.gradientDefinitions, gradientType: state.gradientType }}/>
       <GradientInput/>
       <GradientStoreManager/>
+      <GradientModifiers />
     </Provider>
   </div>;
 }

@@ -80,7 +80,7 @@ export const GradientInput = () => {
     </div>
     <div class={styles.colorPicker}>
       <ColorPicker
-        alpha={1}
+        alpha={activeStop().color.alpha}
         color={activeStop().color}
         onChange={(color: Color) => setStopColor(state.activeStopId!, color)}
       />

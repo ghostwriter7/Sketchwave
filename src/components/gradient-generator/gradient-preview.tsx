@@ -17,8 +17,12 @@ export const GradientPreview = (props: VoidProps<{
     switch (type) {
       case 'linear':
         return ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
-      case 'radial':
-        return null // todo;
+      case 'radial': {
+        const centerX = ctx.canvas.width / 2;
+        const centerY = ctx.canvas.height / 2;
+        const outerRadius = Math.min(ctx.canvas.width, ctx.canvas.height) / 2;
+        return ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, outerRadius);
+      }
       case 'conic':
         return ctx.createConicGradient(0, ctx.canvas.width / 2, ctx.canvas.height / 2);
     }

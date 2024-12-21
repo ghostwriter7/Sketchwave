@@ -2,7 +2,8 @@
   display: grid;
   grid-template-areas:
     "stopList preview colorPicker"
-    "stopList input storeManager";
+    "stopList input storeManager"
+    "stopList modifiers storeManager";
   grid-template-columns: repeat(3, auto);
   grid-template-rows: repeat(2, auto);
   gap: var(--space-lg);
@@ -106,4 +107,8 @@
 .active {
   outline: 2px solid var(--clr-primary);
   outline-offset: 1px;
+}
+
+.gradientModifiers {
+  grid-area: modifiers;
 }

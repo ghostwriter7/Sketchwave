@@ -16,7 +16,7 @@ export class Color {
   }
 
   public toString(): string {
-    return `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`;
+    return `rgba(${this.red}, ${this.green}, ${this.blue}, ${this.alpha.toFixed(2)})`;
   }
 
   public toHue(): number {
