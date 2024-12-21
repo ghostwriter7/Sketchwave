@@ -2,7 +2,6 @@
 
 import type { Color } from './types/Color.ts';
 import type { Point } from './types/Point.ts';
-import type { ColorPickEvent } from './types/events.ts';
 
 type Type = {
   description?: string,
@@ -18,7 +17,6 @@ declare global {
   }
 
   interface HTMLElementEventMap {
-    colorpick: ColorPickEvent;
     scalechange: CustomEvent<{ scale: number }>;
   }
 

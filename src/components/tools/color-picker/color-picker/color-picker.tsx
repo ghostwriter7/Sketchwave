@@ -5,7 +5,8 @@ import { AlphaRange } from '../alpha-range/alpha-range.tsx';
 import { createEffect, createSignal, type VoidProps } from 'solid-js';
 import { Color } from '../../../../types/Color.ts';
 import { ColorShortcuts } from '../../../color-shortcuts/color-shortcuts.tsx';
-import { ColorPickEvent } from '../../../../types/events.ts';
+
+export type ComputeNewHueFn = (color: Color) => void;
 
 export const ColorPicker = (props: VoidProps<{
   color: Color,
@@ -17,11 +18,12 @@ export const ColorPicker = (props: VoidProps<{
   let internalValue: Color | null = null;
   let colorPickerRef!: HTMLDivElement;
   let previewRef!: HTMLDivElement;
+  let computeNewHueFn!: ComputeNewHueFn;
 
   createEffect(() => {
     if (!props.color.equals(internalValue)) {
       internalValue = props.color;
-      setTimeout(() => colorPickerRef.dispatchEvent(new ColorPickEvent(internalValue!)));
+      setTimeout(() => computeNewHueFn(internalValue!));
     }
   });
 
@@ -46,13 +48,34 @@ export const ColorPicker = (props: VoidProps<{
   const onHueChange = (hue: number) => setHue(hue);
 
   const onAlphaChange = (alpha: number) =>
-    updateLocalValueAndNotifyHost(props.color.withAlpha(alpha))
+    updateLocalValueAndNotifyHost(props.color.withAlpha(alpha));
 
   return <div ref={colorPickerRef} class={`${styles['color-picker']} color-picker`}>
-    <ColorShortcuts class={styles['color-shortcuts']} onChange={onColorShortcutPick}/>
-    <div class={styles.preview} ref={previewRef!}></div>
-    <SaturationBrightnessRange hue={hue} onChange={onRGBChange}/>
-    <HueRange color={props.color} onChange={onHueChange}/>
-    <AlphaRange alpha={props.alpha} color={props.color} onChange={onAlphaChange}/>
+    <ColorShortcuts
+      class={styles['color-shortcuts']}
+      onChange={onColorShortcutPick}
+    />
+
+    <div
+      class={styles.preview}
+      ref={previewRef!}>
+    </div>
+
+    <SaturationBrightnessRange
+      hue={hue}
+      onChange={onRGBChange}
+    />
+
+    <HueRange
+      color={props.color}
+      onChange={onHueChange}
+      setComputeNewHue={(fn: ComputeNewHueFn) => computeNewHueFn = fn}
+    />
+
+    <AlphaRange
+      alpha={props.alpha}
+      color={props.color}
+      onChange={onAlphaChange}
+    />
   </div>
 }

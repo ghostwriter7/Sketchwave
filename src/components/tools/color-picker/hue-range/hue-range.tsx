@@ -1,20 +1,27 @@
-import { onCleanup, onMount, type VoidProps } from 'solid-js';
+import { onMount, type VoidProps } from 'solid-js';
 import { CONFIG } from '../config.ts';
 import styles from '../color-picker/color-picker.module.css';
 import { FULL_CIRCLE } from '../../../../constants.ts';
 import { Color } from '../../../../types/Color.ts';
 import type { RGBA } from '../../../../types/core.type.ts';
-import { ColorPickEvent } from '../../../../types/events.ts';
 import { ColorHelper } from '../../../../utils/ColorHelper.ts';
+import type { ComputeNewHueFn } from '../color-picker/color-picker.tsx';
 
 const CENTER_Y = CONFIG.sliderHeight / 2;
 
 export const HueRange = (props: VoidProps<{
   color: Color;
   onChange: (hue: number) => void;
+  setComputeNewHue: (fn: ComputeNewHueFn) => void;
 }>) => {
   let sliderRef!: HTMLCanvasElement;
   let sliderCtx!: CanvasRenderingContext2D;
+
+  props.setComputeNewHue((color: Color) => {
+    const closestColorIndex = ColorHelper.findClosestColorIndexInRange(color, colors);
+    const offset = CONFIG.inlineMargin + closestColorIndex;
+    redrawPicker(offset, color);
+  })
 
   const drawSliderHandle = (ctx: CanvasRenderingContext2D, x: number, color: string) => {
     const { handleOutline, handleRadius } = CONFIG;
@@ -81,25 +88,13 @@ export const HueRange = (props: VoidProps<{
 
   let colors: RGBA[];
 
-  const colorPickEventHandler = ({ detail: { color }}: ColorPickEvent) => {
-    const closestColorIndex = ColorHelper.findClosestColorIndexInRange(color, colors);
-    const offset = CONFIG.inlineMargin + closestColorIndex;
-    redrawPicker(offset, color);
-  };
-
-  const abortController = new AbortController();
-
   onMount(() => {
     sliderCtx = sliderRef.getContext('2d', { willReadFrequently: true })!;
     drawSlider(sliderCtx);
     drawSliderHandle(sliderCtx, CONFIG.inlineMargin, 'red');
     colors = [...sliderCtx.getImageData(CONFIG.inlineMargin, 15, sliderRef.width - CONFIG.inlineMargin, 1)
       .data].chunk(4) as RGBA[];
-
-    sliderRef.parentElement!.addEventListener(ColorPickEvent.NAME, colorPickEventHandler, { signal: abortController.signal});
   });
-
-  onCleanup(() => abortController.abort());
 
   return <canvas
     class={styles.slider}
