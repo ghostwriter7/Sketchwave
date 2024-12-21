@@ -16,3 +16,10 @@
   top: -5px;
   outline: 2px solid var(--clr-primary);
 }
+
+.title {
+  border-bottom: 1px solid currentColor;
+  letter-spacing: 1px;
+  padding-bottom: var(--space-md);
+  text-align: center;
+}

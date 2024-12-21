@@ -9,7 +9,9 @@ export const GradientGeneratorButton = () => {
     <button id="gradient-generator-button" onClick={() => dialogApi.open()}>
       <Icon icon="gradient"></Icon>
     </button>
-    <Dialog setRef={(ref) => dialogApi = ref}>
+    <Dialog
+      title="Gradient Generator"
+      setRef={(ref) => dialogApi = ref}>
       <GradientGenerator />
     </Dialog>
   </>

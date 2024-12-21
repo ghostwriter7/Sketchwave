@@ -1,4 +1,4 @@
-import { onMount, type ParentProps } from 'solid-js';
+import { onMount, type ParentProps, Show } from 'solid-js';
 import styles from './dialog.module.css';
 import { Icon } from '../icon/icon.tsx';
 
@@ -8,7 +8,8 @@ export type DialogApi = {
 }
 
 export const Dialog = (props: ParentProps<{
-  setRef: (ref: { close: () => void; open: () => void }) => void
+  setRef: (ref: { close: () => void; open: () => void }) => void;
+  title?: string;
 }>) => {
   let dialogRef!: HTMLDialogElement;
 
@@ -30,6 +31,13 @@ export const Dialog = (props: ParentProps<{
     <button class={styles.closeButton} onClick={() => dialogRef.close()}>
       <Icon icon="close"></Icon>
     </button>
-    {props.children}
+    <Show when={props.title}>
+      <div>
+        <h3 class={styles.title}>{props.title}</h3>
+      </div>
+    </Show>
+    <div>
+      {props.children}
+    </div>
   </dialog>
 }
