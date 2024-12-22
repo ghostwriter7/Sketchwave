@@ -1,0 +1,27 @@
+.radioGroup {
+  border: 2px solid var(--clr-primary);
+  border-radius: var(--radius);
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+.input {
+  display: none;
+}
+
+.label {
+  border-radius: var(--radius);
+  cursor: pointer;
+  padding: var(--space-md);
+
+  &:hover {
+    background: var(--bg-hover);
+    color: var(--clr-hover);
+  }
+
+  &:has(+ input[checked]) {
+    background: var(--bg-active);
+    color: var(--clr-active);
+  }
+}

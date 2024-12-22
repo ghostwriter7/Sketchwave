@@ -1,19 +1,20 @@
 import styles from './gradient-generator.module.css';
-import { useGradientContext } from './gradient-generator.tsx';
+import { type GradientType, useGradientContext } from './gradient-generator.tsx';
+import { RadioGroup } from '../radio-group/radio-group.tsx';
 
 export const GradientModifiers = () => {
-  const { setGradientType } = useGradientContext();
-
-
+  const { setGradientType, state } = useGradientContext();
+  const gradientTypes = [
+    { label: 'Radial', value: 'radial' },
+    { label: 'Linear', value: 'linear' },
+    { label: 'Conic', value: 'conic' }
+  ];
 
   return <div class={styles.gradientModifiers}>
-    <input type="radio" id="radial" name="gradientType" value="radial" onChange={() => setGradientType("radial")} />
-    <label for="radial">Radial</label>
-
-    <input type="radio" id="linear" name="gradientType" value="linear"onChange={() => setGradientType("linear")} checked/>
-    <label for="linear">Linear</label>
-
-    <input type="radio" id="conic" name="gradientType" value="conic"onChange={() => setGradientType("conic")} />
-    <label for="conic">Conic</label>
+    <RadioGroup
+      options={gradientTypes}
+      value={state.gradientType}
+      onChange={(value) => setGradientType(value as GradientType)}
+    />
   </div>
 }

@@ -26,9 +26,18 @@ export const GradientStoreManager = () => {
 
   return <div class={styles.gradientStoreManager}>
     <div class={styles.storeManagerButtons}>
-      <button onClick={() => createOrUpdateGradient(gradientState.id)}><Icon icon="save"/></button>
+      <button
+        title={gradientState.id ? 'Update' : 'Save'}
+        onClick={() => createOrUpdateGradient(gradientState.id)}>
+        <Icon icon="save"/>
+      </button>
       <Show when={gradientState.id}>
-        <button class={styles.saveButton} onClick={() => createOrUpdateGradient()}><Icon icon="add"/></button>
+        <button
+          class={styles.saveButton}
+          title="Save As New"
+          onClick={() => createOrUpdateGradient()}>
+          <Icon icon="add"/>
+        </button>
       </Show>
     </div>
     <div class={`${styles.gradientsList} scroller`}>

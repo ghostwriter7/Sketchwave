@@ -73,7 +73,7 @@ export const GradientInput = () => {
       <GradientPreview
         gradient={{
           gradientDefinitions: state.gradientDefinitions,
-          gradientType: state.gradientType,
+          gradientType: 'linear',
         }}
         height={50}
         width={width}/>
