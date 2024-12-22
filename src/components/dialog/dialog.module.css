@@ -7,6 +7,11 @@
   overflow: visible;
   min-width: 500px;
   min-height: 300px;
+
+  &[open] {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .body {

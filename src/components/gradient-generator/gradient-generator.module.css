@@ -17,6 +17,7 @@
 }
 
 .gradientPreview {
+  align-self: flex-start;
   border-radius: var(--radius);
   grid-area: preview;
 }
