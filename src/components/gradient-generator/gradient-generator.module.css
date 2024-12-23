@@ -37,13 +37,17 @@
 
 .stopList {
   align-self: flex-start;
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
   grid-area: stopList;
   gap: var(--space-md);
+  height: 100%;
   display: flex;
   flex-direction: column;
   min-width: 250px;
   max-height: 575px;
   overflow-y: auto;
+  padding: var(--space-md);
 }
 
 .stopListItem {
@@ -83,11 +87,14 @@
 }
 
 .gradientsList {
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
   display: flex;
   flex-wrap: wrap;
   overflow-y: auto;
   flex: 1;
   gap: var(--space-md);
+  padding: var(--space-md);
   place-content: baseline;
   max-height: 200px;
   max-width: 400px;
