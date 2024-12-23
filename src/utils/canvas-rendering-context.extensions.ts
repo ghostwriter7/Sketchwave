@@ -19,7 +19,7 @@ const createGradient = function (this: CanvasRenderingContext2D | OffscreenCanva
 
   switch (gradient.gradientType) {
     case 'linear':
-      canvasGradient = this.createLinearGradient(origin.x, origin.y, width, 0);
+      canvasGradient = this.createLinearGradient(0, 0, width, 0);
       break;
     case 'radial': {
       const centerX = origin.x + width / 2;
