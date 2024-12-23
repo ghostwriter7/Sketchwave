@@ -1,0 +1,10 @@
+services:
+    emscripten:
+      container_name: emscripten_env
+      image: "emscripten/emsdk"
+      working_dir: "/src"
+      volumes:
+          - ./canvas-backend:/src
+      command:
+        - bash
+

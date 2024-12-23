@@ -20,4 +20,13 @@ export class WebAssemblyHelper {
   public static createMemoryBlock(initial = 1, maximum?: number): WebAssembly.Memory {
     return new WebAssembly.Memory({ initial, maximum });
   }
+
+  /**
+   * `DataView` provides explicit control of how data is accessed.
+   * TypedArrays use the platform's endianness. WebAssembly memory is always little-endian.
+   * @param buffer
+   */
+  public static createDataView(buffer: ArrayBuffer): DataView {
+    return new DataView(buffer);
+  }
 }
