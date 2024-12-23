@@ -39,10 +39,19 @@ export const ShapePicker = () => {
 
   const baseGradientOption = { value: 'gradient', label: 'Gradient' };
 
+  const setValueAndValidate = (value: AppearanceType, thisName: 'fill' | 'outline', siblingName: 'fill' | 'outline') => {
+    const isTransparent = value === 'transparent';
+    const isSiblingTransparent = shapePickerState[siblingName] === 'transparent';
+    setShapePickerState({
+      [thisName]: value as AppearanceType,
+      [siblingName]: isTransparent && isSiblingTransparent ? 'solid' : shapePickerState[siblingName]
+    });
+  }
+
   const selects: SelectProps[] = [
     {
       value: () => shapePickerState.fill,
-      onChange: (value) => setShapePickerState('fill', value as AppearanceType),
+      onChange: (value) => setValueAndValidate(value as AppearanceType, 'fill', 'outline'),
       label: 'Fill',
       options: [
         ...commonOptions,
@@ -54,7 +63,7 @@ export const ShapePicker = () => {
     },
     {
       value: () => shapePickerState.outline,
-      onChange: (value) => setShapePickerState('outline', value as AppearanceType),
+      onChange: (value) => setValueAndValidate(value as AppearanceType, 'outline', 'fill'),
       label: 'Outline',
       options: [
         ...commonOptions,
