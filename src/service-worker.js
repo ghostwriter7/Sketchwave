@@ -13,12 +13,12 @@ const cachableResources = [
 ];
 
 const addResourcesToCache = async (resources) => {
-  const cache = await caches.open(randomIdentifier);
+  const cache = await caches.open(buildTimestamp);
   await cache.addAll(resources);
 };
 
 const putInCache = async (request, response) => {
-  const cache = await caches.open(randomIdentifier);
+  const cache = await caches.open(buildTimestamp);
   console.log(`Caching ${request.url}`);
   await cache.put(request, response);
 }
@@ -72,7 +72,7 @@ self.addEventListener('install',  (event) => {
 
 self.addEventListener('activate', async (event) => {
   const cacheKeys = await caches.keys();
-  const cachesToBeDeleted = cacheKeys.filter((cacheKey) => cacheKey !== randomIdentifier);
+  const cachesToBeDeleted = cacheKeys.filter((cacheKey) => cacheKey !== buildTimestamp);
 
   if (cachesToBeDeleted.length === 0) return;
 
