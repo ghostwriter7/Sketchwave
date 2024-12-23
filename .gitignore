@@ -23,3 +23,5 @@ dist-ssr
 .vercel
 
 canvas-backend/cmake-build-debug
+canvas-backend/.idea
+public/library.wasm

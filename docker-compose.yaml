@@ -1,10 +1,13 @@
 services:
     emscripten:
       container_name: emscripten_env
-      image: "emscripten/emsdk"
-      working_dir: "/src"
+      image: emscripten/emsdk
+      working_dir: /src
       volumes:
-          - ./canvas-backend:/src
+          - ./canvas-backend/src:/src
+          - ./public:/public
       command:
         - bash
+        - -c
+        - "emcc library.cpp -o /public/library.wasm -s STANDALONE_WASM --no-entry"
 

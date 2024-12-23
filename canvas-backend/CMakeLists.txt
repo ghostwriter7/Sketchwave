@@ -3,4 +3,4 @@ project(canvas_backend)
 
 set(CMAKE_CXX_STANDARD 26)
 
-add_executable(canvas_backend main.cpp)
+add_executable(canvas_backend src/library.cpp)
