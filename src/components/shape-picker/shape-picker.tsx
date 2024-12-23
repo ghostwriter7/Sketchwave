@@ -14,7 +14,6 @@ type ShapePickerState = {
   shape: ShapeType | null;
 };
 
-
 export const ShapePicker = () => {
   const { state, updateState } = useGlobalContext();
   const [shapePickerState, setShapePickerState] = createStore<ShapePickerState>({
@@ -121,7 +120,11 @@ export const ShapePicker = () => {
           <button
             id={shapeType}
             classList={{ active: shapePickerState.shape == shapeType }}
-            onClick={() => setShapePickerState({ shape: shapeType, arc: 'sharp' })}
+            onClick={() => setShapePickerState({
+              shape: shapeType, arc: roundedDisabledForShapes.includes(shapeType)
+                ? 'sharp'
+                : shapePickerState.arc
+            })}
             title={title}
           >
             <Icon icon={icon}/>

@@ -2,6 +2,7 @@
 
 import type { Color } from './types/Color.ts';
 import type { Point } from './types/Point.ts';
+import type { Gradient } from './components/gradient-generator/gradient-generator.tsx';
 
 type Type = {
   description?: string,
@@ -26,6 +27,7 @@ declare global {
 
   interface Window {
     ctx: CanvasRenderingContext2D;
+
     showOpenFilePicker(options: {
       excludeAcceptAllOption?: boolean,
       multiple?: boolean,
@@ -40,7 +42,14 @@ declare global {
     toTitleCase(): string;
   }
 
-  interface CanvasRenderingContext2D {
+  interface CreateGradient {
+    createGradient(gradient: Gradient, origin: Point, width: number, height: number): CanvasGradient;
+  }
+
+  interface OffscreenCanvasRenderingContext2D extends CreateGradient {
+  }
+
+  interface CanvasRenderingContext2D extends CreateGradient {
     getColorFromPixel(x: number, y: number): Color;
     rotateCanvas(origin: Point, radians: number): void;
   }

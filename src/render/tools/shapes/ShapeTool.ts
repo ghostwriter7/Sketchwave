@@ -23,6 +23,7 @@ import { notifications } from './create-path-for-shape-fns/notifications.ts';
 import { person } from './create-path-for-shape-fns/person.ts';
 import type { ToolProperties } from '../../../global-provider.tsx';
 import { AdjustableToolHandler } from '../abstract/AdjustableToolHandler.ts';
+import type { Gradient } from '../../../components/gradient-generator/gradient-generator.tsx';
 
 export class ShapeTool extends AdjustableToolHandler {
   protected nativeCursor = 'crosshair';
@@ -76,8 +77,22 @@ export class ShapeTool extends AdjustableToolHandler {
     const startPoint = this.startPoint;
     const { dx, dy } = Point.delta(startPoint, this.endPoint);
 
+    const fillGradient = fill === 'gradient' ? this.state.gradients.find(({ id }) => this.state.fillGradientId === id)! : undefined
+    const outlineGradient = outline === 'gradient' ? this.state.gradients.find(({ id }) => this.state.outlineGradientId === id)! : undefined
+
     this.createLayer((ctx: CanvasRenderingContext2D) =>
-      ShapeTool.render(ctx, pathOrPoints, { fill, outline, arc, radius, rotate, startPoint, width: dx, height: dy })
+      ShapeTool.render(ctx, pathOrPoints, {
+        fill,
+        outline,
+        arc,
+        radius,
+        rotate,
+        startPoint,
+        width: dx,
+        height: dy,
+        fillGradient,
+        outlineGradient
+      })
     );
   }
 
@@ -113,6 +128,10 @@ export class ShapeTool extends AdjustableToolHandler {
 
     const pathOrPoints = this.getPathOrPoints();
     const { fill, arc, outline } = this.toolState.toolProperties!;
+
+    const fillGradient = fill === 'gradient' ? this.state.gradients.find(({ id }) => this.state.fillGradientId === id)! : undefined
+    const outlineGradient = outline === 'gradient' ? this.state.gradients.find(({ id }) => this.state.outlineGradientId === id)! : undefined
+
     ShapeTool.render(this.ctx, pathOrPoints, {
       fill,
       arc,
@@ -121,6 +140,8 @@ export class ShapeTool extends AdjustableToolHandler {
       startPoint: this.startPoint,
       width: this.endPoint.x - this.startPoint.x,
       height: this.endPoint.y - this.startPoint.y,
+      fillGradient,
+      outlineGradient
     });
   }
 
@@ -154,9 +175,12 @@ export class ShapeTool extends AdjustableToolHandler {
                           rotate,
                           startPoint,
                           width,
-                          height
+                          height,
+                          fillGradient,
+                          outlineGradient
                         }: Pick<ToolProperties, 'arc' | 'fill' | 'outline'> & {
-                          radius: number; rotate?: number; startPoint: Point, width: number, height: number
+                          radius: number; rotate?: number; startPoint: Point, width: number, height: number;
+                          outlineGradient?: Gradient; fillGradient?: Gradient
                         }): void {
     if (rotate) {
       const [centerX, centerY] = [startPoint.x + width / 2, startPoint.y + height / 2];
@@ -167,15 +191,25 @@ export class ShapeTool extends AdjustableToolHandler {
     }
 
     const solidFill = fill === 'solid';
+    const gradientFill = fill === 'gradient';
     const solidOutline = outline === 'solid';
+    const gradientOutline = outline === 'gradient';
+
+    if (gradientFill) {
+      ctx.fillStyle = ctx.createGradient(fillGradient!, startPoint, width, height);
+    }
+
+    if (gradientOutline) {
+      ctx.strokeStyle = ctx.createGradient(outlineGradient!, startPoint, width, height);
+    }
 
     if (arc === 'round' && Array.isArray(pathOrPoints)) {
-      solidFill && ctx.fill(createRoundedPath(pathOrPoints, radius));
-      solidOutline && ctx.stroke(createPathFromPoints(pathOrPoints));
+      (solidFill || gradientFill) && ctx.fill(createRoundedPath(pathOrPoints, radius));
+      (solidOutline || gradientOutline) && ctx.stroke(createPathFromPoints(pathOrPoints));
     } else {
       const path = pathOrPoints instanceof Path2D ? pathOrPoints : createPathFromPoints(pathOrPoints);
-      solidFill && ctx.fill(path);
-      solidOutline && ctx.stroke(path);
+      (solidFill || gradientFill) && ctx.fill(path);
+      (solidOutline || gradientOutline) && ctx.stroke(path);
     }
   }
 
