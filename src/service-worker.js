@@ -69,7 +69,7 @@ self.addEventListener('install',  (event) => {
   event.waitUntil((async () => {
     await updateCachableResources();
     return addResourcesToCache(cachableResources);
-  })(), clients.claim());
+  })());
 });
 
 self.addEventListener('activate', async (event) => {
@@ -81,6 +81,7 @@ self.addEventListener('activate', async (event) => {
   console.log(`Purging caches: ${cachesToBeDeleted.join(', ')}`);
 
   Promise.all(cachesToBeDeleted.map((cacheKey) => caches.delete(cacheKey)));
+  clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
