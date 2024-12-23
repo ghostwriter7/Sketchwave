@@ -1,6 +1,6 @@
 import styles from './gradient-generator.module.css';
 import { type GradientType, useGradientContext } from './gradient-generator.tsx';
-import { RadioGroup } from '../radio-group/radio-group.tsx';
+import { RadioGroup } from '../form-controls/radio-group/radio-group.tsx';
 
 export const GradientModifiers = () => {
   const { setGradientType, state } = useGradientContext();

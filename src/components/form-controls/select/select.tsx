@@ -13,7 +13,11 @@ export const Select = (props: VoidProps<SelectProps>) => {
 
   return <div class={styles.wrapper}>
     <label for={uniqueId}>{props.label}</label>
-    <select class={styles.select} id={uniqueId}>
+    <select
+      class={styles.select}
+      id={uniqueId}
+      onChange={(event: Event) => props.onChange((event.target as HTMLSelectElement).value)
+      }>
       <For each={props.options}>
         {({ value, label, disabled }) =>
           <option disabled={disabled?.()} value={value}>{label}</option>}
