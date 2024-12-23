@@ -15,7 +15,7 @@ import { Icon } from '../icon/icon.tsx';
 import { PickColorButton } from '../pick-color-button/pick-color-button.tsx';
 import { ColorShortcuts } from '../color-shortcuts/color-shortcuts.tsx';
 import { InstallButton } from '../install-button/install-button.tsx';
-import { GradientGeneratorButton } from '../gradient-generator-button/gradient-generator-button.tsx';
+import { GradientMenuGroup } from '../gradient-menu-group/gradient-menu-group.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -75,9 +75,7 @@ const Menu = () => {
       <ColorShortcuts/>
     </MenuGroup>
     <span class="divider"></span>
-    <MenuGroup label="Gradients (G)">
-      <GradientGeneratorButton />
-    </MenuGroup>
+    <GradientMenuGroup />
     <span class="divider"></span>
     <InstallButton/>
   </nav>

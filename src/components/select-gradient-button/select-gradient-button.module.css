@@ -1,0 +1,15 @@
+.selectGradientButton {
+  align-items: center;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: space-between;
+  margin-right: var(--space-sm);
+  outline: 1px solid var(--clr-primary);
+  padding: var(--space-sm);
+}
+
+.label {
+  color: var(--clr-primary);
+}

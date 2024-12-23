@@ -4,13 +4,17 @@ import styles from './gradient-generator.module.css';
 
 export const GradientPreview = (props: VoidProps<{
   height?: number;
+  onClick?: (event: MouseEvent) => void;
   gradient: Gradient;
   width?: number;
 }>) => {
   const canvas = <canvas
     class={styles.gradientPreview}
     width={props.width || 500}
-    height={props.height || 300}></canvas> as HTMLCanvasElement;
+    height={props.height || 300}
+    onClick={(event) => props.onClick?.(event)}
+  >
+  </canvas> as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
 
   const createGradientFromType = (type: GradientType) => {

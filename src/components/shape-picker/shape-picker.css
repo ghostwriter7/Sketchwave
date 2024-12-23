@@ -11,7 +11,7 @@
     flex-wrap: wrap;
     gap: var(--space-sm);
     overflow-y: scroll;
-    max-width: 170px;
+    max-width: 171px;
     max-height: 70px;
   }
 

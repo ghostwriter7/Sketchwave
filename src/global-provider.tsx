@@ -20,6 +20,8 @@ export type GlobalContextState = {
   currentMouseX: number | null;
   currentMouseY: number | null;
   gradients: Gradient[];
+  fillGradientId?: string;
+  outlineGradientId?: string;
   height: number;
   layerFacade: LayerFacade | null;
   scale: number;
@@ -56,6 +58,8 @@ interface GlobalContextActions {
 
   upsertGradient: (gradient: Gradient) => void;
   deleteGradient: (id: string) => void;
+  setFillGradientId: (id: string) => void;
+  setOutlineGradientId: (id: string) => void;
 }
 
 const [state, setState] = createStore<GlobalContextState>({
@@ -106,6 +110,8 @@ const [state, setState] = createStore<GlobalContextState>({
 
 const facade: GlobalContextActions = {
   state,
+  setFillGradientId: (id: string) => setState('fillGradientId', id),
+  setOutlineGradientId: (id: string) => setState('outlineGradientId', id),
   setAlpha: (alpha: number) => setState('alpha', alpha),
   setActiveTool: (tool?: ToolType) => setState('activeTool', tool),
   setColor: (color: Color) => setState({
@@ -124,11 +130,13 @@ const facade: GlobalContextActions = {
     const existingGradientIndex = gradient.id
       ? state.gradients.findIndex(({ id }) => gradient.id === id)!
       : -1;
-    setState({ gradients: existingGradientIndex !== -1
+    setState({
+      gradients: existingGradientIndex !== -1
         ? state.gradients.with(existingGradientIndex, gradient)
-        : [...state.gradients, gradient] });
+        : [...state.gradients, gradient]
+    });
   },
-  deleteGradient: (id: string) => setState({ gradients: state.gradients.filter((gradient) => gradient.id !== id)})
+  deleteGradient: (id: string) => setState({ gradients: state.gradients.filter((gradient) => gradient.id !== id) })
 }
 
 export const useGlobalContext = (): GlobalContextActions => facade;

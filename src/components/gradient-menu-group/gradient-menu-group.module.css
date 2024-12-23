@@ -1,0 +1,8 @@
+.gradientMenuGroup, .activeGradients {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.activeGradients {
+  flex-direction: column;
+}
