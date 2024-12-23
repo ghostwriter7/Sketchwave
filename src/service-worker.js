@@ -1,4 +1,5 @@
-const randomIdentifier = Math.random().toFixed(3);
+const buildTimestamp = __BUILD_TIMESTAMP__;
+console.log(`Build timestamp: ${buildTimestamp}`);
 
 const externalStyleResource = ['https://fonts.googleapis.com/css2', 'https://fonts.gstatic.com'];
 

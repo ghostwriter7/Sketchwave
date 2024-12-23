@@ -23,7 +23,12 @@ export default defineConfig({
       writeBundle() {
         buildSync({
           minify: false,
-          bundle: true,
+          bundle: false,
+          define: {
+            __BUILD_TIMESTAMP__: JSON.stringify(new Date().toISOString())
+          },
+          format: 'esm',
+          write: true,
           entryPoints: [path.join(process.cwd(), 'src/service-worker.js')],
           outfile: path.join(process.cwd(), 'dist', 'service-worker.js')
         })
