@@ -1,4 +1,5 @@
 .shape-picker {
+  align-items: center;
   display: flex;
   gap: var(--space-md);
   min-width: 220px;
@@ -7,17 +8,17 @@
     align-items: center;
     border-radius: var(--radius);
     border: 1px solid var(--clr-primary);
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, auto);
     gap: var(--space-sm);
     overflow-y: scroll;
     max-width: 171px;
-    max-height: 70px;
+    max-height: 100px;
   }
 
   .modifiers {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
     gap: var(--space-md);
   }
 }

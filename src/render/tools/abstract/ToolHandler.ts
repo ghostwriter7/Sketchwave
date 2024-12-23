@@ -4,7 +4,7 @@ import type { LayerFacade } from '../../LayerFacade.ts';
 import { Logger } from '../../../utils/Logger.ts';
 import { applyToolState } from '../helpers/apply-tool-state.ts';
 import { createCursor } from '../helpers/create-cursor.ts';
-import { useGlobalContext } from '../../../global-provider.tsx';
+import { type GlobalContextState, useGlobalContext } from '../../../global-provider.tsx';
 
 type EventHandler = (event: MouseEvent) => void;
 
@@ -19,6 +19,7 @@ export abstract class ToolHandler {
 
   protected readonly deactivate: () => void;
   protected readonly logger = new Logger(this.constructor as Constructor);
+  protected readonly state: GlobalContextState;
 
   protected get canvas(): HTMLCanvasElement {
     return this.ctx.canvas;
@@ -62,6 +63,8 @@ export abstract class ToolHandler {
 
   protected constructor(protected readonly toolState: ToolState,
                         protected readonly layerFacade: LayerFacade) {
+    const { state } = useGlobalContext();
+    this.state = state;
     this.halfSize = this.toolState.size / 2;
     this.layerFacade.ctx.save();
     applyToolState(this.layerFacade.ctx, toolState);

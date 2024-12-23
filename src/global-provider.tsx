@@ -4,10 +4,13 @@ import { type LayerFacade } from './render/LayerFacade.ts';
 import { Color } from './types/Color.ts';
 import type { Gradient } from './components/gradient-generator/gradient-generator.tsx';
 
+export type AppearanceType = 'transparent' | 'gradient' | 'solid';
+export type ArcType = 'sharp' | 'round';
+
 export interface ToolProperties {
-  round?: boolean;
-  stroke?: boolean;
-  fill?: boolean;
+  arc?: ArcType;
+  outline?: AppearanceType;
+  fill?: AppearanceType;
   shapeType?: ShapeType;
 }
 

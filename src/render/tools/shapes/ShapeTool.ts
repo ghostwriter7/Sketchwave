@@ -56,21 +56,28 @@ export class ShapeTool extends AdjustableToolHandler {
   }
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
-    super(toolState, layerFacade);
+    const roundCorners = toolState.toolProperties!.arc === 'round';
+    super({
+      ...toolState, ...(toolState.toolProperties!.outline === 'solid' && {
+        lineCap: roundCorners ? 'round' : 'square',
+        lineJoin: roundCorners ? 'round' : 'miter'
+      })
+    }, layerFacade);
+
   }
 
   public tryCreateLayer(): void {
     if (!this.startPoint || !this.endPoint) return;
 
     const pathOrPoints = this.getPathOrPoints();
-    const { fill, stroke, round } = this.toolState.toolProperties!;
+    const { fill, outline, arc } = this.toolState.toolProperties!;
     const radius = this.lineWidth / 2;
     const rotate = this.rotateAngleInRadians;
     const startPoint = this.startPoint;
     const { dx, dy } = Point.delta(startPoint, this.endPoint);
 
     this.createLayer((ctx: CanvasRenderingContext2D) =>
-      ShapeTool.render(ctx, pathOrPoints, { fill, stroke, round, radius, rotate, startPoint, width: dx, height: dy })
+      ShapeTool.render(ctx, pathOrPoints, { fill, outline, arc, radius, rotate, startPoint, width: dx, height: dy })
     );
   }
 
@@ -105,11 +112,11 @@ export class ShapeTool extends AdjustableToolHandler {
     super.renderPreview();
 
     const pathOrPoints = this.getPathOrPoints();
-    const { fill, stroke, round } = this.toolState.toolProperties!;
+    const { fill, arc, outline } = this.toolState.toolProperties!;
     ShapeTool.render(this.ctx, pathOrPoints, {
       fill,
-      stroke,
-      round,
+      arc,
+      outline,
       radius: this.lineWidth / 2,
       startPoint: this.startPoint,
       width: this.endPoint.x - this.startPoint.x,
@@ -141,14 +148,14 @@ export class ShapeTool extends AdjustableToolHandler {
                         pathOrPoints: Point[] | Path2D,
                         {
                           fill,
-                          stroke,
+                          arc,
                           radius,
-                          round,
+                          outline,
                           rotate,
                           startPoint,
                           width,
                           height
-                        }: Pick<ToolProperties, 'round' | 'fill' | 'stroke'> & {
+                        }: Pick<ToolProperties, 'arc' | 'fill' | 'outline'> & {
                           radius: number; rotate?: number; startPoint: Point, width: number, height: number
                         }): void {
     if (rotate) {
@@ -158,13 +165,17 @@ export class ShapeTool extends AdjustableToolHandler {
       ctx.rotate(rotate);
       ctx.translate(-centerX, -centerY);
     }
-    if (round && Array.isArray(pathOrPoints)) {
-      fill && ctx.fill(createRoundedPath(pathOrPoints, radius));
-      stroke && ctx.stroke(createPathFromPoints(pathOrPoints));
+
+    const solidFill = fill === 'solid';
+    const solidOutline = outline === 'solid';
+
+    if (arc === 'round' && Array.isArray(pathOrPoints)) {
+      solidFill && ctx.fill(createRoundedPath(pathOrPoints, radius));
+      solidOutline && ctx.stroke(createPathFromPoints(pathOrPoints));
     } else {
       const path = pathOrPoints instanceof Path2D ? pathOrPoints : createPathFromPoints(pathOrPoints);
-      fill && ctx.fill(path);
-      stroke && ctx.stroke(path);
+      solidFill && ctx.fill(path);
+      solidOutline && ctx.stroke(path);
     }
   }
 

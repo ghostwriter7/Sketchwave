@@ -5,7 +5,7 @@ export type SelectProps<T = string | number> = {
   disabled?: Accessor<boolean>;
   options: { disabled?: Accessor<boolean>; label: string; value: T }[];
   label: string;
-  value: T;
+  value: Accessor<T>;
   onChange: (value: T) => void;
 }
 
@@ -25,7 +25,7 @@ export const Select = (props: VoidProps<SelectProps>) => {
           <option
             disabled={disabled?.()}
             value={value}
-            selected={value === props.value}
+            selected={value === props.value()}
           >{label}</option>}
       </For>
     </select>
