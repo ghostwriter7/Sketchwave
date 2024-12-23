@@ -64,10 +64,12 @@ const updateCachableResources = async () => {
 };
 
 self.addEventListener('install',  (event) => {
+  self.skipWaiting();
+
   event.waitUntil((async () => {
     await updateCachableResources();
     return addResourcesToCache(cachableResources);
-  })());
+  })(), clients.claim());
 });
 
 self.addEventListener('activate', async (event) => {
