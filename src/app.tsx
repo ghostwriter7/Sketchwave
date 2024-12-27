@@ -4,7 +4,7 @@ import { MainView } from './components/main-view/main-view.tsx';
 
 const App = () => {
   const KEYBOARD_MAPPING = {
-    'brushes-picker': 'KeyB',
+    brushPicker: 'KeyB',
     eraser: 'KeyE',
     fillSpace: 'KeyF',
     rect: 'KeyR',

@@ -1,30 +1,32 @@
-export const BRUSHES = [
+import type { Options } from '../../types/core.type.ts';
+
+export const BRUSHES: Options = [
   {
     label: 'Brush',
-    id: 'brush'
+    value: 'brush'
   },
   {
     label: 'Airbrush',
-    id: 'airbrush'
+    value: 'airbrush'
   },
   {
     label: 'Calligraphy Brush',
-    id: 'calligraphyBrush'
+    value: 'calligraphyBrush'
   },
   {
     label: 'Pastel Brush',
-    id: 'pastelBrush'
+    value: 'pastelBrush'
   },
   {
     label: 'Marker',
-    id: 'marker'
+    value: 'marker'
   },
   {
     label: 'Beads Brush',
-    id: 'beadsBrush'
+    value: 'beadsBrush'
   },
   {
     label: 'Wiggle Line',
-    id: 'wiggleLineBrush'
+    value: 'wiggleLineBrush'
   }
 ];
