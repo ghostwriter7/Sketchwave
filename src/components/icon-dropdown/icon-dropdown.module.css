@@ -3,5 +3,11 @@
 }
 
 .popover {
+  background: transparent;
+  border: none;
+  inset: unset;
+  padding: 0;
+  left: anchor(left);
+  top: anchor(bottom);
   position: absolute;
 }
