@@ -97,22 +97,28 @@ export class ShapeTool extends AdjustableToolHandler {
   }
 
   protected initializeListeners(): void {
-    this.onClick((event) => {
+    this.onMouseDown((event) => {
+      if (this.isWorking) return;
+
       this.isWorking = true;
-      if (!this.startPoint) {
-        this.startPoint = Point.fromEvent(event);
-      } else {
-        this.endPoint = Point.fromEvent(event);
-        this.renderPreview();
+      this.startPoint = Point.fromEvent(event);
+    });
 
-        this.shapeAdjuster = this.createShapeAdjuster();
+    this.onClick((event) => {
+      const point = Point.fromEvent(event);
+      if (point.x === this.startPoint!.x && point.y === this.startPoint!.y) return;
 
-        const [startPoint, endPoint] = this.getAdjustedStartAndEndPoints();
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
+      this.endPoint = point
+      this.renderPreview();
 
-        this.shapeAdjuster.renderBoxBetweenStartAndEndPoints(startPoint, endPoint);
-      }
+      this.shapeAdjuster = this.createShapeAdjuster();
+
+      const [startPoint, endPoint] = this.getAdjustedStartAndEndPoints();
+      this.startPoint = startPoint;
+      this.endPoint = endPoint;
+
+      this.shapeAdjuster.renderBoxBetweenStartAndEndPoints(startPoint, endPoint);
+
     });
 
     this.onMove((event) => {
