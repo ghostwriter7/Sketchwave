@@ -1,6 +1,6 @@
-import type { Options } from '../../types/core.type.ts';
+import type { BrushType, Options } from '../../types/core.type.ts';
 
-export const BRUSHES: Options = [
+export const BRUSHES: Options<BrushType> = [
   {
     label: 'Brush',
     value: 'brush'

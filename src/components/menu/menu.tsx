@@ -16,7 +16,8 @@ import { PickColorButton } from '../pick-color-button/pick-color-button.tsx';
 import { ColorShortcuts } from '../color-shortcuts/color-shortcuts.tsx';
 import { InstallButton } from '../install-button/install-button.tsx';
 import { GradientMenuGroup } from '../gradient-menu-group/gradient-menu-group.tsx';
-// import { IconDropdown } from '../icon-dropdown/icon-dropdown.tsx';
+import { ROTATE_OPTIONS } from './consts/rotate-options.ts';
+import { IconDropdown } from '../icon-dropdown/icon-dropdown.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -61,28 +62,13 @@ const Menu = () => {
           </button>}
       </For>
       <PickColorButton/>
-      {/*<IconDropdown*/}
-      {/*  icon={'rotate_left'}*/}
-      {/*  options={[*/}
-      {/*    {*/}
-      {/*      icon: 'rotate_left',*/}
-      {/*      label: '90° left',*/}
-      {/*      value: 'rotateLeft'*/}
-      {/*    },*/}
-      {/*    {*/}
-      {/*      icon: 'rotate_right',*/}
-      {/*      label: '90° right',*/}
-      {/*      value: 'rotateRight'*/}
-      {/*    },*/}
-      {/*    {*/}
-      {/*      icon: 'flip',*/}
-      {/*      label: '180°',*/}
-      {/*      value: 'rotate180'*/}
-      {/*    }*/}
-      {/*  ]}*/}
-      {/*  onChange={(o) => console.log(o)}*/}
-      {/*  title={"Rotate Canvas"}*/}
-      {/*/>*/}
+      <IconDropdown
+        id="rotateButton"
+        icon="rotate_left"
+        options={ROTATE_OPTIONS}
+        onChange={(rotateAction) => setActiveTool(rotateAction as ToolType)}
+        title={"Rotate Canvas"}
+      />
     </MenuGroup>
     <span class="divider"></span>
     <MenuGroup label="Brushes (B)">

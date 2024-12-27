@@ -7,19 +7,24 @@ export interface Layer {
   draw(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D): void;
 }
 
-export type ToolType =
+export type RotateAction = 'rotateLeft' | 'rotateRight' | 'flip';
+export type BrushType =
   | 'airbrush'
   | 'beadsBrush'
   | 'brush'
   | 'calligraphyBrush'
-  | 'eraser'
-  | 'fillSpace'
   | 'pastelBrush'
   | 'marker'
+  | 'wiggleLineBrush';
+
+export type ToolType =
+  | 'eraser'
+  | 'fillSpace'
   | 'importImage'
   | 'line'
   | 'shape'
-  | 'wiggleLineBrush';
+  | BrushType
+  | RotateAction;
 
 export type ShapeType = SimpleShapeType | ComplexShapeType;
 
