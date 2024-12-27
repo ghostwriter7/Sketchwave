@@ -16,7 +16,7 @@ import { PickColorButton } from '../pick-color-button/pick-color-button.tsx';
 import { ColorShortcuts } from '../color-shortcuts/color-shortcuts.tsx';
 import { InstallButton } from '../install-button/install-button.tsx';
 import { GradientMenuGroup } from '../gradient-menu-group/gradient-menu-group.tsx';
-import { IconDropdown } from '../icon-dropdown/icon-dropdown.tsx';
+// import { IconDropdown } from '../icon-dropdown/icon-dropdown.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -65,8 +65,19 @@ const Menu = () => {
       {/*  icon={'rotate_left'}*/}
       {/*  options={[*/}
       {/*    {*/}
-      {/*      label: 'Rotate 90 deg left',*/}
+      {/*      icon: 'rotate_left',*/}
+      {/*      label: '90° left',*/}
       {/*      value: 'rotateLeft'*/}
+      {/*    },*/}
+      {/*    {*/}
+      {/*      icon: 'rotate_right',*/}
+      {/*      label: '90° right',*/}
+      {/*      value: 'rotateRight'*/}
+      {/*    },*/}
+      {/*    {*/}
+      {/*      icon: 'flip',*/}
+      {/*      label: '180°',*/}
+      {/*      value: 'rotate180'*/}
       {/*    }*/}
       {/*  ]}*/}
       {/*  onChange={(o) => console.log(o)}*/}
