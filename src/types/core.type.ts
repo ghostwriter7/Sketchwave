@@ -47,4 +47,12 @@ export type Constructor = new (...args: any) => any;
 export type RGBA = [number, number, number, number];
 export type RGB = [number, number, number];
 
+export type OptionValue = string | number;
 
+export type Option<T = OptionValue> = {
+  label: string;
+  value: T;
+  icon?: string;
+}
+
+export type Options<T = OptionValue> = Option<T>[];

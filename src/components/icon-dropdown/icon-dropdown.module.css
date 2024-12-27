@@ -1,0 +1,7 @@
+.wrapper {
+  cursor: pointer;
+}
+
+.popover {
+  position: absolute;
+}

@@ -16,6 +16,7 @@ import { PickColorButton } from '../pick-color-button/pick-color-button.tsx';
 import { ColorShortcuts } from '../color-shortcuts/color-shortcuts.tsx';
 import { InstallButton } from '../install-button/install-button.tsx';
 import { GradientMenuGroup } from '../gradient-menu-group/gradient-menu-group.tsx';
+import { IconDropdown } from '../icon-dropdown/icon-dropdown.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -60,6 +61,17 @@ const Menu = () => {
           </button>}
       </For>
       <PickColorButton/>
+      {/*<IconDropdown*/}
+      {/*  icon={'rotate_left'}*/}
+      {/*  options={[*/}
+      {/*    {*/}
+      {/*      label: 'Rotate 90 deg left',*/}
+      {/*      value: 'rotateLeft'*/}
+      {/*    }*/}
+      {/*  ]}*/}
+      {/*  onChange={(o) => console.log(o)}*/}
+      {/*  title={"Rotate Canvas"}*/}
+      {/*/>*/}
     </MenuGroup>
     <span class="divider"></span>
     <MenuGroup label="Brushes (B)">
@@ -75,7 +87,7 @@ const Menu = () => {
       <ColorShortcuts/>
     </MenuGroup>
     <span class="divider"></span>
-    <GradientMenuGroup />
+    <GradientMenuGroup/>
     <span class="divider"></span>
     <InstallButton/>
   </nav>
