@@ -1,4 +1,4 @@
-import { For, type VoidProps, createUniqueId, Show, onMount, type Accessor, onCleanup } from 'solid-js';
+import { For, type VoidProps, Show, onMount, type Accessor, onCleanup } from 'solid-js';
 import type { Options, OptionValue } from '../../types/core.type.ts';
 import styles from './icon-dropdown.module.css';
 import { Icon } from '../icon/icon.tsx';
@@ -34,11 +34,18 @@ export const IconDropdown = (props: VoidProps<IconDropdownProps>) => {
       classList={{ active: props.isActive?.() }}
       title={props.title}
       popovertarget={popoverId}
+      // @ts-ignore
       style={{ 'anchor-name': anchorName }}
     >
       <Icon icon={props.icon}/>
     </button>
-    <div ref={popoverRef} popover id={popoverId} style={{ 'position-anchor': anchorName }} class={styles.popover}>
+    <div
+      class={styles.popover}
+      id={popoverId}
+      popover
+      ref={popoverRef}
+      // @ts-ignore
+      style={{ 'position-anchor': anchorName }}>
       <Card title={props.title}>
         <div class={styles.options}>
           <For each={props.options}>
