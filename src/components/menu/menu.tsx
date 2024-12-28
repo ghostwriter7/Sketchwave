@@ -1,5 +1,5 @@
 import { useGlobalContext } from '../../global-provider.tsx';
-import './menu.css';
+import styles from './menu.module.css';
 import type { ToolType } from '../../types/core.type.ts';
 import { Logger } from '../../utils/Logger.ts';
 import { ColorPickerInput } from '../color-picker-input/color-picker-input.tsx';
@@ -43,49 +43,53 @@ const Menu = () => {
     }
   };
 
-  return <nav class="menu scroller" onClick={handleClick}>
+  return <nav class={`${styles.menu} scroller`} onClick={handleClick}>
     <MenuGroup label="File">
-      <SaveButton/>
-      <OpenFileButton/>
-      <UndoRedoButton/>
+      <div class={styles.grid}>
+        <SaveButton/>
+        <OpenFileButton/>
+        <UndoRedoButton/>
+      </div>
     </MenuGroup>
-    <span class="divider"></span>
+    <span class={styles.divider}></span>
     <MenuGroup label="View">
       <FullScreenButton/>
     </MenuGroup>
-    <span class="divider"></span>
+    <span class={styles.divider}></span>
     <MenuGroup label="Tools">
-      <For each={buttons}>
-        {({ id, icon, title }) =>
-          <button classList={{ active: state.activeTool === id }} data-tool={id} title={title}>
-            <Icon icon={icon}/>
-          </button>}
-      </For>
-      <PickColorButton/>
-      <IconDropdown
-        id="rotateButton"
-        icon="rotate_left"
-        options={ROTATE_OPTIONS}
-        onChange={(rotateAction) => setActiveTool(rotateAction as ToolType)}
-        title={"Rotate Canvas"}
-      />
+      <div class={styles.grid}>
+        <For each={buttons}>
+          {({ id, icon, title }) =>
+            <button classList={{ active: state.activeTool === id }} data-tool={id} title={title}>
+              <Icon icon={icon}/>
+            </button>}
+        </For>
+        <PickColorButton/>
+        <IconDropdown
+          id="rotateButton"
+          icon="rotate_left"
+          options={ROTATE_OPTIONS}
+          onChange={(rotateAction) => setActiveTool(rotateAction as ToolType)}
+          title={'Rotate Canvas'}
+        />
+      </div>
     </MenuGroup>
-    <span class="divider"></span>
+    <span class={styles.divider}></span>
     <MenuGroup label="Brushes (B)">
       <BrushPicker/>
     </MenuGroup>
-    <span class="divider"></span>
+    <span class={styles.divider}></span>
     <MenuGroup label="Shapes (S)">
       <ShapePicker/>
     </MenuGroup>
-    <span class="divider"></span>
+    <span class={styles.divider}></span>
     <MenuGroup label="Colors">
       <ColorPickerInput/>
       <ColorShortcuts/>
     </MenuGroup>
-    <span class="divider"></span>
+    <span class={styles.divider}></span>
     <GradientMenuGroup/>
-    <span class="divider"></span>
+    <span class={styles.divider}></span>
     <InstallButton/>
   </nav>
 }

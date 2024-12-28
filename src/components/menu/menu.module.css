@@ -7,10 +7,16 @@
   max-height: 150px;
   overflow: auto hidden;
   padding: var(--space-sm);
+}
 
-  .divider {
-    background: var(--bg-active);
-    height: 100%;
-    width: 2px;
-  }
+.divider {
+  background: var(--bg-active);
+  height: 100%;
+  width: 2px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  grid-gap: var(--space-sm);
 }
