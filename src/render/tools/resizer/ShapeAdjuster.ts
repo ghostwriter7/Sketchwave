@@ -1,8 +1,9 @@
-import { Point } from '../../../types/Point.ts';
 import { ThemeHelper } from '../../../utils/ThemeHelper.ts';
 import { toRadians } from '../../../math/to-radians.ts';
 import { RESIZE_ACTIONS, RESIZE_CURSORS } from '../../../types/cursors.ts';
 import type { OnActionFinishHandler, OnCancelHandler, OnChangeHandler } from './types.ts';
+import { Point } from '../../../types/Point.ts';
+import type { Coordinate } from '../../../types/core.type.ts';
 
 type Action = 'move' | 'resize' | 'rotate';
 
@@ -206,7 +207,7 @@ export class ShapeAdjuster {
     this.rotationAngleInRadians = toRadians(this.rotationAngle);
   }
 
-  private adjustAvailableAction(point: Point): void {
+  private adjustAvailableAction(point: Coordinate): void {
     if (this.rotationAngleInRadians) {
       const tempPoint = new DOMPoint(point.x, point.y);
       point = tempPoint.matrixTransform(this.ctx.getTransform().inverse());

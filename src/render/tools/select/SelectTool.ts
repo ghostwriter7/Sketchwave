@@ -15,7 +15,7 @@ export class SelectTool extends AdjustableToolHandler {
     const startPoint = this.startPoint!;
     const endPoint = this.endPoint!;
     const [startX, startY] = this.startPoint;
-    const offscreenCanvas = this.offscreenCtx.canvas;
+    const offscreenCanvas = this.offscreenCtx!.canvas;
     const width = this.boxWidth!;
     const height = this.boxHeight!;
 
@@ -29,7 +29,7 @@ export class SelectTool extends AdjustableToolHandler {
   private imageData?: ImageData;
   private selectionStartPoint?: Point;
   private selectionEndPoint?: Point;
-  private offscreenCtx: OffscreenCanvasRenderingContext2D;
+  private offscreenCtx?: OffscreenCanvasRenderingContext2D;
 
   constructor(toolState: ToolState, layerFacade: LayerFacade) {
     super(toolState, layerFacade);
@@ -79,7 +79,7 @@ export class SelectTool extends AdjustableToolHandler {
       this.ctx.resetTransform();
       this.ctx.clearRect(...this.getOrigin().toArray(), ...this.getDimensions());
       this.rotateCanvas();
-      this.ctx.drawImage(this.offscreenCtx.canvas, ...this.startPoint!.toArray(), this.boxWidth!, this.boxHeight!);
+      this.ctx.drawImage(this.offscreenCtx!.canvas, ...this.startPoint!.toArray(), this.boxWidth!, this.boxHeight!);
     }
   }
 
