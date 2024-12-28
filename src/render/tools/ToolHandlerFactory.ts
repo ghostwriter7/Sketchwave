@@ -14,6 +14,10 @@ import { BeadsBrush } from './brushes/beads-brush/BeadsBrush.ts';
 import { WiggleLineBrush } from './brushes/wiggle-line-brush/WiggleLineBrush.ts';
 import { FillSpace } from './fill-space/FillSpace.ts';
 import { ImportImage } from './import-image/ImportImage.ts';
+import { RotateCCWTool } from './rotate/RotateCCWTool.ts';
+import { RotateCWTool } from './rotate/RotateCWTool.ts';
+import { FlipVerticalTool } from './rotate/FlipVerticalTool.ts';
+import { FlipHorizontalTool } from './rotate/FlipHorizontalTool.ts';
 
 export class ToolHandlerFactory {
   private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
@@ -23,12 +27,16 @@ export class ToolHandlerFactory {
     calligraphyBrush: CalligraphyBrushTool,
     eraser: EraserTool,
     fillSpace: FillSpace,
+    flipHorizontal: FlipHorizontalTool,
+    flipVertical: FlipVerticalTool,
     importImage: ImportImage,
     line: LineTool,
     marker: Marker,
+    rotateCCW: RotateCCWTool,
+    rotateCW: RotateCWTool,
     pastelBrush: PastelBrush,
     shape: ShapeTool,
-    wiggleLineBrush: WiggleLineBrush
+    wiggleLineBrush: WiggleLineBrush,
   }
 
   public static fromToolType(toolType: ToolType, toolState: ToolState, layerFacade: LayerFacade): ToolHandler {

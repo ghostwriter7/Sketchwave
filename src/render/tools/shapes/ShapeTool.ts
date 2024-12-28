@@ -67,7 +67,7 @@ export class ShapeTool extends AdjustableToolHandler {
 
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (!this.startPoint || !this.endPoint) return;
 
     const pathOrPoints = this.getPathOrPoints();

@@ -4,16 +4,21 @@ export const ROTATE_OPTIONS: Options<RotateAction> = [
   {
     icon: 'rotate_left',
     label: '90° left',
-    value: 'rotateLeft'
+    value: 'rotateCCW'
   },
   {
     icon: 'rotate_right',
     label: '90° right',
-    value: 'rotateRight'
+    value: 'rotateCW'
   },
   {
-    icon: 'flip',
-    label: '180°',
-    value: 'flip'
+    icon: 'border_horizontal',
+    label: 'Flip horizontally',
+    value: 'flipHorizontal'
+  },
+  {
+    icon: 'border_vertical',
+    label: 'Flip vertically',
+    value: 'flipVertical'
   }
 ];

@@ -16,6 +16,13 @@ export abstract class ToolHandler {
   protected cursorSize?: number;
   protected customCursorCreateFn?: (ctx: OffscreenCanvasRenderingContext2D) => void;
   protected nativeCursor = 'pointer';
+  protected newWidth?: number;
+  protected newHeight?: number;
+  /**
+   * Tries to create a new layer that should be pushed onto the stack.
+   * Called by a rendering system prior to destroying a tool.
+   */
+  protected tryCreateLayer?: () => void;
 
   protected readonly deactivate: () => void;
   protected readonly logger = new Logger(this.constructor as Constructor);
@@ -79,7 +86,7 @@ export abstract class ToolHandler {
   public onDestroy(): void {
     this.logger.log('Destroying an instance.');
     this.abortController?.abort(`Destroying an instance.`);
-    this.tryCreateLayer();
+    this.tryCreateLayer?.();
     this.canvas.style.cursor = 'pointer';
     if (this.cursorObjectUrl) URL.revokeObjectURL(this.cursorObjectUrl);
     this.layerFacade.ctx.restore();
@@ -95,17 +102,15 @@ export abstract class ToolHandler {
     this.canvas.style.cursor = await this.createCursor();
   }
 
-  /**
-   * Tries to create a new layer that should be pushed onto the stack.
-   * Called by a rendering system prior to destroying a tool.
-   */
-  public abstract tryCreateLayer(): void;
-
   protected createLayer(drawLayerFn: (ctx: CanvasRenderingContext2D) => void): void {
     const toolState = this.toolState;
     const tool = this.name;
+    const canvasWidth = this.newWidth || this.state.width;
+    const canvasHeight = this.newHeight || this.state.height;
 
     this.layerFacade.pushLayer({
+      canvasWidth,
+      canvasHeight,
       tool,
       draw: (ctx: CanvasRenderingContext2D) => {
         applyToolState(ctx, toolState);

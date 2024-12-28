@@ -25,7 +25,7 @@ const Canvas = () => {
   window.ctx = ctx;
 
   setCtx(ctx);
-  const layerFacade = new LayerFacade(state);
+  const layerFacade = new LayerFacade();
   setLayerFacade(layerFacade)
 
   const logger = new Logger('Canvas')

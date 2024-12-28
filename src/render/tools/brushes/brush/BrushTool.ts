@@ -11,7 +11,7 @@ export class BrushTool extends SimpleBrush {
     this.customCursorCreateFn = createSimpleDotCursor(this.colour, this.lineWidth);
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (this.points.length === 0) return;
 
     const points = this.points;

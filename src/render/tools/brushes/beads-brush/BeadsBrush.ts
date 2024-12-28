@@ -13,7 +13,7 @@ export class BeadsBrush extends SimpleBrush {
     this.customCursorCreateFn = createSimpleDotCursor(this.colour, 10);
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (this.points.length < 2) return;
 
     const points = this.points;

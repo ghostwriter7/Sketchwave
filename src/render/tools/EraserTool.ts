@@ -24,7 +24,7 @@ export class EraserTool extends SimpleBrush {
     }, layerFacade);
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (this.points.length === 0) return;
 
     const points = this.points;

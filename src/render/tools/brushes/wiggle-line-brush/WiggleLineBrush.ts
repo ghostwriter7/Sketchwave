@@ -12,7 +12,7 @@ export class WiggleLineBrush extends SimpleBrush {
     super(toolState, layerFacade)
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (this.points.length < 2) return;
 
     const path = this.path;

@@ -1,6 +1,6 @@
 import type { Layer } from '../types/core.type.ts';
 import { Logger } from '../utils/Logger.ts';
-import type { GlobalContextState } from '../global-provider.tsx';
+import { type GlobalContextState, useGlobalContext } from '../global-provider.tsx';
 import { type Accessor, createSignal, type Setter } from 'solid-js';
 import { ThemeHelper } from '../utils/ThemeHelper.ts';
 
@@ -16,27 +16,37 @@ export class LayerFacade {
   private nextLayerIndex = 0;
   private readonly setCanUndo: Setter<boolean>;
   private readonly setCanRedo: Setter<boolean>;
+  private readonly setDimensions: (width: number, height: number) => void;
+  private readonly state: GlobalContextState;
 
   public get ctx(): CanvasRenderingContext2D {
     return this.state.ctx!;
   }
 
-  constructor(private readonly state: GlobalContextState) {
+  constructor() {
+    const { state, setDimensions } = useGlobalContext();
+    this.setDimensions = setDimensions;
+    this.state = state;
+
     const [canUndo, setCanUndo] = createSignal(false);
     const [canRedo, setCanRedo] = createSignal(false);
-
     this.canUndo = canUndo;
     this.canRedo = canRedo;
 
     this.setCanRedo = setCanRedo;
     this.setCanUndo = setCanUndo;
 
+    const width = this.state.width;
+    const height = this.state.height;
+
     this.stack.push({
+      canvasHeight: state.height,
+      canvasWidth: state.width,
       order: this.nextLayerIndex,
       tool: LayerFacade.name,
       draw: (ctx: CanvasRenderingContext2D) => {
         ctx.fillStyle = ThemeHelper.getColor('gray');
-        ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        ctx.fillRect(0, 0, width, height);
       }
     });
     this.nextLayerIndex++;
@@ -65,6 +75,12 @@ export class LayerFacade {
 
   public renderLayers(): void {
     this.logger.log(`Rendering layers...`);
+
+    const { canvasWidth, canvasHeight } = this.stack.at(-1)!;
+    if (canvasWidth != this.state.width || canvasHeight != this.state.height) {
+      this.setDimensions(canvasWidth, canvasHeight);
+    }
+
     this.ctx.putImageData(this.snapshot, 0, 0);
   }
 
@@ -95,8 +111,15 @@ export class LayerFacade {
 
   private createSnapshot(): ImageData {
     const offscreenCanvas = new OffscreenCanvas(this.ctx.canvas.width, this.ctx.canvas.height);
-    const ctx = offscreenCanvas.getContext('2d')!;
+    const ctx = offscreenCanvas.getContext('2d', { willReadFrequently: true})!;
     this.stack.forEach((layer) => {
+      let imageData: ImageData | null = null;
+      if (offscreenCanvas.width !== layer.canvasWidth || offscreenCanvas.height !== layer.canvasHeight) {
+        imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+      }
+      offscreenCanvas.width = layer.canvasWidth;
+      offscreenCanvas.height = layer.canvasHeight;
+      !!imageData && ctx.putImageData(imageData, 0, 0);
       ctx.save();
       layer.draw(ctx);
       ctx.restore();

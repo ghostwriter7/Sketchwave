@@ -20,7 +20,7 @@ export class AirbrushTool extends SimpleBrush {
     super(toolState, layerFacade);
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (this.randomPoints.length === 0) return;
 
     const randomPoints = this.randomPoints;

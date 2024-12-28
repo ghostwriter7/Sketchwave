@@ -31,7 +31,7 @@ export abstract class SimpleBrush extends ToolHandler {
   protected resetState(): void {
     this.isWorking = false;
     if (this.points.length === 0) return;
-    this.tryCreateLayer();
+    this.tryCreateLayer!();
     this.points = [];
     this.lastPointIndex = 0;
   }

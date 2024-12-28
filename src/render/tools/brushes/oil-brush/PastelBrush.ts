@@ -54,7 +54,7 @@ export class PastelBrush extends SimpleBrush {
     this.radius = this.halfSize / 7;
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (this.points.length < 2) return;
 
     const offscreenCanvas = this.offscreenCtx.canvas;

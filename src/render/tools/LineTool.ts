@@ -18,7 +18,7 @@ export class LineTool extends ToolHandler {
     super({ ...toolState, lineJoin: 'round', lineCap: 'round' }, layerFacade);
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (this.points.length <= 1) return;
 
     const path = this.createPath();

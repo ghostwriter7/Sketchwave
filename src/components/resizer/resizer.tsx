@@ -7,7 +7,7 @@ import { ThemeHelper } from '../../utils/ThemeHelper.ts';
 import { RESIZE_CURSORS } from '../../types/cursors.ts';
 
 export const Resizer = () => {
-  const { state, setDimensions } = useGlobalContext();
+  const { state } = useGlobalContext();
 
   const canvasRef = <canvas
     class="resizer"
@@ -164,7 +164,13 @@ export const Resizer = () => {
 
     const { width, height } = getActualCanvasDimensions();
     if (newWidth !== width || newHeight !== height) {
-      setDimensions(newWidth / state.scale, newHeight / state.scale);
+      state.layerFacade!.pushLayer({
+        canvasWidth: newWidth / state.scale,
+        canvasHeight: newHeight / state.scale,
+        tool: 'Resizer',
+        draw(_ctx: CanvasRenderingContext2D) {}
+      });
+      state.layerFacade!.renderLayers();
     }
     isDragging = false;
     canvasRef.style.zIndex = 'unset';

@@ -23,7 +23,7 @@ export class ImportImage extends AdjustableToolHandler {
     this.ctx.drawImage(this.imageBitmap, this.startPoint.x, this.startPoint.y, this.endPoint.x - this.startPoint.x, this.endPoint.y - this.startPoint.y);
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (!this.imageBitmap || !this.startPoint || !this.endPoint) return;
 
     const imageBitmap = this.imageBitmap;

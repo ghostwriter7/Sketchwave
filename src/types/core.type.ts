@@ -1,13 +1,15 @@
 import { Point } from './Point.ts';
 
 export interface Layer {
+  canvasWidth: number;
+  canvasHeight: number;
   order?: number;
   tool: string;
 
   draw(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D): void;
 }
 
-export type RotateAction = 'rotateLeft' | 'rotateRight' | 'flip';
+export type RotateAction = 'rotateCCW' | 'rotateCW' | 'flipHorizontal' | 'flipVertical';
 export type BrushType =
   | 'airbrush'
   | 'beadsBrush'

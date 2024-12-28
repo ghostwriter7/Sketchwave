@@ -14,7 +14,7 @@ export class FillSpace extends ToolHandler {
     super(toolState, layerFacade);
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (!this.updatedImageData) return;
 
     const imageData = this.updatedImageData;

@@ -4,7 +4,7 @@ import { Icon } from '../icon/icon.tsx';
 import { FileHelper } from '../../utils/FileHelper.ts';
 
 export const OpenFileButton = () => {
-  const { state, setDimensions } = useGlobalContext();
+  const { state } = useGlobalContext();
   const logger = new Logger('OpenFileButton');
 
   const tryGetImageBitmap = async (): Promise<ImageBitmap | null> => {
@@ -35,12 +35,11 @@ export const OpenFileButton = () => {
         const scaleFactor = Math.min(maxWidth / width, maxHeight / height);
         updatedWidth = width * scaleFactor;
         updatedHeight = height * scaleFactor;
-        setDimensions(updatedWidth, updatedHeight);
-      } else {
-        setDimensions(width, height);
       }
 
       state.layerFacade!.pushLayer({
+        canvasWidth: updatedWidth,
+        canvasHeight: updatedHeight,
         tool: 'OpenFileButton',
         draw: (ctx: CanvasRenderingContext2D) =>
           ctx.drawImage(imageBitmap, 0, 0, imageBitmap.width, imageBitmap.height, 0, 0,

@@ -30,7 +30,7 @@ export class CalligraphyBrushTool extends SimpleBrush {
     applyToolState(this.offscreenCtx, this.toolState);
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (this.points.length == 0) return;
 
     const points = this.points;

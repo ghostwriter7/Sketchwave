@@ -36,7 +36,7 @@ export class Marker extends SimpleBrush {
     super({ ...toolState, fillStyle: new Color(...toolState.rgb, 0.01).toString() }, layerFacade);
   }
 
-  public tryCreateLayer(): void {
+  protected tryCreateLayer = () => {
     if (this.points.length == 0) return;
     const points = this.points;
     const radius = this.halfSize;
