@@ -35,7 +35,6 @@ export class ShapeAdjusterBuilder {
   }
 
   public setScale(scale: number): this {
-    this.shapeAdjuster.scale = scale;
     this.shapeAdjuster.canvas.style.transform = `scale(${scale})`;
     return this;
   }
@@ -50,6 +49,11 @@ export class ShapeAdjusterBuilder {
     Object.entries(styles).forEach(([property, value]) =>
       /* @ts-ignore */
       this.shapeAdjuster.canvas.style[property] = value);
+    return this;
+  }
+
+  public withCompleteOnNonActionClickDisabled(): this {
+    this.shapeAdjuster.completeOnNonActionClick = false;
     return this;
   }
 

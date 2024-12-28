@@ -8,7 +8,7 @@ type Action = 'move' | 'resize' | 'rotate';
 
 export class ShapeAdjuster {
   public minimalSize: number = 10;
-  public scale: number = 1;
+  public completeOnNonActionClick = true;
   public rotationEnabled = true;
   public moveEnabled = true;
   public drawDashedBoxAtInit = true;
@@ -145,8 +145,8 @@ export class ShapeAdjuster {
 
     this.canvas.addEventListener('mousedown', this.handleClick.bind(this), options)
     this.canvas.addEventListener('mouseup', () => {
+      this.activeAction && this.onActionFinishHandler?.();
       this.activeAction = undefined;
-      this.onActionFinishHandler?.();
     }, options)
     this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this), options);
     document.body.addEventListener('keydown', ({ code }: KeyboardEvent) => {
@@ -169,7 +169,7 @@ export class ShapeAdjuster {
       this.activeAction = this.availableAction;
       this.previousActionPoint = Point.fromEvent(event);
     } else {
-      this.complete();
+      this.completeOnNonActionClick && this.complete();
     }
   }
 

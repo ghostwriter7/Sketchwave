@@ -18,6 +18,7 @@ export class LayerFacade {
   private readonly setCanRedo: Setter<boolean>;
   private readonly setDimensions: (width: number, height: number) => void;
   private readonly state: GlobalContextState;
+  private readonly background = ThemeHelper.getColor('gray');
 
   public get ctx(): CanvasRenderingContext2D {
     return this.state.ctx!;
@@ -47,7 +48,7 @@ export class LayerFacade {
       order: this.nextLayerIndex,
       tool: LayerFacade.name,
       draw: (ctx: CanvasRenderingContext2D) => {
-        ctx.fillStyle = ThemeHelper.getColor('gray');
+        ctx.fillStyle = this.background;
         ctx.fillRect(0, 0, width, height);
       }
     });
@@ -129,7 +130,7 @@ export class LayerFacade {
         const imageData = ctx.getImageData(originX!, originY!, canvasWidth, canvasHeight);
         offscreenCanvas.width = canvasWidth;
         offscreenCanvas.height = canvasHeight;
-        imageData && ctx.putImageData(imageData, 0, 0);
+        ctx.putImageData(imageData, 0, 0);
       }
 
       ctx.save();

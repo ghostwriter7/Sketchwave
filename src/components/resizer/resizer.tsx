@@ -45,20 +45,19 @@ export const Resizer = () => {
       .withRotationDisabled()
       .withMoveDisabled()
       .withoutDashedBoxAtInit()
+      .withCompleteOnNonActionClickDisabled()
       .setDimensions(
         state.resizableDimensions.width,
         state.resizableDimensions.height
       )
-      // .setStyles({ transform: 'translate(-50%, -50%)' })
-      .setScale(state.scale)
       .setOnActionFinish(() => shapeAdjuster.complete())
       .setOnChange(() => resizerRef.style.zIndex = '100')
       .setOnComplete((origin, width, height) => {
           state.layerFacade!.pushLayer({
-            originX: origin.x - originX,
-            originY: origin.y - originY,
-            canvasWidth: width,
-            canvasHeight: height,
+            originX: (origin.x / state.scale) - originX,
+            originY: (origin.y / state.scale) - originY,
+            canvasWidth: width / state.scale,
+            canvasHeight: height / state.scale,
             tool: 'Resizer',
             draw: noop
           });
