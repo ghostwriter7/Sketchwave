@@ -2,10 +2,22 @@ import { Point } from '../../../types/Point.ts';
 import { ThemeHelper } from '../../../utils/ThemeHelper.ts';
 import { toRadians } from '../../../math/to-radians.ts';
 import { RESIZE_ACTIONS, RESIZE_CURSORS } from '../../../types/cursors.ts';
+import type { OnActionFinishHandler, OnCancelHandler, OnChangeHandler } from './types.ts';
 
 type Action = 'move' | 'resize' | 'rotate';
 
 export class ShapeAdjuster {
+  public minimalSize: number = 10;
+  public scale: number = 1;
+  public rotationEnabled = true;
+  public moveEnabled = true;
+  public drawDashedBoxAtInit = true;
+  public onActionFinishHandler?: OnActionFinishHandler;
+  public onChangeHandler?: OnChangeHandler;
+  public onCompleteHandler?: OnChangeHandler;
+  public onCancelHandler?: OnCancelHandler;
+  public readonly canvas: HTMLCanvasElement;
+
   private activeAction?: Action;
   private previousActionPoint?: Point;
   private availableAction?: Action;
@@ -14,13 +26,12 @@ export class ShapeAdjuster {
   private boxHeight!: number;
   private resizePoints!: Point[];
   private rotationAngle = 0;
-  private rotationAngleInRadians = 0;
 
+  private rotationAngleInRadians = 0;
   private rotateHandleOrigin!: Point;
   private rotateHandleDimension = 20;
 
   private readonly abortController = new AbortController();
-  private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
 
   private readonly indicatorDimension = 10;
@@ -30,23 +41,14 @@ export class ShapeAdjuster {
   private readonly cursors = RESIZE_CURSORS;
   private readonly cursorActionMap = RESIZE_ACTIONS;
 
-  constructor(
-    private readonly rootCanvas: HTMLCanvasElement,
-    private readonly onChange: (origin: Point, width: number, height: number, angle: number,) => void,
-    private readonly onComplete: () => void,
-    private readonly onCancel: () => void,
-    private readonly minimalSize: number,
-    private readonly scale: number,
-    width: number,
-    height: number,
-  ) {
+  public set container(container: HTMLElement) {
+    container.appendChild(this.canvas);
+  }
+
+  constructor() {
     this.canvas = document.createElement('canvas');
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.canvas.style.transform = `scale(${this.scale})`;
-    this.ctx = this.canvas.getContext('2d')!;
     this.canvas.classList.add('shape-resizer');
-    this.rootCanvas.parentNode!.appendChild(this.canvas);
+    this.ctx = this.canvas.getContext('2d')!;
   }
 
   public destroy(): void {
@@ -60,7 +62,7 @@ export class ShapeAdjuster {
     this.boxHeight = endPoint.y - origin.y;
     this.ctx.strokeStyle = ThemeHelper.getColor('clr-primary');
 
-    this.drawBoxAndControls();
+    this.drawBoxAndControls(true);
     this.initializeEventListeners();
   }
 
@@ -70,7 +72,7 @@ export class ShapeAdjuster {
     this.ctx.strokeRect(this.origin.x, this.origin.y, this.boxWidth, this.boxHeight);
   }
 
-  private drawBoxAndControls(): void {
+  private drawBoxAndControls(isInitialization = false): void {
     this.ctx.resetTransform();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -81,9 +83,10 @@ export class ShapeAdjuster {
       this.ctx.translate(-centerX, -centerY);
     }
 
-    this.drawDashedBox();
+    (!isInitialization || this.drawDashedBoxAtInit) && this.drawDashedBox();
     this.drawResizeIndicators();
-    this.drawRotateHandle();
+
+    if (this.rotationEnabled) this.drawRotateHandle();
   }
 
   private drawRotateHandle(): void {
@@ -141,20 +144,23 @@ export class ShapeAdjuster {
     const options = { signal: this.abortController.signal };
 
     this.canvas.addEventListener('mousedown', this.handleClick.bind(this), options)
-    this.canvas.addEventListener('mouseup', () => this.activeAction = undefined, options)
+    this.canvas.addEventListener('mouseup', () => {
+      this.activeAction = undefined;
+      this.onActionFinishHandler?.();
+    }, options)
     this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this), options);
     document.body.addEventListener('keydown', ({ code }: KeyboardEvent) => {
       if (['Escape', 'Enter'].includes(code)) {
         this.complete();
       } else if (code === 'Delete') {
-        this.onCancel();
+        this.onCancelHandler?.();
         this.destroy();
       }
     }, options);
   }
 
-  private complete(): void {
-    this.onComplete();
+  public complete(): void {
+    this.onCompleteHandler?.(this.origin, this.boxWidth, this.boxHeight, this.rotationAngleInRadians);
     this.destroy();
   }
 
@@ -191,7 +197,7 @@ export class ShapeAdjuster {
     }
 
     this.drawBoxAndControls();
-    this.onChange(this.origin, this.boxWidth, this.boxHeight, this.rotationAngleInRadians);
+    this.onChangeHandler?.(this.origin, this.boxWidth, this.boxHeight, this.rotationAngleInRadians);
   }
 
   private handleRotateAction(dx: number): void {
@@ -206,10 +212,11 @@ export class ShapeAdjuster {
       point = tempPoint.matrixTransform(this.ctx.getTransform().inverse());
     }
 
-    if (Point.isWithinBoundingBox(point, this.rotateHandleOrigin, this.rotateHandleDimension, this.rotateHandleDimension)) {
+    if (this.rotationEnabled
+      && Point.isWithinBoundingBox(point, this.rotateHandleOrigin, this.rotateHandleDimension, this.rotateHandleDimension)) {
       this.canvas.style.cursor = 'grab';
       this.availableAction = 'rotate';
-    } else if (Point.isWithinBoundingBox(point, this.origin, this.boxWidth, this.boxHeight)) {
+    } else if (this.moveEnabled && Point.isWithinBoundingBox(point, this.origin, this.boxWidth, this.boxHeight)) {
       this.canvas.style.cursor = 'move';
       this.availableAction = 'move';
     } else {

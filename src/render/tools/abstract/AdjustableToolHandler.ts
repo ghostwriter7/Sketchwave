@@ -1,6 +1,7 @@
 import { ToolHandler } from './ToolHandler.ts';
 import { ShapeAdjuster } from '../resizer/ShapeAdjuster.ts';
 import { Point } from '../../../types/Point.ts';
+import { ShapeAdjusterBuilder } from '../resizer/ShapeAdjusterBuilder.ts';
 
 export abstract class AdjustableToolHandler extends ToolHandler {
   protected startPoint?: Point;
@@ -16,16 +17,16 @@ export abstract class AdjustableToolHandler extends ToolHandler {
   }
 
   protected createShapeAdjuster(): ShapeAdjuster {
-    return new ShapeAdjuster(
-      this.layerFacade.ctx.canvas,
-      this.handleShapeAdjustment.bind(this),
-      this.onComplete.bind(this),
-      this.onCancel.bind(this),
-      this.MINIMAL_SIZE,
-      this.scale,
-      this.width,
-      this.height,
-    );
+    return new ShapeAdjusterBuilder()
+      .insertAt(this.layerFacade.ctx.canvas.parentElement!)
+      .setOnChange(this.handleShapeAdjustment.bind(this))
+      .setOnComplete(this.onComplete.bind(this))
+      .setOnCancel(this.onCancel.bind(this))
+      .setMinimalSize(this.MINIMAL_SIZE)
+      .setScale(this.scale)
+      .setDimensions(this.width, this.height)
+      .setStyles({ positionAnchor: '--mainCanvas', top: 'anchor(top)', left: 'anchor(left)' })
+      .build();
   }
 
   protected handleShapeAdjustment(origin: Point, width: number, height: number, angle: number): void {

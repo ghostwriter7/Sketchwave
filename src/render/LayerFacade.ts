@@ -40,6 +40,8 @@ export class LayerFacade {
     const height = this.state.height;
 
     this.stack.push({
+      originX: 0,
+      originY: 0,
       canvasHeight: state.height,
       canvasWidth: state.width,
       order: this.nextLayerIndex,
@@ -62,7 +64,14 @@ export class LayerFacade {
   }
 
   public pushLayer(layer: Layer): void {
-    this.stack.push({ ...layer, order: this.nextLayerIndex });
+    this.stack.push({
+      ...layer,
+      order: this.nextLayerIndex,
+      canvasWidth: Math.floor(layer.canvasWidth),
+      canvasHeight: Math.floor(layer.canvasHeight),
+      originX: layer.originX || 0,
+      originY: layer.originY || 0,
+    });
     this.nextLayerIndex++;
     this.logger.log(`A new layer created by ${layer.tool}. Current count: ${this.stack.length}`);
     this.refreshSnapshot();
@@ -111,19 +120,23 @@ export class LayerFacade {
 
   private createSnapshot(): ImageData {
     const offscreenCanvas = new OffscreenCanvas(this.ctx.canvas.width, this.ctx.canvas.height);
-    const ctx = offscreenCanvas.getContext('2d', { willReadFrequently: true})!;
+    const ctx = offscreenCanvas.getContext('2d', { willReadFrequently: true })!;
+
     this.stack.forEach((layer) => {
-      let imageData: ImageData | null = null;
-      if (offscreenCanvas.width !== layer.canvasWidth || offscreenCanvas.height !== layer.canvasHeight) {
-        imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+      const { canvasWidth, canvasHeight, originX, originY } = layer;
+
+      if (offscreenCanvas.width !== canvasWidth || offscreenCanvas.height !== canvasHeight) {
+        const imageData = ctx.getImageData(originX!, originY!, canvasWidth, canvasHeight);
+        offscreenCanvas.width = canvasWidth;
+        offscreenCanvas.height = canvasHeight;
+        imageData && ctx.putImageData(imageData, 0, 0);
       }
-      offscreenCanvas.width = layer.canvasWidth;
-      offscreenCanvas.height = layer.canvasHeight;
-      !!imageData && ctx.putImageData(imageData, 0, 0);
+
       ctx.save();
       layer.draw(ctx);
       ctx.restore();
     });
+
     return ctx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height);
   }
 }

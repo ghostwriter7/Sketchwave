@@ -58,4 +58,8 @@ declare global {
     prompt: () => Promise<void>;
     userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
   }
+
+  interface CSSStyleDeclaration {
+    positionAnchor?: string;
+  }
 }

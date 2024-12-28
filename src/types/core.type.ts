@@ -1,6 +1,8 @@
 import { Point } from './Point.ts';
 
 export interface Layer {
+  originX?: number;
+  originY?: number;
   canvasWidth: number;
   canvasHeight: number;
   order?: number;

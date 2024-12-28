@@ -100,7 +100,7 @@ const [state, setState] = createStore<GlobalContextState>({
   currentMouseX: null,
   currentMouseY: null,
   gradients: [],
-  height: innerHeight * 0.7,
+  height: Math.floor(innerHeight * 0.7),
   layerFacade: null,
   scale: 1,
   size: 3,
@@ -108,7 +108,7 @@ const [state, setState] = createStore<GlobalContextState>({
     height: 0,
     width: 0,
   },
-  width: innerWidth * 0.8
+  width: Math.floor(innerWidth * 0.8)
 });
 
 const facade: GlobalContextActions = {
