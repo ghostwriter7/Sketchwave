@@ -18,6 +18,7 @@ export abstract class ToolHandler {
   protected nativeCursor = 'pointer';
   protected newWidth?: number;
   protected newHeight?: number;
+  protected recreate: () => void;
   /**
    * Tries to create a new layer that should be pushed onto the stack.
    * Called by a rendering system prior to destroying a tool.
@@ -77,6 +78,11 @@ export abstract class ToolHandler {
     applyToolState(this.layerFacade.ctx, toolState);
     const { setActiveTool } = useGlobalContext();
     this.deactivate = () => setActiveTool();
+    this.recreate = () => {
+      const toolName = state.activeTool;
+      this.deactivate();
+      setActiveTool(toolName);
+    };
   }
 
   /**

@@ -42,16 +42,18 @@ declare global {
     toTitleCase(): string;
   }
 
-  interface CreateGradient {
+
+  interface CommonCanvasExtension {
     createGradient(gradient: Gradient, origin: Point, width: number, height: number): CanvasGradient;
-  }
 
-  interface OffscreenCanvasRenderingContext2D extends CreateGradient {
-  }
-
-  interface CanvasRenderingContext2D extends CreateGradient {
-    getColorFromPixel(x: number, y: number): Color;
     rotateCanvas(origin: Point, radians: number): void;
+  }
+
+  interface OffscreenCanvasRenderingContext2D extends CommonCanvasExtension {
+  }
+
+  interface CanvasRenderingContext2D extends CommonCanvasExtension {
+    getColorFromPixel(x: number, y: number): Color;
   }
 
   interface BeforeInstallPromptEvent extends Event {

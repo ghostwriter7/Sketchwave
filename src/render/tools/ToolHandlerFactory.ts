@@ -18,6 +18,7 @@ import { RotateCCWTool } from './rotate/RotateCCWTool.ts';
 import { RotateCWTool } from './rotate/RotateCWTool.ts';
 import { FlipVerticalTool } from './rotate/FlipVerticalTool.ts';
 import { FlipHorizontalTool } from './rotate/FlipHorizontalTool.ts';
+import { SelectTool } from './select/SelectTool.ts';
 
 export class ToolHandlerFactory {
   private static readonly toolKeyToTypeMap: Record<ToolType, new (toolState: ToolState, layerFacade: LayerFacade) => ToolHandler> = {
@@ -35,6 +36,7 @@ export class ToolHandlerFactory {
     rotateCCW: RotateCCWTool,
     rotateCW: RotateCWTool,
     pastelBrush: PastelBrush,
+    select: SelectTool,
     shape: ShapeTool,
     wiggleLineBrush: WiggleLineBrush,
   }

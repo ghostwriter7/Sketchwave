@@ -26,6 +26,7 @@ export type ToolType =
   | 'fillSpace'
   | 'importImage'
   | 'line'
+  | 'select'
   | 'shape'
   | BrushType
   | RotateAction;

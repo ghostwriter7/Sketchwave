@@ -7,7 +7,7 @@ CanvasRenderingContext2D.prototype.getColorFromPixel = function (x: number, y: n
   return new Color(red, green, blue, alpha);
 }
 
-CanvasRenderingContext2D.prototype.rotateCanvas = function (origin: Point, radians: number): void {
+OffscreenCanvasRenderingContext2D.prototype.rotateCanvas = CanvasRenderingContext2D.prototype.rotateCanvas = function (origin: Point, radians: number): void {
   this.resetTransform();
   this.translate(origin.x, origin.y);
   this.rotate(radians);

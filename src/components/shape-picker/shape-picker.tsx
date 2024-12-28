@@ -110,6 +110,8 @@ export const ShapePicker = () => {
     const activeTool = state.activeTool;
     if (activeTool !== 'shape') {
       setShapePickerState('shape', null);
+    } else {
+      setShapePickerState('shape', state.toolProperties!.shapeType!);
     }
   });
 

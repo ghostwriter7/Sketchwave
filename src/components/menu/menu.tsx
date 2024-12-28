@@ -28,6 +28,7 @@ const Menu = () => {
     { id: 'eraser', icon: 'ink_eraser', title: 'Eraser (E)' },
     { id: 'fillSpace', icon: 'format_color_fill', title: 'Fill Space (F)' },
     { id: 'importImage', icon: 'add_photo_alternate', title: 'Import Image (CTRL + I)' },
+    { id: 'select', icon: 'select_all', title: 'Select' }
   ];
 
   const getAttributeValue = (element: HTMLElement, name: string): string | null | undefined =>

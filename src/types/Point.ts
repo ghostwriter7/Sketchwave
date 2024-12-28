@@ -1,6 +1,15 @@
-export class Point {
+export class Point implements Iterable<number>{
   constructor(public readonly x: number,
               public readonly y: number) {
+  }
+
+  public *[Symbol.iterator](): Generator<number> {
+    yield this.x;
+    yield this.y;
+  }
+
+  public toArray(): [number, number] {
+    return [this.x, this.y];
   }
 
   public static delta(startPoint: Point, endPoint: Point): { dx: number; dy: number; } {

@@ -8,6 +8,8 @@ export abstract class AdjustableToolHandler extends ToolHandler {
   protected endPoint?: Point;
   protected rotateAngleInRadians?: number;
   protected shapeAdjuster?: ShapeAdjuster;
+  protected boxWidth?: number;
+  protected boxHeight?: number;
 
   protected MINIMAL_SIZE = 30;
 
@@ -31,17 +33,25 @@ export abstract class AdjustableToolHandler extends ToolHandler {
 
   protected handleShapeAdjustment(origin: Point, width: number, height: number, angle: number): void {
     this.startPoint = origin;
+    this.boxWidth = width;
+    this.boxHeight = height;
     this.endPoint = new Point(origin.x + width, origin.y + height);
     this.rotateAngleInRadians = angle;
-    this.ctx.rotateCanvas( Point.midPoint(this.startPoint, this.endPoint), angle);
+    this.rotateCanvas();
     this.renderPreview();
   }
 
-  protected abstract onComplete(): void;
+  protected onComplete(): void {
+    this.recreate();
+  };
 
   protected onCancel(): void {
     this.startPoint = this.endPoint = undefined;
     this.layerFacade.renderLayers();
     this.deactivate();
+  }
+
+  protected rotateCanvas(): void {
+    this.ctx.rotateCanvas(Point.midPoint(this.startPoint!, this.endPoint!), this.rotateAngleInRadians!);
   }
 }

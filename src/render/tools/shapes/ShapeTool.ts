@@ -118,7 +118,6 @@ export class ShapeTool extends AdjustableToolHandler {
       this.endPoint = endPoint;
 
       this.shapeAdjuster.renderBoxBetweenStartAndEndPoints(startPoint, endPoint);
-
     });
 
     this.onMove((event) => {
@@ -149,16 +148,6 @@ export class ShapeTool extends AdjustableToolHandler {
       fillGradient,
       outlineGradient
     });
-  }
-
-  protected onComplete(): void {
-    if (!this.isWorking) return;
-    this.tryCreateLayer();
-    this.isWorking = false;
-    this.startPoint = undefined;
-    this.endPoint = undefined;
-    this.rotateAngleInRadians = undefined;
-    this.ctx.resetTransform();
   }
 
   private getPathOrPoints(): Path2D | Point[] {
