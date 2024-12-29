@@ -18,6 +18,7 @@ import { InstallButton } from '../install-button/install-button.tsx';
 import { GradientMenuGroup } from '../gradient-menu-group/gradient-menu-group.tsx';
 import { ROTATE_OPTIONS } from './consts/rotate-options.ts';
 import { IconDropdown } from '../icon-dropdown/icon-dropdown.tsx';
+import { NewProjectButton } from '../new-project-button/new-project-button.tsx';
 
 const Menu = () => {
   const logger = new Logger('Menu');
@@ -47,6 +48,7 @@ const Menu = () => {
   return <nav class={`${styles.menu} scroller`} onClick={handleClick}>
     <MenuGroup label="File">
       <div class={styles.grid}>
+        <NewProjectButton />
         <SaveButton/>
         <OpenFileButton/>
         <UndoRedoButton/>

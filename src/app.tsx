@@ -3,7 +3,8 @@ import { CanvasSummary } from './components/canvas-summary/canvas-summary.tsx';
 import { MainView } from './components/main-view/main-view.tsx';
 
 const App = () => {
-  const KEYBOARD_MAPPING = {
+  const KEYBOARD_MAPPING: Record<string, string | { key: string, ctrl?: boolean; shift?: boolean; }> = {
+    newProject: { key: 'KeyN', shift: true },
     brushPicker: 'KeyB',
     eraser: 'KeyE',
     fillSpace: 'KeyF',
@@ -24,12 +25,12 @@ const App = () => {
   }
 
   document.addEventListener('keydown', (event) => {
-    const { code, ctrlKey } = event;
+    const { code, ctrlKey, shiftKey } = event;
     const matchingActionKey = Object.entries(KEYBOARD_MAPPING).find(([_, value]) => {
       if (typeof value === 'string') {
         return code === value && !ctrlKey;
       }
-      return value.key === code && (!value.ctrl || ctrlKey);
+      return value.key === code && (!value.ctrl || ctrlKey) && (!value.shift || shiftKey);
     })?.[0];
 
     if (matchingActionKey) {

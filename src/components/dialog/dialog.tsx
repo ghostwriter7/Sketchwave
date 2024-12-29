@@ -8,7 +8,7 @@ export type DialogApi = {
 }
 
 export const Dialog = (props: ParentProps<{
-  setRef: (ref: { close: () => void; open: () => void }) => void;
+  setRef: (ref: DialogApi) => void;
   title?: string;
 }>) => {
   let dialogRef!: HTMLDialogElement;
