@@ -1,5 +1,3 @@
-mod utils;
-
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -8,6 +6,7 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn greet() {
-    alert("Hello, canvas-backend!");
+pub fn greet(name: &str) {
+    alert(&format!("Hello, {}!", name));
 }
+

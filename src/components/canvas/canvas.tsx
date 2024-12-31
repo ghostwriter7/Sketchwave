@@ -27,6 +27,7 @@ const Canvas = () => {
       const file = item.getAsFile()!;
       const imageBitmap = await createImageBitmap(file);
 
+      layerFacade.clearLayers();
       layerFacade.pushLayer({
         canvasWidth: imageBitmap.width,
         canvasHeight: imageBitmap.height,

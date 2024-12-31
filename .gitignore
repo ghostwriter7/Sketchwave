@@ -22,6 +22,8 @@ dist-ssr
 *.sw?
 .vercel
 
-canvas-backend/cmake-build-debug
-canvas-backend/.idea
-public/library.wasm
+extension/dist
+extension/node_modules
+
+canvas-backend/pkg
+canvas-backend/target
