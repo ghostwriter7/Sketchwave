@@ -15,7 +15,9 @@
 }
 
 .body {
+  display: flex;
   overflow: auto;
+  flex: 1;
 }
 
 .closeButton {

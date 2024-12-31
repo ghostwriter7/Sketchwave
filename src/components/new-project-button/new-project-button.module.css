@@ -1,0 +1,16 @@
+.content {
+  width: 100%;
+}
+
+.content, .form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form {
+  flex: 1;
+}
+
+.saveButton {
+  align-self: flex-end;
+}
