@@ -14,11 +14,35 @@ const Canvas = () => {
   const canvasRef = <canvas
     class="canvas"
     height={state.height}
-    style={{ transform: `scale(${state.scale})`}}
+    style={{ transform: `scale(${state.scale})` }}
     width={state.width}
     onMouseLeave={() => setMousePos(null, null)}
     onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY)}>
   </canvas> as HTMLCanvasElement;
+
+  document.addEventListener('paste', async ({ clipboardData }: ClipboardEvent) => {
+    const item = Array.from(clipboardData!.items).find(({ type }) => type.includes('image'));
+
+    if (item) {
+      const file = item.getAsFile()!;
+      const imageBitmap = await createImageBitmap(file);
+
+      layerFacade.pushLayer({
+        canvasWidth: imageBitmap.width,
+        canvasHeight: imageBitmap.height,
+        draw: (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) => ctx.drawImage(imageBitmap, 0, 0),
+        tool: 'Clipboard'
+      });
+      layerFacade.renderLayers();
+    }
+  });
+
+  document.addEventListener('copy', () => {
+    canvasRef.toBlob((blob) => {
+      const file = new File([blob!], 'clipboardImage.png', { type: 'image/png' });
+      navigator.clipboard.write([new ClipboardItem({ 'image/png': file })]);
+    });
+  });
 
   const ctx = canvasRef.getContext('2d', { willReadFrequently: true })!
 
