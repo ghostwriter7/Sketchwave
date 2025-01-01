@@ -5,5 +5,16 @@
   "manifest_version": 3,
   "action": {
     "default_popup": "index.html"
+  },
+  "host_permissions": ["<all_urls>"],
+  "permissions": ["tabs", "activeTab"],
+  "content_scripts": [
+    {
+      "js": ["contentScript.js"],
+      "matches": ["https://*/*"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
   }
 }
