@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "watch": "nodemon --ignore \"./dist\" --ext ts,html,css --exec \"npm run build\""
   },
   "devDependencies": {
     "@types/chrome": "^0.0.287",
