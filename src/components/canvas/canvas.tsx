@@ -7,6 +7,7 @@ import { ToolHandlerFactory } from '../../render/tools/ToolHandlerFactory.ts';
 import './canvas.css';
 import { Logger } from '../../utils/Logger.ts';
 import { ScaleChangeEvent } from '../../types/events.ts';
+import { ClipboardManager } from './ClipboardManager.ts';
 
 const Canvas = () => {
   const { state, setCtx, setLayerFacade, setMousePos } = useGlobalContext();
@@ -20,38 +21,16 @@ const Canvas = () => {
     onMouseMove={(event) => setMousePos(event.offsetX, event.offsetY)}>
   </canvas> as HTMLCanvasElement;
 
-  document.addEventListener('paste', async ({ clipboardData }: ClipboardEvent) => {
-    const item = Array.from(clipboardData!.items).find(({ type }) => type.includes('image'));
-
-    if (item) {
-      const file = item.getAsFile()!;
-      const imageBitmap = await createImageBitmap(file);
-
-      layerFacade.clearLayers();
-      layerFacade.pushLayer({
-        canvasWidth: imageBitmap.width,
-        canvasHeight: imageBitmap.height,
-        draw: (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) => ctx.drawImage(imageBitmap, 0, 0),
-        tool: 'Clipboard'
-      });
-      layerFacade.renderLayers();
-    }
-  });
-
-  document.addEventListener('copy', () => {
-    canvasRef.toBlob((blob) => {
-      const file = new File([blob!], 'clipboardImage.png', { type: 'image/png' });
-      navigator.clipboard.write([new ClipboardItem({ 'image/png': file })]);
-    });
-  });
-
   const ctx = canvasRef.getContext('2d', { willReadFrequently: true })!
 
   window.ctx = ctx;
 
   setCtx(ctx);
   const layerFacade = new LayerFacade();
-  setLayerFacade(layerFacade)
+  setLayerFacade(layerFacade);
+
+  const clipboardManager = new ClipboardManager(layerFacade);
+  clipboardManager.initialize();
 
   const logger = new Logger('Canvas')
 
