@@ -47,7 +47,7 @@ const Canvas = () => {
       }
       image.src = dataUrl;
     }
-  })
+  });
 
   const clipboardManager = new ClipboardManager(layerFacade);
   clipboardManager.initialize();

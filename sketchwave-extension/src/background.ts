@@ -8,9 +8,8 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         await chrome.scripting.executeScript({
           args: [result],
           func: (dataUrl: string) => localStorage.setItem('injectedDataUrl', dataUrl),
-          target: {
-            tabId: tab.id!
-          }
+          target: { tabId: tab.id! },
+          injectImmediately: true
         });
         sendResponse({ success: true });
       }
