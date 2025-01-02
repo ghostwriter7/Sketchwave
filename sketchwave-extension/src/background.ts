@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         const tab = await chrome.tabs.create({ url: `https://sketchwave.vercel.app` });
         await chrome.scripting.executeScript({
           args: [result],
-          func: (dataUrl: string) => localStorage.setItem('injectedDataUrl', dataUrl),
+          func: (dataUrl: string) => sessionStorage.setItem('dataUrl', dataUrl),
           target: { tabId: tab.id! },
           injectImmediately: true
         });

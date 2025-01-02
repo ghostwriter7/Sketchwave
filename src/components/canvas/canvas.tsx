@@ -30,10 +30,9 @@ const Canvas = () => {
   setLayerFacade(layerFacade);
 
   setTimeout(() => {
-    const dataUrl = localStorage.getItem('injectedDataUrl');
-    console.log('dataUrl', dataUrl);
+    const dataUrl = sessionStorage.getItem('dataUrl');
     if (dataUrl) {
-      localStorage.removeItem('injectedDataUrl');
+      sessionStorage.removeItem('dataUrl');
       const image = new Image();
       image.onload = () => {
         layerFacade.pushLayer({
