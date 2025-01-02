@@ -29,6 +29,26 @@ const Canvas = () => {
   const layerFacade = new LayerFacade();
   setLayerFacade(layerFacade);
 
+  setTimeout(() => {
+    const dataUrl = localStorage.getItem('injectedDataUrl');
+    console.log('dataUrl', dataUrl);
+    if (dataUrl) {
+      localStorage.removeItem('injectedDataUrl');
+      const image = new Image();
+      image.onload = () => {
+        layerFacade.pushLayer({
+          canvasHeight: image.height,
+          canvasWidth: image.width,
+          draw: (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D)=> ctx.drawImage(image, 0, 0),
+          tool: 'SketchwaveExtension'
+        });
+        layerFacade.renderLayers();
+        URL.revokeObjectURL(image.src);
+      }
+      image.src = dataUrl;
+    }
+  })
+
   const clipboardManager = new ClipboardManager(layerFacade);
   clipboardManager.initialize();
 
