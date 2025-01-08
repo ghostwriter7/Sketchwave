@@ -1,0 +1,25 @@
+.home {
+  align-items: center;
+  background: var(--bg-secondary);
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+.card {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius);
+  color: var(--clr-primary);
+  font-size: 1.5em;
+  padding: 3rem;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--bg-hover);
+    color: var(--clr-hover);
+  }
+
+}
