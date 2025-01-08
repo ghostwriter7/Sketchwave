@@ -1,12 +1,12 @@
 import './style.css'
 import { render } from 'solid-js/web';
-import App from './app.tsx';
 import './utils/string.extensions.ts';
 import './utils/array.extensions.ts';
 import './utils/canvas-rendering-context.extensions.ts';
 import { Logger } from './utils/Logger.ts';
-import { isDevMode, isPlaygroundMode } from './utils/environment.ts';
-import { Playground } from './playground/playground.tsx';
+import { isDevMode } from './utils/environment.ts';
+import { Router } from '@solidjs/router';
+import { routes } from './routes.ts';
 
 const logger = new Logger('Main');
 
@@ -28,4 +28,4 @@ if (!isDevMode()) {
   }
 }
 
-render(() => isPlaygroundMode() ? <Playground/> : <App/>, document.getElementById('root')!);
+render(() => <Router>{routes}</Router>, document.getElementById('root')!);

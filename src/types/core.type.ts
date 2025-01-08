@@ -68,3 +68,5 @@ export type Option<T = OptionValue> = {
 export type Options<T = OptionValue> = Option<T>[];
 
 export type Coordinate = { x: number, y: number };
+
+export type KeyboardShortcuts = Record<string, string | { key: string, ctrl?: boolean; shift?: boolean; }>;
