@@ -1,4 +1,5 @@
 .wrapper {
+  align-items: center;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
@@ -7,6 +8,8 @@
 }
 
 .input {
+  border-bottom-color: var(--clr-primary);
+  border-right-color: var(--clr-primary);
   appearance: textfield;
   width: 30px;
 
@@ -21,4 +24,8 @@
   display: flex;
   gap: var(--space-sm);
   justify-content: space-between;
+}
+
+.button {
+  justify-self: flex-end;
 }
