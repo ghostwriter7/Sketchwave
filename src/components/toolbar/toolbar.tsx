@@ -9,7 +9,7 @@ type ToolbarProps = {
 }
 
 export const Toolbar = (props: VoidProps<ToolbarProps>) => {
-  const [activeSection, setActiveSection] = createSignal('home');
+  const [activeSection, setActiveSection] = createSignal('juggling');
   const sections = props.sections ?? ['home'];
 
   return <>

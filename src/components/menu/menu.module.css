@@ -4,7 +4,7 @@
   display: flex;
   flex-wrap: nowrap;
   gap: var(--space-md);
-  max-height: 150px;
+  height: 135px;
   overflow: auto hidden;
   padding: var(--space-sm);
 }
@@ -12,7 +12,7 @@
 .divider {
   background: var(--bg-active);
   height: 100%;
-  width: 2px;
+  min-width: 2px;
 }
 
 .grid {
