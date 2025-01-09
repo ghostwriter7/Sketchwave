@@ -3,7 +3,7 @@ console.log(`Build timestamp: ${buildTimestamp}`);
 
 const externalStyleResource = ['https://fonts.googleapis.com/css2', 'https://fonts.gstatic.com'];
 
-const cachableResources = [
+const cacheableResources = [
   '/',
   '/index.html',
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined',
@@ -26,10 +26,10 @@ const putInCache = async (request, response) => {
 const resolveRequestFromCacheFirst = async (request) => {
   const path = request.url.replace(location.origin, '');
 
-  const cachableResource = cachableResources.some((resource) => path === resource)
+  const cacheableResource = cacheableResources.some((resource) => path === resource)
     || externalStyleResource.some((resource) => path.startsWith(resource));
 
-  if (cachableResource) {
+  if (cacheableResource) {
     const responseFromCache = await caches.match(request);
 
     if (responseFromCache) {
@@ -41,7 +41,7 @@ const resolveRequestFromCacheFirst = async (request) => {
   try {
     console.log(`Fetching ${request.url} from network`);
     const responseFromNetwork = await fetch(request.clone());
-    cachableResource && putInCache(request, responseFromNetwork.clone());
+    cacheableResource && putInCache(request, responseFromNetwork.clone());
     return responseFromNetwork;
   } catch (error) {
     return new Response('Network error happened', {
@@ -51,24 +51,30 @@ const resolveRequestFromCacheFirst = async (request) => {
   }
 };
 
-const updateCachableResources = async () => {
+const updateCacheableResources = async () => {
   const response = await fetch('./vite-manifest.json');
   const manifest = await response.json();
-  const indexEntry = manifest['index.html'];
-  const javascriptFile = `/${indexEntry.file}`;
-  const cssFile = `/${indexEntry.css[0]}`;
+  const resources = [...new Set(Object.values(manifest).flatMap(({ file, css }) => {
+    const assets = [`/${file}`];
 
-  console.log(`Updating cachable resources with entries: ${javascriptFile}, ${cssFile}`);
+    if (css) {
+      assets.push(`/${css[0]}`);
+    }
 
-  cachableResources.push(javascriptFile, cssFile);
+    return assets;
+  }))];
+
+  console.log(`Updating cacheable resources with entries: ${resources.join(', ')}`);
+
+  cacheableResources.push(...resources);
 };
 
 self.addEventListener('install',  (event) => {
   self.skipWaiting();
 
   event.waitUntil((async () => {
-    await updateCachableResources();
-    return addResourcesToCache(cachableResources);
+    await updateCacheableResources();
+    return addResourcesToCache(cacheableResources);
   })());
 });
 
