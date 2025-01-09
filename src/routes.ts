@@ -3,11 +3,11 @@ import type { RouteDefinition } from '@solidjs/router';
 
 export const routes: RouteDefinition[] = [
   {
-    path: '/menu',
+    path: '/',
     component: lazy(() => import('./routes/home/Home.tsx'))
   },
   {
-    path: ['/', '/painter'],
+    path: '/painter',
     component: lazy(() => import('./routes/Painter.tsx'))
   },
   {

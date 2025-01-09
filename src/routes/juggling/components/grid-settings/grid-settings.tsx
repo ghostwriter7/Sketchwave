@@ -8,7 +8,7 @@ import { ThemeHelper } from '../../../../utils/ThemeHelper.ts';
 export const GridSettings = () => {
   const { state } = useGlobalContext();
   const [store, setStore] = createStore({
-    size: 100,
+    size: 300,
     row: 2,
     col: 4
   });
