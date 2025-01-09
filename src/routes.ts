@@ -12,6 +12,6 @@ export const routes: RouteDefinition[] = [
   },
   {
     path: '/juggling',
-    component: lazy(() => import('./routes/Juggling'))
+    component: lazy(() => import('./routes/juggling/Juggling.tsx'))
   }
 ];

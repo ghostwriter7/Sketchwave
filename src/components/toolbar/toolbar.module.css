@@ -1,0 +1,23 @@
+.sections {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--clr-primary);
+  color: var(--clr-primary);
+  display: flex;
+  padding: var(--space-sm) var(--space-lg);
+}
+
+.item {
+  cursor: pointer;
+  font-size: .9em;
+  padding: var(--space-sm);
+  text-transform: uppercase;
+
+  &:hover {
+    background: var(--bg-hover);
+    color: var(--clr-hover);
+  }
+
+  &[data-active] {
+    font-weight: bold;
+  }
+}

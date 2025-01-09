@@ -1,8 +1,8 @@
-import Menu from '../components/menu/menu.tsx';
 import { MainView } from '../components/main-view/main-view.tsx';
 import { CanvasSummary } from '../components/canvas-summary/canvas-summary.tsx';
 import { EventService } from '../utils/EventService.ts';
 import { useBeforeLeave } from '@solidjs/router';
+import { Toolbar } from '../components/toolbar/toolbar.tsx';
 
 const Painter = () => {
   const KEYBOARD_MAPPING: Record<string, string | { key: string, ctrl?: boolean; shift?: boolean; }> = {
@@ -31,7 +31,7 @@ const Painter = () => {
   useBeforeLeave(() => eventService.destroy());
 
   return <>
-    <Menu/>
+    <Toolbar />
     <MainView/>
     <CanvasSummary/>
   </>
