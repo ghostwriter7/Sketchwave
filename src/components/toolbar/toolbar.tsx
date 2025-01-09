@@ -1,6 +1,7 @@
 import { createSignal, For, lazy, Show, type VoidProps } from 'solid-js';
 import Menu from '../menu/menu.tsx';
 import styles from './toolbar.module.css';
+import { HomeTools } from '../menu/home-tools.tsx';
 
 type ToolbarProps = {
   sections?: string[];
@@ -12,7 +13,7 @@ export const Toolbar = (props: VoidProps<ToolbarProps>) => {
   const sections = props.sections ?? ['home'];
 
   return <>
-    <Show when={sections.length > 1} fallback={<Menu />}>
+    <Show when={sections.length > 1} fallback={<Menu><HomeTools/></Menu>}>
       <div class={styles.sections}>
         <For each={sections}>
           {(section) => <span
@@ -24,12 +25,14 @@ export const Toolbar = (props: VoidProps<ToolbarProps>) => {
         </For>
       </div>
       <div>
-        <Show when={activeSection() === 'home'} fallback={(() => {
-          const Component = props.components![activeSection()];
-          return <Component/>;
-        })()}>
-          <Menu/>
-        </Show>
+        <Menu>
+          <Show when={activeSection() === 'home'} fallback={(() => {
+            const Component = props.components![activeSection()];
+            return <Component/>;
+          })()}>
+            <HomeTools/>
+          </Show>
+        </Menu>
       </div>
     </Show>
   </>
